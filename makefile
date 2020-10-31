@@ -6,6 +6,9 @@ VulkanTest: main.cpp
 
 .PHONY: test clean
 
+debug: main.cpp
+	g++ $(CFLAGS) -o VulkanTest main.cpp $(LDFLAGS) -D debug
+
 test: VulkanTest
 	./VulkanTest
 
