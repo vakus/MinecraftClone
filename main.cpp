@@ -71,6 +71,31 @@ private:
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
     /**
+     * Stores list of all validation layers we want to enable
+     */
+    const std::vector<const char *> validationLayers = {
+        "VK_LAYER_KHRONOS_validation"};
+
+    /**
+     * Stores LogicalDevice
+     */
+    VkDevice device;
+
+    /**
+     * Stores graphics queue.
+     */
+    VkQueue queue;
+
+    /**
+     * stores window surface
+     */
+    VkSurfaceKHR surface;
+
+    /**
+     * stores presentation queue
+     */
+    VkQueue presentQueue;
+    /**
      * This function runs window setup
      * 
      * it takes two arguments
@@ -101,7 +126,9 @@ private:
     {
         createInstance(enableValidationLayers);
         setupDebugMessanger(enableValidationLayers);
+        createSurface();
         pickPhysicalDevice();
+        createLogicalDevice(enableValidationLayers);
     }
 
     /**
@@ -109,9 +136,6 @@ private:
      */
     void createInstance(bool enableValidationLayers)
     {
-
-        const std::vector<const char *> validationLayers = {
-            "VK_LAYER_KHRONOS_validation"};
 
         if (enableValidationLayers && !checkValidationLayerSupport(validationLayers))
         {
@@ -159,8 +183,7 @@ private:
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
             populateDebugMessengerCreateInfo(debugCreateInfo);
-            createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
-
+            createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
         }
         else
         {
@@ -255,7 +278,7 @@ private:
         return VK_FALSE;
     }
 
-    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
+    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo)
     {
         createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -279,32 +302,38 @@ private:
         }
     }
 
-    void pickPhysicalDevice(){
+    void pickPhysicalDevice()
+    {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
-        if(deviceCount == 0){
+        if (deviceCount == 0)
+        {
             throw std::runtime_error("failed to find GPUs with Vulkan support!");
         }
 
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
-
         std::multimap<int, VkPhysicalDevice> candidates;
-        for(const auto& device: devices){
+        for (const auto &device : devices)
+        {
             int score = rateDeviceSuitability(device);
             candidates.insert(std::make_pair(score, device));
         }
 
-        if(candidates.rbegin()->first > 0){
+        if (candidates.rbegin()->first > 0)
+        {
             physicalDevice = candidates.rbegin()->second;
-        }else{
+        }
+        else
+        {
             throw std::runtime_error("failed to find a suitable GPU");
         }
     }
 
-    int rateDeviceSuitability(VkPhysicalDevice device){
+    int rateDeviceSuitability(VkPhysicalDevice device)
+    {
         int score = 0;
 
         VkPhysicalDeviceProperties deviceProperties;
@@ -313,24 +342,33 @@ private:
         vkGetPhysicalDeviceProperties(device, &deviceProperties);
         vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-        if(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU){
+        if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+        {
             score += 1000;
         }
 
         QueueFamilyIndices indices = findQueueFamilies(device);
 
-        if(!indices.graphicsFamily.has_value()){
+        if (!indices.isComplete())
+        {
             return 0;
         }
 
         return score;
     }
 
-    struct QueueFamilyIndices{
+    struct QueueFamilyIndices
+    {
         std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
+
+        bool isComplete(){
+            return graphicsFamily.has_value() && presentFamily.has_value();
+        }
     };
 
-    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device){
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)
+    {
         QueueFamilyIndices indices;
 
         uint32_t queueFamilyCount = 0;
@@ -340,17 +378,70 @@ private:
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
         int x = 0;
-        for(const auto& queueFamily : queueFamilies){
-            if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT){
+        for (const auto &queueFamily : queueFamilies)
+        {
+            VkBool32 presentSupport = false;
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, x, surface, &presentSupport);
+            if(presentSupport){
+                indices.presentFamily = x;
+            }
+            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            {
                 indices.graphicsFamily = x;
             }
-            if(indices.graphicsFamily.has_value()){
+            if (indices.graphicsFamily.has_value())
+            {
                 break;
             }
-            i++;
+            x++;
         }
 
         return indices;
+    }
+
+    void createLogicalDevice(bool enableValidationLayers)
+    {
+        QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+        queueCreateInfo.queueCount = 1;
+
+        float queuePriority = 1.0f;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+
+        VkPhysicalDeviceFeatures deviceFeatuers{};
+
+        VkDeviceCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        createInfo.pQueueCreateInfos = &queueCreateInfo;
+        createInfo.queueCreateInfoCount = 1;
+        createInfo.pEnabledFeatures = &deviceFeatuers;
+
+        createInfo.enabledExtensionCount = 0;
+
+        if (enableValidationLayers)
+        {
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        }
+        else
+        {
+            createInfo.enabledLayerCount = 0;
+        }
+
+        if(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS){
+            throw std::runtime_error("Failed to create logical device!");
+        }
+
+        vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &queue);
+    }
+
+    void createSurface(){
+        if(glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS){
+            throw new std::runtime_error("Failed to create window surface");
+        }
     }
 
     /**
@@ -373,6 +464,10 @@ private:
         {
             vulkan::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         }
+        vkDestroyDevice(device, nullptr);
+
+        vkDestroySurfaceKHR(instance, surface, nullptr);
+
         vkDestroyInstance(instance, nullptr);
 
         glfwDestroyWindow(window);
