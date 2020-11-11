@@ -10,6 +10,7 @@
 #include <map>
 #include <optional>
 #include <set>
+#include <cstdint>
 
 #include "logger.cpp"
 
@@ -100,6 +101,11 @@ private:
      */
     VkQueue presentQueue;
 
+    /**
+     * Stores swap chain
+     */
+    VkSwapchainKHR swapChain;
+
     struct QueueFamilyIndices
     {
         std::optional<uint32_t> graphicsFamily;
@@ -127,8 +133,7 @@ private:
      * 
      * after calling this function it will assign handle to `window` private variable
      */
-    void
-    initWindow(uint32_t width, uint32_t height)
+    void initWindow(uint32_t width, uint32_t height)
     {
         glfwInit();
 
@@ -153,6 +158,61 @@ private:
         createSurface();
         pickPhysicalDevice();
         createLogicalDevice(enableValidationLayers);
+        createSwapChain();
+    }
+
+    void createSwapChain()
+    {
+        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
+
+        VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
+        VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+        VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+
+        uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+        // maxImageCount = 0 means no maximum value
+        if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
+        {
+            imageCount = swapChainSupport.capabilities.maxImageCount;
+        }
+
+        VkSwapchainCreateInfoKHR createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+        createInfo.surface = surface;
+        createInfo.minImageCount = imageCount;
+        createInfo.imageFormat = surfaceFormat.format;
+        createInfo.imageColorSpace = surfaceFormat.colorSpace;
+        createInfo.imageExtent = extent;
+        createInfo.imageArrayLayers = 1;
+        createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+        QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+        uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+        if (indices.graphicsFamily != indices.presentFamily)
+        {
+            createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+            createInfo.queueFamilyIndexCount = 2;
+            createInfo.pQueueFamilyIndices = queueFamilyIndices;
+        }
+        else
+        {
+            createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            createInfo.queueFamilyIndexCount = 0;     //optional
+            createInfo.pQueueFamilyIndices = nullptr; //optional
+        }
+
+        createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+        createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+
+        createInfo.presentMode = presentMode;
+        createInfo.clipped = VK_TRUE;
+        createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+        if(vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS){
+            throw std::runtime_error("failed to create swap chain");
+        }
     }
 
     /**
@@ -262,6 +322,12 @@ private:
         return true;
     }
 
+    /**
+     * This function is used to return list of all required extensions.
+     * 
+     * Currently required extensions consist of all extensions required by GLFW library.
+     * If validation layers are enabled VK_EXT_DEBUG_UTILS_EXTENSION_NAME is also added as extension.
+     */
     std::vector<const char *> getRequiredExtensions(bool enableValidationLayers)
     {
         uint32_t glfwExtensionCount = 0;
@@ -279,6 +345,16 @@ private:
         return extensions;
     }
 
+    /**
+     * This function will automatically log all messages from Validation Layers
+     * to the logger.
+     * 
+     * Currently the mapping is as follows:
+     *      - verbose messages are considered finer log
+     *      - info messages are considered fine log
+     *      - warning messages are considered warning log
+     *      - error messages are considered error log
+     */
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData, void *pUserData)
     {
 
@@ -302,6 +378,14 @@ private:
         return VK_FALSE;
     }
 
+    /**
+     * This function is used to setup structure of Validation Layer messenger
+     * 
+     * Currently this function uses the following settings:
+     *      - The verbose, info, warning and error messages are allowed
+     *      - The messages with General information, Validation information, Performance information are allowed
+     *      - The callback is `debugCallback`
+     */
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo)
     {
         createInfo = {};
@@ -312,6 +396,12 @@ private:
         createInfo.pUserData = nullptr;
     }
 
+    /**
+     * This function is used to setup validation layers
+     * 
+     * If enableValidationLayers is true then the function will setup a validation layer messenger.
+     * Otherwise this function does nothing.
+     */
     void setupDebugMessanger(bool enableValidationLayers)
     {
         if (enableValidationLayers)
@@ -326,6 +416,13 @@ private:
         }
     }
 
+    /**
+     * This function is used to choose Physical Device which will be used to render graphics
+     * 
+     * First this function checks for all devices which support Vulkan API,
+     * then the function checks all supported devices with rateDeviceSuitability, and then it picks device
+     * with the highest score.
+     */
     void pickPhysicalDevice()
     {
         uint32_t deviceCount = 0;
@@ -356,6 +453,15 @@ private:
         }
     }
 
+    /**
+     * This function is used to score device, on how useful it is to us
+     * 
+     * The score is affected as follows:
+     *      - If the physical graphics is a Discrete GPU then score is increased by 1000 points
+     *      - If the device doesnt support required extensions then the device is rated as 0
+     *      - If the device doesnt have all required indices then the device is rated as 0
+     *      - If the device doesnt have swap chain format or present mode then the device is rated as 0
+     */
     int rateDeviceSuitability(VkPhysicalDevice device)
     {
         int score = 0;
@@ -379,13 +485,20 @@ private:
         }
 
         SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-        if(!swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty()){
+        if (swapChainSupport.formats.empty() || swapChainSupport.presentModes.empty())
+        {
             return 0;
         }
-        
+
         return score;
     }
 
+    /**
+     * This function is used to find which queue family is supported by the physical device
+     * 
+     * We want to find a queue which has VK_QUEUE_GRAPHICS_BIT in graphics family, as well
+     * as we want to find that the device supports Surfaces for present Family.
+     */
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)
     {
         QueueFamilyIndices indices;
@@ -419,6 +532,9 @@ private:
         return indices;
     }
 
+    /**
+     * This function is used to check if physical device supports all the required extensions
+     */
     bool checkDeviceExtensionSupport(VkPhysicalDevice device)
     {
         uint32_t extensionCount;
@@ -437,6 +553,9 @@ private:
         return requiredExtensions.empty();
     }
 
+    /**
+     * This function is used to create logical device which will be used to interface between the application and physical device
+     */
     void createLogicalDevice(bool enableValidationLayers)
     {
         QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
@@ -486,6 +605,9 @@ private:
         vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
     }
 
+    /**
+     * This function creates surface between GLFW Window and Vulkan instance
+     */
     void createSurface()
     {
         if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS)
@@ -494,7 +616,11 @@ private:
         }
     }
 
-    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device){
+    /**
+     * This function is used to get information about available Swap Chain for the specified physical device
+     */
+    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device)
+    {
         SwapChainSupportDetails details;
 
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
@@ -502,7 +628,8 @@ private:
         uint32_t formatCount;
         vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
 
-        if(formatCount != 0){
+        if (formatCount != 0)
+        {
             details.formats.resize(formatCount);
             vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
         }
@@ -510,12 +637,81 @@ private:
         uint32_t presentModeCount;
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
 
-        if(presentModeCount != 0){
+        if (presentModeCount != 0)
+        {
             details.presentModes.resize(presentModeCount);
             vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
         }
 
         return details;
+    }
+
+    /**
+    * This function will choose format for the chain swap.
+    * 
+    * We prefer format which supports both VK_FORMAT_B8G8R8A8_SRGB (Red Green Blue Alpha - 32bit and that supports SRGB)
+    * as well as one which supports VK_COLOR_SPACE_SRGB_NONLINEAR_KHR, which checks if SRGB is possible.
+    * If we do not find preferred mode, we will use the first one on the list, which *hopefully* is good enough
+    * 
+    * FIXME: ideally we should score the formats and choose the best one from ones that are available,
+    * instead of choosing one that is first
+    */
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
+    {
+        for (const auto &availableFormat : availableFormats)
+        {
+            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            {
+                return availableFormat;
+            }
+        }
+
+        return availableFormats[0];
+    }
+
+    /**
+    * This function will decide which presentation mode should be used in the swap chain
+    * 
+    * We prefer VK_PRESENT_MODE_MAILBOX_KHR which allows tripple buffering, however this mode is not
+    * guaranteed to be present. If we do not find VK_PRESENT_MODE_MAILBOX_KHR, we will use guaranteed
+    * VK_PRESENT_MODE_FIFO_KHR which allows for double buffering.
+    */
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes)
+    {
+        //preferred mode
+        for (const auto &presentMode : availablePresentModes)
+        {
+            if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+            {
+                return presentMode;
+            }
+        }
+
+        //this mode is guaranteed to be present
+        return VK_PRESENT_MODE_FIFO_KHR;
+    }
+
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
+    {
+        if (capabilities.currentExtent.width != UINT32_MAX)
+        {
+            return capabilities.currentExtent;
+        }
+        else
+        {
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+
+            VkExtent2D actualExtent = {
+                static_cast<uint32_t>(width),
+                static_cast<uint32_t>(height)};
+
+            actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
+
+            actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
+
+            return actualExtent;
+        }
     }
 
     /**
@@ -538,6 +734,8 @@ private:
         {
             vulkan::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         }
+        vkDestroySwapchainKHR(device, swapChain, nullptr);
+
         vkDestroyDevice(device, nullptr);
 
         vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -648,6 +846,11 @@ int main(int argc, char *argv[])
             }
         }
     }
+
+    const std::string compDate = __DATE__;
+    const std::string compTime = __TIME__;
+
+    logger::fine("Compiled on " + compDate + " at " + compTime);
 
     Application application;
 
