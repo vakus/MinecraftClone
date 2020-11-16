@@ -750,11 +750,50 @@ private:
 
 int main(int argc, char *argv[])
 {
+    //if `-D VALIDATIONLAYERS` is present in compilation, then validation layers will be enabled as default
+    #ifdef VALIDATIONLAYERS
+        bool enableValidationLayers = true;
+    #else
+        bool enableValidationLayers = false;
+    #endif
 
-    bool enableValidationLayers = false;
+    //if `-D LOGMIN=VALUE` is present in compilation then the value will be used for default logmin
+    #ifndef LOGMIN
+        logger::setMinLog(logger::INFO);
+    #elif LOGMIN == 1
+        logger::setMinLog(logger::FINER);
+    #elif LOGMIN == 2
+        logger::setMinLog(logger::FINE);
+    #elif LOGMIN == 3
+        logger::setMinLog(logger::INFO);
+    #elif LOGMIN == 4
+        logger::setMinLog(logger::WARN);
+    #elif LOGMIN == 5
+        logger::setMinLog(logger::ERROR);
+    #elif LOGMIN == 6
+        logger::setMinLog(logger::CRITICAL);
+    #else
+        logger::setMinLog(logger::INFO);
+    #endif
 
-    logger::setMinLog(logger::INFO);
-    logger::setMaxLog(logger::NONE);
+    //if `-D LOGMAX=VALUE` is present in compilation then the value will be used for default logmax
+    #ifndef LOGMAX
+        logger::setMaxLog(logger::INFO);
+    #elif LOGMAX == 1
+        logger::setMaxLog(logger::FINER);
+    #elif LOGMAX == 2
+        logger::setMaxLog(logger::FINE);
+    #elif LOGMAX == 3
+        logger::setMaxLog(logger::INFO);
+    #elif LOGMAX == 4
+        logger::setMaxLog(logger::WARN);
+    #elif LOGMAX == 5
+        logger::setMaxLog(logger::ERROR);
+    #elif LOGMAX == 6
+        logger::setMaxLog(logger::CRITICAL);
+    #else
+        logger::setMaxLog(logger::INFO);
+    #endif
 
     //check runtime arguments
     if (argc > 0)

@@ -7,7 +7,7 @@ VulkanTest: main.cpp
 .PHONY: test clean
 
 debug: main.cpp
-	g++ $(CFLAGS) -o VulkanTest main.cpp $(LDFLAGS) -D debug
+	g++ $(CFLAGS) -o VulkanTest main.cpp $(LDFLAGS) -Wall -D VALIDATIONLAYERS -D LOGMIN=2
 
 test: VulkanTest
 	./VulkanTest
