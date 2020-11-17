@@ -106,6 +106,26 @@ private:
      */
     VkSwapchainKHR swapChain;
 
+    /**
+     * 
+     */
+    std::vector<VkImage> swapChainImages;
+
+    /**
+     * 
+     */
+    VkFormat swapChainImageFormat;
+
+    /**
+     * 
+     */
+    VkExtent2D swapChainExtent;
+
+    /**
+     * 
+     */
+    std::vector<VkImageView> swapChainImageViews;
+
     struct QueueFamilyIndices
     {
         std::optional<uint32_t> graphicsFamily;
@@ -159,6 +179,40 @@ private:
         pickPhysicalDevice();
         createLogicalDevice(enableValidationLayers);
         createSwapChain();
+        createImageViews();
+        createGraphicsPipeline();
+    }
+
+    void createGraphicsPipeline(){
+        
+    }
+
+    void createImageViews()
+    {
+        swapChainImageViews.resize(swapChainImages.size());
+
+        for (size_t x = 0; x < swapChainImages.size(); x++)
+        {
+            VkImageViewCreateInfo createInfo{};
+            createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            createInfo.image = swapChainImages[x];
+            createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+            createInfo.format = swapChainImageFormat;
+            createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            createInfo.subresourceRange.baseMipLevel = 0;
+            createInfo.subresourceRange.levelCount = 1;
+            createInfo.subresourceRange.baseArrayLayer = 0;
+            createInfo.subresourceRange.layerCount = 1;
+
+            if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[x]) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create image views!");
+            }
+        }
     }
 
     void createSwapChain()
@@ -210,9 +264,17 @@ private:
         createInfo.clipped = VK_TRUE;
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if(vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS){
+        if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS)
+        {
             throw std::runtime_error("failed to create swap chain");
         }
+
+        vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
+        swapChainImages.resize(imageCount);
+        vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
+
+        swapChainImageFormat = surfaceFormat.format;
+        swapChainExtent = extent;
     }
 
     /**
@@ -730,6 +792,11 @@ private:
      */
     void cleanup(bool enableValidationLayers)
     {
+        for (auto imageView : swapChainImageViews)
+        {
+            vkDestroyImageView(device, imageView, nullptr);
+        }
+
         if (enableValidationLayers)
         {
             vulkan::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
@@ -750,50 +817,50 @@ private:
 
 int main(int argc, char *argv[])
 {
-    //if `-D VALIDATIONLAYERS` is present in compilation, then validation layers will be enabled as default
-    #ifdef VALIDATIONLAYERS
-        bool enableValidationLayers = true;
-    #else
-        bool enableValidationLayers = false;
-    #endif
+//if `-D VALIDATIONLAYERS` is present in compilation, then validation layers will be enabled as default
+#ifdef VALIDATIONLAYERS
+    bool enableValidationLayers = true;
+#else
+    bool enableValidationLayers = false;
+#endif
 
-    //if `-D LOGMIN=VALUE` is present in compilation then the value will be used for default logmin
-    #ifndef LOGMIN
-        logger::setMinLog(logger::INFO);
-    #elif LOGMIN == 1
-        logger::setMinLog(logger::FINER);
-    #elif LOGMIN == 2
-        logger::setMinLog(logger::FINE);
-    #elif LOGMIN == 3
-        logger::setMinLog(logger::INFO);
-    #elif LOGMIN == 4
-        logger::setMinLog(logger::WARN);
-    #elif LOGMIN == 5
-        logger::setMinLog(logger::ERROR);
-    #elif LOGMIN == 6
-        logger::setMinLog(logger::CRITICAL);
-    #else
-        logger::setMinLog(logger::INFO);
-    #endif
+//if `-D LOGMIN=VALUE` is present in compilation then the value will be used for default logmin
+#ifndef LOGMIN
+    logger::setMinLog(logger::INFO);
+#elif LOGMIN == 1
+    logger::setMinLog(logger::FINER);
+#elif LOGMIN == 2
+    logger::setMinLog(logger::FINE);
+#elif LOGMIN == 3
+    logger::setMinLog(logger::INFO);
+#elif LOGMIN == 4
+    logger::setMinLog(logger::WARN);
+#elif LOGMIN == 5
+    logger::setMinLog(logger::ERROR);
+#elif LOGMIN == 6
+    logger::setMinLog(logger::CRITICAL);
+#else
+    logger::setMinLog(logger::INFO);
+#endif
 
-    //if `-D LOGMAX=VALUE` is present in compilation then the value will be used for default logmax
-    #ifndef LOGMAX
-        logger::setMaxLog(logger::INFO);
-    #elif LOGMAX == 1
-        logger::setMaxLog(logger::FINER);
-    #elif LOGMAX == 2
-        logger::setMaxLog(logger::FINE);
-    #elif LOGMAX == 3
-        logger::setMaxLog(logger::INFO);
-    #elif LOGMAX == 4
-        logger::setMaxLog(logger::WARN);
-    #elif LOGMAX == 5
-        logger::setMaxLog(logger::ERROR);
-    #elif LOGMAX == 6
-        logger::setMaxLog(logger::CRITICAL);
-    #else
-        logger::setMaxLog(logger::INFO);
-    #endif
+//if `-D LOGMAX=VALUE` is present in compilation then the value will be used for default logmax
+#ifndef LOGMAX
+    logger::setMaxLog(logger::INFO);
+#elif LOGMAX == 1
+    logger::setMaxLog(logger::FINER);
+#elif LOGMAX == 2
+    logger::setMaxLog(logger::FINE);
+#elif LOGMAX == 3
+    logger::setMaxLog(logger::INFO);
+#elif LOGMAX == 4
+    logger::setMaxLog(logger::WARN);
+#elif LOGMAX == 5
+    logger::setMaxLog(logger::ERROR);
+#elif LOGMAX == 6
+    logger::setMaxLog(logger::CRITICAL);
+#else
+    logger::setMaxLog(logger::INFO);
+#endif
 
     //check runtime arguments
     if (argc > 0)
