@@ -3,10 +3,10 @@ LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr
 
 
 debug: src/main.cpp shaders
-	g++ $(CFLAGS) -o build/VulkanTest src/main.cpp $(LDFLAGS) -Wall -D VALIDATIONLAYERS -D LOGMIN=2
+	g++ $(CFLAGS) -o build/VulkanTest src/main.cpp $(LDFLAGS) -Wall -W -g -Og -D VALIDATIONLAYERS -D LOGMIN=2
 
 release: src/main.cpp shaders
-	g++ $(CFLAGS) -o build/VulkanTest src/main.cpp $(LDFLAGS) -Wall
+	g++ $(CFLAGS) -o build/VulkanTest src/main.cpp $(LDFLAGS) -Wall -W -O3
 
 shaders:
 	glslc src/shaders/shader.vert -o build/shaders/vert.spv
