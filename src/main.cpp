@@ -203,6 +203,9 @@ private:
 
     bool framebufferResize = false;
 
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+
     struct QueueFamilyIndices
     {
         std::optional<uint32_t> graphicsFamily;
@@ -256,9 +259,15 @@ private:
     };
 
     const std::vector<Vertex> verticies = {
-        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, 0.5f}, {1.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f}, {1.0f, 0.0f, 1.0f}}};
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    };
+
+    const std::vector<uint32_t> indicies = {
+        0, 1, 2, 2, 3, 0
+    };
 
     /**
      * This function runs window setup
@@ -306,8 +315,37 @@ private:
         createFramebuffers();
         createCommandPool();
         createVertexBuffer();
+        createIndexBuffer();
         createCommandBuffers();
         createSyncObjects();
+    }
+
+    void createIndexBuffer(){
+        VkDeviceSize bufferSize = sizeof(indicies[0]) * indicies.size();
+        
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        createBuffer(bufferSize,
+                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                     stagingBuffer,
+                     stagingBufferMemory);
+
+        void* data;
+        vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, indicies.data(), bufferSize);
+        vkUnmapMemory(device, stagingBufferMemory);
+
+        createBuffer(bufferSize,
+                     VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                     indexBuffer,
+                     indexBufferMemory);
+
+        copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+
+        vkDestroyBuffer(device, stagingBuffer, nullptr);
+        vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory)
@@ -490,11 +528,13 @@ private:
             VkDeviceSize offsets[] = {0};
             vkCmdBindVertexBuffers(commandBuffers[x], 0, 1, vertexBuffers, offsets);
 
+            vkCmdBindIndexBuffer(commandBuffers[x], indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
             //vertexCount
             //instanceCount
             //firstVertex (this works as offset)
             //firstInstance (this works as offset)
-            vkCmdDraw(commandBuffers[x], static_cast<uint32_t>(verticies.size()), 1, 0, 0);
+            vkCmdDrawIndexed(commandBuffers[x], static_cast<uint32_t>(indicies.size()), 1, 0, 0, 0);
 
             vkCmdEndRenderPass(commandBuffers[x]);
 
@@ -1475,6 +1515,9 @@ private:
     void cleanup(bool enableValidationLayers)
     {
         cleanupSwapChain();
+
+        vkDestroyBuffer(device, indexBuffer, nullptr);
+        vkFreeMemory(device, indexBufferMemory, nullptr);
 
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
