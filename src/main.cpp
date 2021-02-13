@@ -24,6 +24,9 @@
 
 #include "logger.cpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 /**
  * This function reads file as array of chars.
  */
@@ -220,6 +223,9 @@ private:
     VkDescriptorPool descriptorPool;
     std::vector<VkDescriptorSet> descriptorSets;
 
+    VkImage textureImage;
+    VkDeviceMemory textureImageMemory;
+
     struct QueueFamilyIndices
     {
         std::optional<uint32_t> graphicsFamily;
@@ -334,6 +340,7 @@ private:
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
+        createTextureImage("textures/Dirt_Top.png");
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
@@ -341,6 +348,93 @@ private:
         createDescriptorSet();
         createCommandBuffers();
         createSyncObjects();
+    }
+
+    void createTextureImage(const char *pathToTexture)
+    {
+        int texWidth, texHeight, texChannels;
+        stbi_uc *pixels = stbi_load(pathToTexture, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        VkDeviceSize imageSize = texWidth * texHeight * 4;
+
+        if (!pixels)
+        {
+            std::string error = "failed to load texture: ";
+            error += pathToTexture;
+            throw std::runtime_error(error);
+        }
+
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+
+        createBuffer(imageSize,
+                     VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                     stagingBuffer,
+                     stagingBufferMemory);
+
+        void *data;
+        vkMapMemory(device, stagingBufferMemory, 0, imageSize, 0, &data);
+        memcpy(data, pixels, static_cast<size_t>(imageSize));
+        vkUnmapMemory(device, stagingBufferMemory);
+
+        stbi_image_free(pixels);
+
+        createImage(
+            texWidth,
+            texHeight,
+            VK_FORMAT_R8G8B8A8_SRGB,
+            VK_IMAGE_TILING_OPTIMAL,
+            VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            textureImage,
+            textureImageMemory);
+    }
+
+    void createImage(
+        uint32_t width,
+        uint32_t height,
+        VkFormat format,
+        VkImageTiling tiling,
+        VkImageUsageFlags usage,
+        VkMemoryPropertyFlags properties,
+        VkImage &image,
+        VkDeviceMemory &imageMemory)
+    {
+        VkImageCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        createInfo.imageType = VK_IMAGE_TYPE_2D;
+        createInfo.extent.width = static_cast<uint32_t>(width);
+        createInfo.extent.height = static_cast<uint32_t>(height);
+        createInfo.extent.depth = 1;
+        createInfo.mipLevels = 1;
+        createInfo.arrayLayers = 1;
+        createInfo.format = format;
+        createInfo.tiling = tiling;
+        createInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        createInfo.usage = usage;
+        createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        createInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        createInfo.flags = 0;
+
+        if (vkCreateImage(device, &createInfo, nullptr, &image) != VK_SUCCESS)
+        {
+            throw std::runtime_error("Failed to create image");
+        }
+
+        VkMemoryRequirements memRequirements;
+        vkGetImageMemoryRequirements(device, image, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+
+        if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to allocate image memory");
+        }
+
+        vkBindImageMemory(device, image, imageMemory, 0);
     }
 
     void createDescriptorSet()
