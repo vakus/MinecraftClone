@@ -1,11 +1,15 @@
-CFLAGS = -std=c++17 -O2
+CFLAGS = -std=c++17
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -Iinclude
 
-release: src/main.cpp shaders
+release: src/main.cpp shaders textures
 	g++ $(CFLAGS) -o build/VulkanTest src/main.cpp $(LDFLAGS) -Wall -W -O3
 
-debug: src/main.cpp shaders
-	g++ $(CFLAGS) -o build/VulkanTest src/main.cpp $(LDFLAGS) -Wall -W -g -Og -D VALIDATIONLAYERS -D LOGMIN=2
+debug: src/main.cpp shaders textures
+	g++ $(CFLAGS) -o build/VulkanTest src/main.cpp $(LDFLAGS) -Wall -W -g -O3 -D VALIDATIONLAYERS -D LOGMIN=2
+
+textures:
+	mkdir -p build/textures
+	cp -rv src/textures/* build/textures
 
 shaders:
 	mkdir -p build/shaders
