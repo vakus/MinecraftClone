@@ -1,22 +1,10 @@
+#include "logger.hpp"
 #include <iostream>
 #include <string>
 #include <ctime>
 
 namespace logger
 {
-    void warn(std::string message);
-
-    enum logtype
-    {
-        FINER,    //all information
-        FINE,     //most information
-        INFO,     //basic information
-        WARNING,  //warnings
-        ERROR,    //errors
-        CRITICAL, //unrecoverable errors
-        NONE      //nothing
-    };
-
     logtype min = INFO;
     logtype max = CRITICAL;
 
