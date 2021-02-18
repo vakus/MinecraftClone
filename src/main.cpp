@@ -260,7 +260,6 @@ private:
     struct Vertex
     {
         glm::vec3 pos;
-        glm::vec3 color;
         glm::vec2 texCoord;
 
         static VkVertexInputBindingDescription getBindingDescription()
@@ -274,9 +273,9 @@ private:
             return bindingDescription;
         }
 
-        static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
+        static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions()
         {
-            std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+            std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
 
             attributeDescriptions[0].binding = 0;
             attributeDescriptions[0].location = 0;
@@ -285,13 +284,8 @@ private:
 
             attributeDescriptions[1].binding = 0;
             attributeDescriptions[1].location = 1;
-            attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-            attributeDescriptions[1].offset = offsetof(Vertex, color);
-
-            attributeDescriptions[2].binding = 0;
-            attributeDescriptions[2].location = 2;
-            attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-            attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
+            attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+            attributeDescriptions[1].offset = offsetof(Vertex, texCoord);
 
             return attributeDescriptions;
         }
@@ -302,44 +296,45 @@ private:
         glm::mat4 model;
         glm::mat4 view;
         glm::mat4 proj;
+        glm::vec3 colorTint;
     };
 
     const std::vector<Vertex> verticies = {
         //top
-        {{-0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}},
 
         //front
-        {{-0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
 
         //back
-        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
 
         //left
-        {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-        {{0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
+        {{0.5f, 0.5f, -0.5f}, {1.0f, 0.0f}},
 
         //right
-        {{-0.5f, -0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}},
 
         //bottom
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}};
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}}};
 
     const std::vector<uint32_t> indicies = {
         0, 1, 2, 2, 3, 0,       // top
@@ -783,6 +778,8 @@ private:
         }
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
+        //we do not want to tint the model
+        ubo.colorTint = {1.0f, 1.0f, 1.0f};
 
         //GLM was made to work with OpenGL which had Y coordinate inverted.
         //Vulkan however doesnt use inverted Y coordinate so we invert it once again.
