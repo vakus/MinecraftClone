@@ -5,7 +5,7 @@
 #include <cstdint>
 
 #include "logger.hpp"
-#include "application_vulkan.cpp"
+#include "application.hpp"
 
 
 int main(int argc, char *argv[])
