@@ -78,7 +78,7 @@ class Application{
         VkDevice device;
 
         /**
-         * TODO: ???
+         * Graphics Queue from Logical Device. Used to task rendering jobs on the GPU
          */
 
         VkQueue graphicsQueue;
@@ -89,7 +89,7 @@ class Application{
         VkSurfaceKHR surface;
 
         /**
-         * TODO: ???
+         * Presentation Queue from Logical Device. Used to queue rendered frame to be displayed
          */
         VkQueue presentQueue;
 

@@ -7,9 +7,11 @@
 #include "logger.hpp"
 #include "application.hpp"
 
-
 int main(int argc, char *argv[])
 {
+
+    Application application;
+
 //if `-D VALIDATIONLAYERS` is present in compilation, then validation layers will be enabled as default
 #ifdef VALIDATIONLAYERS
     bool enableValidationLayers = true;
@@ -143,6 +145,16 @@ int main(int argc, char *argv[])
             {
                 enableValidationLayers = true;
             }
+            else if (parg.compare("--validation-layer-khronos") == 0)
+            {
+                enableValidationLayers = true;
+                application.validationLayers.push_back("VK_LAYER_KHRONOS_validation");
+            }
+            else if (parg.compare("--validation-layer-api-dump") == 0)
+            {
+                enableValidationLayers = true;
+                application.validationLayers.push_back("VK_LAYER_LUNARG_api_dump");
+            }
         }
     }
 
@@ -150,8 +162,19 @@ int main(int argc, char *argv[])
     const std::string compTime = __TIME__;
 
     logger::fine("Compiled on " + compDate + " at " + compTime);
+#ifdef VALIDATIONLAYERS
+    logger::fine("Compiled with Validation Layers enabled by default");
+#endif
+#ifdef LAYERS_KHRONOS_VALIDATION
+    application.validationLayers.push_back("VK_LAYER_KHRONOS_validation");
+    logger::fine("Compiled with Always On Validation Layer VK_LAYER_KHRONOS_validation");
+#endif
+#ifdef LAYERS_API_DUMP
+    application.validationLayers.push_back("VK_LAYER_LUNARG_api_dump");
+    logger::fine("Compiled with Always On Validation Layer VK_LAYER_LUNARG_api_dump");
+#endif
 
-    Application application;
+
 
     try
     {

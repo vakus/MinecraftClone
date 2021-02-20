@@ -8,7 +8,7 @@ release: src/main.cpp shaders textures
 	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -O3
 
 debug: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O3 -D VALIDATIONLAYERS -D LOGMIN=2
+	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O3 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION -D LAYERS_API_DUMP
 
 textures:
 	mkdir -p build/textures

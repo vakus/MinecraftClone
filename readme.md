@@ -1,10 +1,12 @@
 ## Application Arguments
 
-| Argument                                                           | Description                      |
-|--------------------------------------------------------------------|----------------------------------|
-| --logmin [finer\|fine\|info\|warn\|warning\|error\|critical\|none] | Sets minimum allowed log level   |
-| --logmax [finer\|fine\|info\|warn\|warning\|error\|critical\|none] | Sets maximum allowed log level   |
-| --validation-layers                                                | Enables Vulkan Validation Layers |
+| Argument                                                           | Description                         |
+|--------------------------------------------------------------------|-------------------------------------|
+| --logmin [finer\|fine\|info\|warn\|warning\|error\|critical\|none] | Sets minimum allowed log level      |
+| --logmax [finer\|fine\|info\|warn\|warning\|error\|critical\|none] | Sets maximum allowed log level      |
+| --validation-layers                                                | Enables Vulkan Validation Layers    |
+| --validation-layer-khronos                                         | Enables VK_LAYER_KHRONOS_validation |
+| --validation-layer-api-dump                                        | Enables VK_LAYER_LUNARG_api_dump    |
 
 
 **NOTE:** to enable Vulkan Validation Layers you are required to have VulkanSDK, otherwise the application may result with a crash.
