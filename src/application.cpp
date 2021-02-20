@@ -1798,6 +1798,7 @@ void Application::mainLoop()
         frame++;
 
         //update the vertex and index buffer
+        vkDeviceWaitIdle(device);
 
         vkDestroyBuffer(device, indexBuffer, nullptr);
         vkFreeMemory(device, indexBufferMemory, nullptr);
