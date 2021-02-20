@@ -148,8 +148,8 @@ std::vector<Vertex> verticies = {
     {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
     {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}}};
 
-const std::vector<uint32_t> indicies = {
-    0, 1, 2, 2, 3, 0,       // top
+std::vector<uint32_t> indicies = {
+    0, 1, 2, 2, 3, 0,       //top
     4, 5, 7, 7, 6, 4,       //front
     8, 9, 11, 11, 10, 8,    //back
     12, 13, 14, 14, 15, 13, //left
@@ -1774,7 +1774,7 @@ VkExtent2D Application::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabil
         return actualExtent;
     }
 }
-
+int frame = 0;
 /**
  * This function is a loop which will be looped until the window should be closed
  */
@@ -1783,6 +1783,37 @@ void Application::mainLoop()
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
+
+        if(frame % 60 == 0){
+            for(size_t x = 0; x < 4; x++){
+            logger::fine("Adding 1");
+                verticies[x].pos = verticies[x].pos + glm::vec3(1);
+            }
+        }else if(frame % 60 == 30){
+            for(size_t x = 0; x < 4; x++){
+            logger::fine("Subtracting 1");
+                verticies[x].pos = verticies[x].pos - glm::vec3(1);
+            }
+        }
+        frame++;
+
+        //update the vertex and index buffer
+
+        vkDestroyBuffer(device, indexBuffer, nullptr);
+        vkFreeMemory(device, indexBufferMemory, nullptr);
+
+        vkDestroyBuffer(device, vertexBuffer, nullptr);
+        vkFreeMemory(device, vertexBufferMemory, nullptr);
+        
+        createVertexBuffer();
+        createIndexBuffer();
+
+        vkDeviceWaitIdle(device);
+        vkDestroyCommandPool(device, commandPool, nullptr);
+        createCommandPool();
+        createCommandBuffers();
+
+
         drawFrame();
     }
 
