@@ -1,144 +1,59 @@
 #include "block.hpp"
 
-void block::initialise(std::vector<block> BLOCKS)
+void block::initialise(std::vector<block> *BLOCKS)
 {
     //BLOCKS.resize(2);
     //dirt
 
-    BLOCKS.push_back(block{{
-                          //top
-                          {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
+    block dirt{{
+                   //top
+                   {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
+                   {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
+                   {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
+                   {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
 
-                          //front
-                          {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
+                   //front
+                   {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
+                   {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
+                   {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
+                   {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
 
-                          //back
-                          {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
+                   //back
+                   {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
+                   {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
+                   {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
+                   {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
 
-                          //left
-                          {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
+                   //left
+                   {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
+                   {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
+                   {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
+                   {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
 
-                          //right
-                          {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-                          {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-                          {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
+                   //right
+                   {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
+                   {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
+                   {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
+                   {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
 
-                          //bottom
-                          {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-                          {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-                          {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}} //
-                      },
-                      {
-                          0, 1, 2, 2, 3, 0,       //top
-                          4, 5, 7, 7, 6, 4,       //front
-                          8, 9, 11, 11, 10, 8,    //back
-                          12, 13, 14, 14, 15, 13, //left
-                          16, 17, 18, 18, 19, 17, //right
-                          20, 21, 22, 22, 23, 20  //bottom
-                      },
-                      1});
-    /*
-    BLOCKS[0]
-        .id = 1;
-    BLOCKS[0].verticies = {
-        //top
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-
-        //front
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //back
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //left
-        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //right
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //bottom
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}} //
-    };
-    BLOCKS[0].indicies = {
-        0, 1, 2, 2, 3, 0,       //top
-        4, 5, 7, 7, 6, 4,       //front
-        8, 9, 11, 11, 10, 8,    //back
-        12, 13, 14, 14, 15, 13, //left
-        16, 17, 18, 18, 19, 17, //right
-        20, 21, 22, 22, 23, 20  //bottom
+                   //bottom
+                   {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
+                   {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
+                   {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
+                   {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)} //
+               },
+               {
+                   0, 1, 2, 2, 3, 0,       //top
+                   4, 5, 7, 7, 6, 4,       //front
+                   8, 9, 11, 11, 10, 8,    //back
+                   12, 13, 14, 14, 15, 13, //left
+                   16, 17, 18, 18, 19, 17, //right
+                   20, 21, 22, 22, 23, 20  //bottom
+               },
+               1
     };
 
-    //stone
-    BLOCKS[1].id = 2;
-    BLOCKS[1].verticies = {
-        //top
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-
-        //front
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //back
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //left
-        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //right
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-
-        //bottom
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}} //
-    };*/
+    BLOCKS->push_back(dirt);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
