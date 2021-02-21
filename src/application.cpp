@@ -26,6 +26,7 @@
 #include <stb_image.h>
 
 #include "application.hpp"
+#include "GameObject3D.hpp"
 
 /**
  * This function reads file as array of chars.
@@ -111,51 +112,6 @@ void Application::run(bool enableValidationLayers)
 }
 
 
-std::vector<Vertex> verticies = {
-    //top
-    {{-0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}},
-    {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-    {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}},
-    {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}},
-
-    //front
-    {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-    {{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
-    {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
-    {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
-
-    //back
-    {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-    {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}},
-    {{-0.5f, 0.5f, -0.5f}, {1.0f, 0.0f}},
-    {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
-
-    //left
-    {{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
-    {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-    {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
-    {{0.5f, 0.5f, -0.5f}, {1.0f, 0.0f}},
-
-    //right
-    {{-0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}},
-    {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}},
-    {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-    {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}},
-
-    //bottom
-    {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-    {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
-    {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
-    {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}}};
-
-std::vector<uint32_t> indicies = {
-    0, 1, 2, 2, 3, 0,       //top
-    4, 5, 7, 7, 6, 4,       //front
-    8, 9, 11, 11, 10, 8,    //back
-    12, 13, 14, 14, 15, 13, //left
-    16, 17, 18, 18, 19, 17, //right
-    20, 21, 22, 22, 23, 20  //bottom
-};
 
 /**
  * This function runs window setup
@@ -168,6 +124,7 @@ std::vector<uint32_t> indicies = {
  */
 void Application::initWindow(uint32_t width, uint32_t height)
 {
+    logger::finer("Initialising Window");
     glfwInit();
 
     //dont create OpenGL context (we are using Vulkan)
@@ -187,6 +144,9 @@ void Application::initWindow(uint32_t width, uint32_t height)
  */
 void Application::initVulkan(bool enableValidationLayers)
 {
+    logger::finer("Initialising Vulkan");
+    GameObject3D gameObject = world.getMesh();
+
     createInstance(enableValidationLayers);
     setupDebugMessenger(enableValidationLayers);
     createSurface();
@@ -203,17 +163,18 @@ void Application::initVulkan(bool enableValidationLayers)
     createTextureImage("textures/Dirt_Top.png");
     createTextureImageView();
     createImageSampler();
-    createVertexBuffer();
-    createIndexBuffer();
+    createVertexBuffer(gameObject);
+    createIndexBuffer(gameObject);
     createUniformBuffers();
     createDescriptorPool();
     createDescriptorSet();
-    createCommandBuffers();
+    createCommandBuffers(gameObject);
     createSyncObjects();
 }
 
 void Application::createDepthResources()
 {
+    logger::finer("Creating Depth Resources");
     VkFormat depthFormat = findDepthFormat();
     createImage(
         swapChainExtent.width,
@@ -263,6 +224,7 @@ bool Application::hasStencilComponent(VkFormat format)
 
 void Application::createImageSampler()
 {
+    logger::finer("Creating Image Sampler");
     VkSamplerCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
     createInfo.magFilter = VK_FILTER_NEAREST; //more fitting than linear, we want art to pixelate
@@ -297,11 +259,13 @@ void Application::createImageSampler()
 
 void Application::createTextureImageView()
 {
+    logger::finer("Creating Texture Image View");
     textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 VkImageView Application::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
 {
+    logger::finer("Creating Image View");
     VkImageViewCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     createInfo.image = image;
@@ -327,6 +291,7 @@ VkImageView Application::createImageView(VkImage image, VkFormat format, VkImage
 
 void Application::createTextureImage(const char *pathToTexture)
 {
+    logger::finer("Creating Texture Image");
     int texWidth, texHeight, texChannels;
     stbi_uc *pixels = stbi_load(pathToTexture, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -374,6 +339,7 @@ void Application::createTextureImage(const char *pathToTexture)
 
 void Application::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
 {
+    logger::finer("Copying Buffer to Image");
     VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
     VkBufferImageCopy region{};
@@ -413,6 +379,7 @@ void Application::createImage(
     VkImage &image,
     VkDeviceMemory &imageMemory)
 {
+    logger::finer("Creating Image");
     VkImageCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     createInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -452,6 +419,7 @@ void Application::createImage(
 
 VkCommandBuffer Application::beginSingleTimeCommands()
 {
+    logger::finer("Beginning Command Buffer");
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -472,6 +440,7 @@ VkCommandBuffer Application::beginSingleTimeCommands()
 
 void Application::endSingleTimeBuffer(VkCommandBuffer commandBuffer)
 {
+    logger::finer("Ending Command Buffer");
     vkEndCommandBuffer(commandBuffer);
 
     VkSubmitInfo submitInfo{};
@@ -487,6 +456,7 @@ void Application::endSingleTimeBuffer(VkCommandBuffer commandBuffer)
 
 void Application::createDescriptorSet()
 {
+    logger::finer("Creating Descriptor Set");
     std::vector<VkDescriptorSetLayout> layouts(swapChainImages.size(), descriptorLayout);
 
     VkDescriptorSetAllocateInfo allocInfo{};
@@ -538,6 +508,7 @@ void Application::createDescriptorSet()
 
 void Application::createDescriptorPool()
 {
+    logger::finer("Creating Descriptor Pool");
     std::array<VkDescriptorPoolSize, 2> poolSizes{};
     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     poolSizes[0].descriptorCount = static_cast<uint32_t>(swapChainImages.size());
@@ -558,6 +529,7 @@ void Application::createDescriptorPool()
 
 void Application::updateUniformBuffer(uint32_t currentImage)
 {
+    logger::finer("Updating Uniform Buffer");
     static auto startTime = std::chrono::high_resolution_clock::now();
 
     auto currentTime = std::chrono::high_resolution_clock::now();
@@ -591,6 +563,7 @@ void Application::updateUniformBuffer(uint32_t currentImage)
 
 void Application::createUniformBuffers()
 {
+    logger::finer("Creating Uniform Buffers");
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
     uniformBuffers.resize(swapChainImages.size());
@@ -608,6 +581,7 @@ void Application::createUniformBuffers()
 
 void Application::createDescriptorSetLayout()
 {
+    logger::finer("Creating Descriptor Set Layout");
     VkDescriptorSetLayoutBinding uboLayoutBinding{};
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorCount = 1;
@@ -635,9 +609,10 @@ void Application::createDescriptorSetLayout()
     }
 }
 
-void Application::createIndexBuffer()
+void Application::createIndexBuffer(GameObject3D gameObject)
 {
-    VkDeviceSize bufferSize = sizeof(indicies[0]) * indicies.size();
+    logger::finer("Creating Index Buffer");
+    VkDeviceSize bufferSize = sizeof(gameObject.indicies[0]) * gameObject.indicies.size();
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -649,7 +624,7 @@ void Application::createIndexBuffer()
 
     void *data;
     vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, indicies.data(), bufferSize);
+    memcpy(data, gameObject.indicies.data(), bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
 
     createBuffer(bufferSize,
@@ -666,6 +641,7 @@ void Application::createIndexBuffer()
 
 void Application::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory)
 {
+    logger::finer("Creating Buffer");
     VkBufferCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     createInfo.size = size;
@@ -695,6 +671,7 @@ void Application::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMe
 
 void Application::copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size)
 {
+    logger::finer("Copying Buffer");
     VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
     VkBufferCopy copyRegion{};
@@ -786,9 +763,10 @@ void Application::transitionImageLayout(
     endSingleTimeBuffer(commandBuffer);
 }
 
-void Application::createVertexBuffer()
+void Application::createVertexBuffer(GameObject3D gameObject)
 {
-    VkDeviceSize bufferSize = sizeof(verticies[0]) * verticies.size();
+    logger::finer("Creating Vertex Buffer");
+    VkDeviceSize bufferSize = sizeof(gameObject.verticies[0]) * gameObject.verticies.size();
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -801,7 +779,7 @@ void Application::createVertexBuffer()
 
     void *data;
     vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, verticies.data(), bufferSize);
+    memcpy(data, gameObject.verticies.data(), bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
 
     createBuffer(bufferSize,
@@ -834,7 +812,7 @@ uint32_t Application::findMemoryType(uint32_t filter, VkMemoryPropertyFlags prop
 
 void Application::createSyncObjects()
 {
-
+    logger::finer("Creating Sync Objects");
     imageAvailableSemaphores.resize(MAX_FRAMES);
     renderFinishSemaphores.resize(MAX_FRAMES);
     inFlightFences.resize(MAX_FRAMES);
@@ -856,8 +834,9 @@ void Application::createSyncObjects()
     }
 }
 
-void Application::createCommandBuffers()
+void Application::createCommandBuffers(GameObject3D gameObject)
 {
+    logger::finer("Creating Command Buffers");
     commandBuffers.resize(swapChainFramebuffers.size());
 
     VkCommandBufferAllocateInfo allocInfo{};
@@ -914,7 +893,7 @@ void Application::createCommandBuffers()
         //instanceCount
         //firstVertex (this works as offset)
         //firstInstance (this works as offset)
-        vkCmdDrawIndexed(commandBuffers[x], static_cast<uint32_t>(indicies.size()), 1, 0, 0, 0);
+        vkCmdDrawIndexed(commandBuffers[x], static_cast<uint32_t>(gameObject.indicies.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffers[x]);
 
@@ -927,6 +906,7 @@ void Application::createCommandBuffers()
 
 void Application::createCommandPool()
 {
+    logger::finer("Creating Command Pool");
     QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
 
     VkCommandPoolCreateInfo poolInfo{};
@@ -942,6 +922,7 @@ void Application::createCommandPool()
 
 void Application::createFramebuffers()
 {
+    logger::finer("Creating Framebuffers");
     swapChainFramebuffers.resize(swapChainImageViews.size());
 
     for (size_t x = 0; x < swapChainImageViews.size(); x++)
@@ -969,6 +950,7 @@ void Application::createFramebuffers()
 
 void Application::createRenderPass()
 {
+    logger::finer("Creating Render Pass");
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = swapChainImageFormat;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -1030,6 +1012,7 @@ void Application::createRenderPass()
 
 void Application::createGraphicsPipeline()
 {
+    logger::finer("Creating Graphics Pipeline");
     std::vector<char> vertShaderCode = readFile("shaders/vert.spv");
     std::vector<char> fragShaderCode = readFile("shaders/frag.spv");
 
@@ -1181,6 +1164,7 @@ void Application::createGraphicsPipeline()
 
 VkShaderModule Application::createShaderModule(const std::vector<char> &code)
 {
+    logger::finer("Creating Shader Module");
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.size();
@@ -1197,6 +1181,7 @@ VkShaderModule Application::createShaderModule(const std::vector<char> &code)
 
 void Application::createImageViews()
 {
+    logger::finer("Creating Image Views");
     swapChainImageViews.resize(swapChainImages.size());
 
     for (size_t x = 0; x < swapChainImages.size(); x++)
@@ -1207,6 +1192,7 @@ void Application::createImageViews()
 
 void Application::createSwapChain()
 {
+    logger::finer("Creating swap chain");
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -1272,7 +1258,7 @@ void Application::createSwapChain()
  */
 void Application::createInstance(bool enableValidationLayers)
 {
-
+    logger::finer("Creating Vulkan Instance");
     if (enableValidationLayers && !checkValidationLayerSupport(validationLayers))
     {
         throw std::runtime_error("Validation layers requested, but not available.");
@@ -1459,6 +1445,7 @@ void Application::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateIn
  */
 void Application::setupDebugMessenger(bool enableValidationLayers)
 {
+    logger::finer("Setting up debug messenger");
     if (enableValidationLayers)
     {
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
@@ -1480,6 +1467,7 @@ void Application::setupDebugMessenger(bool enableValidationLayers)
  */
 void Application::pickPhysicalDevice()
 {
+    logger::finer("Picking Physical Device");
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
@@ -1618,6 +1606,7 @@ bool Application::checkDeviceExtensionSupport(VkPhysicalDevice device)
  */
 void Application::createLogicalDevice(bool enableValidationLayers)
 {
+    logger::finer("Creating Logical Device");
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -1671,6 +1660,7 @@ void Application::createLogicalDevice(bool enableValidationLayers)
  */
 void Application::createSurface()
 {
+    logger::finer("Creating surface");
     if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS)
     {
         throw new std::runtime_error("Failed to create window surface");
@@ -1774,7 +1764,6 @@ VkExtent2D Application::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabil
         return actualExtent;
     }
 }
-int frame = 0;
 /**
  * This function is a loop which will be looped until the window should be closed
  */
@@ -1783,19 +1772,6 @@ void Application::mainLoop()
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-
-        if(frame % 60 == 0){
-            for(size_t x = 0; x < 4; x++){
-            logger::fine("Adding 1");
-                verticies[x].pos = verticies[x].pos + glm::vec3(1);
-            }
-        }else if(frame % 60 == 30){
-            for(size_t x = 0; x < 4; x++){
-            logger::fine("Subtracting 1");
-                verticies[x].pos = verticies[x].pos - glm::vec3(1);
-            }
-        }
-        frame++;
 
         //update the vertex and index buffer
         vkDeviceWaitIdle(device);
@@ -1806,13 +1782,15 @@ void Application::mainLoop()
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
         
-        createVertexBuffer();
-        createIndexBuffer();
+        GameObject3D gameObject = world.getMesh();
+
+        createVertexBuffer(gameObject);
+        createIndexBuffer(gameObject);
 
         vkDeviceWaitIdle(device);
         vkDestroyCommandPool(device, commandPool, nullptr);
         createCommandPool();
-        createCommandBuffers();
+        createCommandBuffers(gameObject);
 
 
         drawFrame();
@@ -1921,7 +1899,7 @@ void Application::recreateSwapChain()
     createUniformBuffers();
     createDescriptorPool();
     createDescriptorSet();
-    createCommandBuffers();
+    createCommandBuffers(world.getMesh());
 }
 
 void Application::cleanupSwapChain()

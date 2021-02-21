@@ -6,6 +6,7 @@
 
 #include "logger.hpp"
 #include "application.hpp"
+#include "block.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -173,9 +174,77 @@ int main(int argc, char *argv[])
     application.validationLayers.push_back("VK_LAYER_LUNARG_api_dump");
     logger::fine("Compiled with Always On Validation Layer VK_LAYER_LUNARG_api_dump");
 #endif
+    //application.BLOCKS.resize(2);
+    //block::initialise(application.BLOCKS);
+    //application.world = chunk{};
 
+    block b{};
+/*
+    b.verticies = {
+        //top
+        {{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
+        {{1.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},
+        {{1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
+        {{0.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+        //front
+        {{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
+        {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
+        {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
 
+        //back
+        {{0.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
+        {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
+        {{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+        {{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
 
+        //left
+        {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
+        {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
+        {{1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+
+        //right
+        {{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
+        {{0.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
+        {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+
+        //bottom
+        {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}} //
+        };
+    b.indicies =
+        {
+            0, 1, 2, 2, 3, 0,       //top
+            4, 5, 7, 7, 6, 4,       //front
+            8, 9, 11, 11, 10, 8,    //back
+            12, 13, 14, 14, 15, 13, //left
+            16, 17, 18, 18, 19, 17, //right
+            20, 21, 22, 22, 23, 20  //bottom
+        };*/
+
+    b.id = 1;
+
+    application.BLOCKS.push_back(b);
+
+    logger::finer("Dumping block ids:");
+    for (int x = 0; x < application.BLOCKS.size(); x++)
+    {
+        logger::finer("Index: " + std::to_string(x) + " BlockID: " + std::to_string(application.BLOCKS[x].id));
+    }
+
+    application.world.blocks[0][0][0] = application.BLOCKS[0];
+    /*
+    for(int x = 0; x < 16; x++){
+        for(int z = 0; z < 16; z++){
+            logger::finer("Setting [" + std::to_string(x) + "][0][" + std::to_string(z) + "] with Block ID: " + std::to_string(application.BLOCKS[0].id));
+            application.world.blocks[x][0][z] = application.BLOCKS[0];
+        }
+    }
+    */
     try
     {
         application.run(enableValidationLayers);

@@ -7,7 +7,15 @@
 #include <optional>
 #include <array>
 #include <vector>
+
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+
+#include "chunk.hpp"
+#include "block.hpp"
+#include "GameObject3D.hpp"
 
 struct QueueFamilyIndices
 {
@@ -37,6 +45,19 @@ struct UniformBufferObject
 
 class Application{
     public:
+
+
+        /**
+         * List of all known blocks
+         */
+        std::vector<block> BLOCKS{};
+
+        /**
+         * world
+         * TODO: replace chunk with actual world; chunk is fine for testing purposes
+         */
+        chunk world{};
+
         /**
          * GLFW window handle for the application
          */
@@ -340,7 +361,7 @@ class Application{
 
         void createDescriptorSetLayout();
 
-        void createIndexBuffer();
+        void createIndexBuffer(GameObject3D gameObject);
 
         void createBuffer(
             VkDeviceSize size,
@@ -363,7 +384,7 @@ class Application{
             VkImageLayout newLayout
         );
 
-        void createVertexBuffer();
+        void createVertexBuffer(GameObject3D gameObject);
 
         uint32_t findMemoryType(
             uint32_t filter,
@@ -372,7 +393,7 @@ class Application{
 
         void createSyncObjects();
 
-        void createCommandBuffers();
+        void createCommandBuffers(GameObject3D gameObject);
 
         void createCommandPool();
 

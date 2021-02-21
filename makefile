@@ -1,8 +1,8 @@
-CFLAGS = -std=c++17 -fmax-errors=5
+CFLAGS = -std=c++17 -fmax-errors=1
 #`isystem include` to prevent warnings for libraries to be displayed.
 # im not very interested in those
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -isystem include
-COMPILEFILES = src/main.cpp src/logger.cpp src/application.cpp
+COMPILEFILES = src/main.cpp src/logger.cpp src/application.cpp src/block.cpp src/chunk.cpp
 
 release: src/main.cpp shaders textures
 	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -O3
