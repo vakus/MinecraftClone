@@ -183,17 +183,13 @@ int main(int argc, char *argv[])
         {
             logger::finer("Index: " + std::to_string(x) + " BlockID: " + std::to_string(application.BLOCKS[x].id));
         }
-
-        application.world.blocks[0][0][0] = application.BLOCKS[0];
-        /*
+        
         for(int x = 0; x < 16; x++){
             for(int z = 0; z < 16; z++){
                 logger::finer("Setting [" + std::to_string(x) + "][0][" + std::to_string(z) + "] with Block ID: " + std::to_string(application.BLOCKS[0].id));
                 application.world.blocks[x][0][z] = application.BLOCKS[0];
             }
         }
-        */
-
     
         application.run(enableValidationLayers);
     }

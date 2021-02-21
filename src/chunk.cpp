@@ -27,8 +27,12 @@ GameObject3D chunk::getMesh(){
                     logger::finer("Block ID: " + std::to_string(b.id));
 
                     for(size_t i = 0; i < b.verticies.size(); i++){
-                        logger::finer("Block Verticies[" + std::to_string(i) + "]: X: " + std::to_string(b.verticies[i].pos.x) + " Y:" + std::to_string(b.verticies[0].pos.y) + " Z:" + std::to_string(b.verticies[0].pos.z));
-                        gameObject.verticies.push_back(b.verticies[i]);
+                        Vertex v = b.verticies[i];
+                        v.pos.x += z;
+                        v.pos.y += x;
+                        v.pos.z += y;
+                        logger::finer("Block Verticies[" + std::to_string(i) + "]: X: " + std::to_string(v.pos.x) + " Y:" + std::to_string(v.pos.y) + " Z:" + std::to_string(v.pos.z));
+                        gameObject.verticies.push_back(v);
                     }
                     for(size_t i = 0; i < b.indicies.size(); i++){
                         logger::finer("Block indicie[" + std::to_string(i) + "]: " + std::to_string(b.indicies[i] + VerticiesOffset));
