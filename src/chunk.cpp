@@ -30,7 +30,7 @@ GameObject3D chunk::getMesh(){
                         Vertex v = b.verticies[i];
                         v.pos.x += z;
                         v.pos.y += x;
-                        v.pos.z += y;
+                        v.pos.z = (v.pos.z + y) * -1;
                         logger::finer("Block Verticies[" + std::to_string(i) + "]: X: " + std::to_string(v.pos.x) + " Y:" + std::to_string(v.pos.y) + " Z:" + std::to_string(v.pos.z));
                         gameObject.verticies.push_back(v);
                     }
