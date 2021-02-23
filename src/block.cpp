@@ -44,11 +44,11 @@ void block::initialise(std::vector<block> *BLOCKS)
             {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)} //
         },
         {
-            0, 1, 2, 2, 3, 0,       //top
+            2, 1, 0, 0, 3, 2,       //top
             4, 5, 7, 7, 6, 4,       //front
-            8, 9, 11, 11, 10, 8,    //back
-            12, 13, 14, 14, 15, 13, //left
-            16, 17, 18, 18, 19, 17, //right
+            11, 9, 8, 8, 10, 11,    //back
+            12, 13, 14, 13, 15, 14, //left
+            18, 17, 16, 18, 19, 17, //right
             20, 21, 22, 22, 23, 20  //bottom
         },
         1};
@@ -94,11 +94,11 @@ void block::initialise(std::vector<block> *BLOCKS)
             {{0.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT)} //
         },
         {
-            0, 1, 2, 2, 3, 0,       //top
+            2, 1, 0, 0, 3, 2,       //top
             4, 5, 7, 7, 6, 4,       //front
-            8, 9, 11, 11, 10, 8,    //back
-            12, 13, 14, 14, 15, 13, //left
-            16, 17, 18, 18, 19, 17, //right
+            11, 9, 8, 8, 10, 11,    //back
+            12, 13, 14, 13, 15, 14, //left
+            18, 17, 16, 18, 19, 17, //right
             20, 21, 22, 22, 23, 20  //bottom
         },
         2};
