@@ -188,6 +188,7 @@ int main(int argc, char *argv[])
             for(int z = 0; z < 16; z++){
                 logger::finer("Setting [" + std::to_string(x) + "][0][" + std::to_string(z) + "] with Block ID: " + std::to_string(application.BLOCKS[0].id));
                 application.world.blocks[x][0][z] = application.BLOCKS[0];
+                application.world.blocks[x][4][z] = application.BLOCKS[0];
             }
         }
     

@@ -1,32 +1,18 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-
-#include <optional>
 #include <set>
-#include <vector>
 #include <string.h>
 #include <fstream>
-#include <array>
 #include <map>
 
-#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtx/quaternion.hpp>
 
 #include <chrono>
-
-#include "logger.hpp"
-#include "vertex.hpp"
-
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include "logger.hpp"
+#include "vertex.hpp"
 #include "application.hpp"
-#include "GameObject3D.hpp"
 
 /**
  * This function reads file as array of chars.
@@ -80,17 +66,99 @@ namespace vulkan
 
 bool rotate = true;
 
+void updateCamera(glm::quat& PlayerRotation, float x, float y){
+    glm::quat pitch = glm::angleAxis(x, glm::vec3(1,0,0));
+    //glm::quat yaw = glm::angleAxis(0.50f, glm::vec3(0,1,0));
+    glm::quat roll = glm::angleAxis(y, glm::vec3(0,0,1));
+    
+    PlayerRotation = glm::normalize(pitch*roll);
+}
+
+float lastdbugx;
+float lastdbugy;
+
 void key_callback(
-    __attribute__((unused)) GLFWwindow *window,
+    GLFWwindow *window,
     int key,
     __attribute__((unused)) int scancode,
     int action,
     __attribute__((unused)) int mods
 ){
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-    {
-        rotate = !rotate;
+    if(action == GLFW_PRESS){
+
+        auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
+        if(key == GLFW_KEY_W){
+            app->PlayerPosition.x++;
+        }else if(key == GLFW_KEY_S){
+            app->PlayerPosition.x--;
+        }else if(key == GLFW_KEY_A){
+            app->PlayerPosition.y++;
+        }else if(key == GLFW_KEY_D){
+            app->PlayerPosition.y--;
+        }else if(key == GLFW_KEY_SPACE){
+            app->PlayerPosition.z++;
+        }else if(key == GLFW_KEY_LEFT_SHIFT){
+            app->PlayerPosition.z--;
+        }else if(key == GLFW_KEY_X){
+            app->PlayerRotation = glm::quat(0,0,0,0);
+        }
+
+        //debug code
+
+        else if(key == GLFW_KEY_I){
+            //cam up
+            lastdbugx -= app->sensitivity;
+            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
+        }
+        else if(key == GLFW_KEY_K){
+            //cam up
+            lastdbugx += app->sensitivity;
+            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
+        }
+        else if(key == GLFW_KEY_J){
+            //cam up
+            lastdbugy += app->sensitivity;
+            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
+        }
+        else if(key == GLFW_KEY_L){
+            //cam up
+            lastdbugy -= app->sensitivity;
+            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
+        }else if(key == GLFW_KEY_MINUS){
+            app->zfar -= 1.0f;
+        }else if(key == GLFW_KEY_EQUAL){
+            app->zfar += 1.0f;
+        }
     }
+}
+
+void cursor_callback(
+    GLFWwindow* window,
+    double posx,
+    double posy
+){
+
+    auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
+    
+    posx *= app->sensitivity;
+    posy *= app->sensitivity;
+
+    if(posy < 0.0){
+        posy = 0.0;
+    }else if(posy > 3.0){
+        posy = 3.0;
+    }
+    logger::fine("posx: " + std::to_string(posx) + " posy: " + std::to_string(posy));
+    updateCamera(app->PlayerRotation, posy, -posx);
+
+    //x - pitch
+    //y - yaw
+    //z - roll
+    //app->PlayerRotation.x += (float)diffPosX * app->sensitivity;
+    //app->PlayerRotation.y += (float)diffPosY * app->sensitivity;
+
+    //app->PlayerRotation.x += posx;
+    //app->PlayerRotation.y += posy;
 }
 
 void framebufferResizeCallback(
@@ -135,6 +203,9 @@ void Application::initWindow(uint32_t width, uint32_t height)
     glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 
     glfwSetKeyCallback(window, key_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glfwSetCursorPosCallback(window, cursor_callback);
 }
 
 /**
@@ -545,8 +616,14 @@ void Application::updateUniformBuffer(uint32_t currentImage)
     {
         ubo.model = glm::rotate(glm::mat4(1.0f), 0 * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     }
-    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
+    ubo.model = glm::mat4(1.0f);
+
+    //calculate the camera rotation
+    
+    //ubo.view = glm::lookAt(PlayerPosition + glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.view = glm::mat4_cast(PlayerRotation) * glm::translate(glm::mat4(1.0f), glm::vec3(0,0,2)+PlayerPosition);
+    //perspective
+    ubo.proj = glm::perspective(glm::radians(fov), swapChainExtent.width / (float)swapChainExtent.height, znear, zfar);
     //we do not want to tint the model
     ubo.colorTint = {1.0f, 1.0f, 1.0f};
 

@@ -12,6 +12,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "chunk.hpp"
 #include "block.hpp"
@@ -46,6 +47,31 @@ struct UniformBufferObject
 class Application{
     public:
 
+        /**
+         * Sensitivity of the mouse
+         */
+        float sensitivity = 0.01f;
+
+        /**
+         * The FOV that should be used for rendering.
+         */
+        float fov = 45.0f;
+
+        /**
+         * The near and far plane for rendering along z axis
+         */
+        float znear = 0.1f;
+        float zfar = 10.0f;
+
+        /**
+         * The position of the player
+         */
+        glm::vec3 PlayerPosition;
+
+        /**
+         * The rotation of the player's camera
+         */
+        glm::quat PlayerRotation = glm::quat(0,0,0,0);
 
         /**
          * List of all known blocks
