@@ -74,9 +74,6 @@ void updateCamera(glm::quat& PlayerRotation, float x, float y){
     PlayerRotation = glm::normalize(pitch*roll);
 }
 
-float lastdbugx;
-float lastdbugy;
-
 void key_callback(
     GLFWwindow *window,
     int key,
@@ -101,29 +98,6 @@ void key_callback(
             app->PlayerPosition.z--;
         }else if(key == GLFW_KEY_X){
             app->PlayerRotation = glm::quat(0,0,0,0);
-        }
-
-        //debug code
-
-        else if(key == GLFW_KEY_I){
-            //cam up
-            lastdbugx -= app->sensitivity;
-            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
-        }
-        else if(key == GLFW_KEY_K){
-            //cam up
-            lastdbugx += app->sensitivity;
-            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
-        }
-        else if(key == GLFW_KEY_J){
-            //cam up
-            lastdbugy += app->sensitivity;
-            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
-        }
-        else if(key == GLFW_KEY_L){
-            //cam up
-            lastdbugy -= app->sensitivity;
-            updateCamera(app->PlayerRotation, lastdbugx, lastdbugy);
         }else if(key == GLFW_KEY_MINUS){
             app->zfar -= 1.0f;
         }else if(key == GLFW_KEY_EQUAL){
@@ -150,15 +124,6 @@ void cursor_callback(
     }
     logger::fine("posx: " + std::to_string(posx) + " posy: " + std::to_string(posy));
     updateCamera(app->PlayerRotation, posy, -posx);
-
-    //x - pitch
-    //y - yaw
-    //z - roll
-    //app->PlayerRotation.x += (float)diffPosX * app->sensitivity;
-    //app->PlayerRotation.y += (float)diffPosY * app->sensitivity;
-
-    //app->PlayerRotation.x += posx;
-    //app->PlayerRotation.y += posy;
 }
 
 void framebufferResizeCallback(
