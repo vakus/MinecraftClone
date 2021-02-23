@@ -123,24 +123,35 @@ void key_callback(
     }
 }
 
+double actualPosX = 0.0;
+double actualPosY = 0.0;
+double lastPosX = 0.0;
+double lastPosY = 0.0;
+
 void cursor_callback(
     GLFWwindow* window,
     double posx,
     double posy
 ){
 
+    double diffPosX = lastPosX - posx;
+    double diffPosY = lastPosY - posy;
+
+    lastPosX = posx;
+    lastPosY = posy;
+
     auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     
-    posx *= app->sensitivity;
-    posy *= app->sensitivity;
+    actualPosX -= diffPosX * app->sensitivity;
+    actualPosY -= diffPosY * app->sensitivity;
 
-    if(posy < 0.0){
-        posy = 0.0;
-    }else if(posy > 3.0){
-        posy = 3.0;
+    if(actualPosY < 0.0){
+        actualPosY = 0.0;
+    }else if(actualPosY > 3.0){
+        actualPosY = 3.0;
     }
-    logger::fine("posx: " + std::to_string(posx) + " posy: " + std::to_string(posy));
-    updateCamera(app->PlayerRotation, posy, -posx);
+    logger::finer("posx: " + std::to_string(actualPosX) + " posy: " + std::to_string(actualPosY));
+    updateCamera(app->PlayerRotation, actualPosY, -actualPosX);
 }
 
 void framebufferResizeCallback(
