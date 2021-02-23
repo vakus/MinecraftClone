@@ -68,11 +68,15 @@ bool rotate = true;
 
 void updateCamera(glm::quat& PlayerRotation, float x, float y){
     glm::quat pitch = glm::angleAxis(x, glm::vec3(1,0,0));
-    //glm::quat yaw = glm::angleAxis(0.50f, glm::vec3(0,1,0));
     glm::quat roll = glm::angleAxis(y, glm::vec3(0,0,1));
     
     PlayerRotation = glm::normalize(pitch*roll);
 }
+
+bool goForward = false;
+bool goBackward = false;
+bool goLeft = false;
+bool goRight = false;
 
 void key_callback(
     GLFWwindow *window,
@@ -81,25 +85,40 @@ void key_callback(
     int action,
     __attribute__((unused)) int mods
 ){
-    if(action == GLFW_PRESS){
+    if(action == GLFW_PRESS || action == GLFW_REPEAT){
 
         auto app = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
         if(key == GLFW_KEY_W){
-            app->PlayerPosition.x++;
+            goForward = true;
+            goBackward = false;
         }else if(key == GLFW_KEY_S){
-            app->PlayerPosition.x--;
+            goForward = false;
+            goBackward = true;
         }else if(key == GLFW_KEY_A){
-            app->PlayerPosition.y++;
+            goRight = false;
+            goLeft = true;
         }else if(key == GLFW_KEY_D){
-            app->PlayerPosition.y--;
-        }else if(key == GLFW_KEY_SPACE){
+            goRight = true;
+            goLeft = false;
+        /*}else if(key == GLFW_KEY_SPACE){
             app->PlayerPosition.z++;
         }else if(key == GLFW_KEY_LEFT_SHIFT){
-            app->PlayerPosition.z--;
+            app->PlayerPosition.z--;*/
         }else if(key == GLFW_KEY_MINUS){
             app->zfar -= 16.0f;
         }else if(key == GLFW_KEY_EQUAL){
             app->zfar += 16.0f;
+        }
+    }else if(action == GLFW_RELEASE){
+        
+        if(key == GLFW_KEY_W){
+            goForward = false;
+        }else if(key == GLFW_KEY_S){
+            goBackward = false;
+        }else if(key == GLFW_KEY_A){
+            goLeft = false;
+        }else if(key == GLFW_KEY_D){
+            goRight = false;
         }
     }
 }
@@ -1811,7 +1830,21 @@ void Application::mainLoop()
 {
     while (!glfwWindowShouldClose(window))
     {
+        glfwSetTime(0);
         glfwPollEvents();
+        //update the physics
+
+        if(goForward){
+            PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 1000.0f;
+        }else if(goBackward){
+            PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 1000.0f;
+        }
+
+        if(goLeft){
+            PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 1000.0f;
+        }else if(goRight){
+            PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 1000.0f;
+        }
 
         //update the vertex and index buffer
         vkDeviceWaitIdle(device);
