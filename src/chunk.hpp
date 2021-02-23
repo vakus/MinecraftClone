@@ -14,10 +14,12 @@
 class chunk{
     public:
         chunk();
-
-        std::vector<std::vector<std::vector<block>>> blocks;
-
+        void setBlock(int x, int y, int z, block b);
         GameObject3D getMesh();
+    private:
+        bool recreate;
+        GameObject3D cachedMesh;
+        std::vector<std::vector<std::vector<block>>> blocks;
 };
 
 #endif
