@@ -96,8 +96,6 @@ void key_callback(
             app->PlayerPosition.z++;
         }else if(key == GLFW_KEY_LEFT_SHIFT){
             app->PlayerPosition.z--;
-        }else if(key == GLFW_KEY_X){
-            app->PlayerRotation = glm::quat(0,0,0,0);
         }else if(key == GLFW_KEY_MINUS){
             app->zfar -= 16.0f;
         }else if(key == GLFW_KEY_EQUAL){
