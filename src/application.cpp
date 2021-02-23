@@ -77,6 +77,8 @@ bool goForward = false;
 bool goBackward = false;
 bool goLeft = false;
 bool goRight = false;
+bool goUpwards = false;
+bool goDownwards = false;
 
 void key_callback(
     GLFWwindow *window,
@@ -100,10 +102,12 @@ void key_callback(
         }else if(key == GLFW_KEY_D){
             goRight = true;
             goLeft = false;
-        /*}else if(key == GLFW_KEY_SPACE){
-            app->PlayerPosition.z++;
+        }else if(key == GLFW_KEY_SPACE){
+            goUpwards = true;
+            goDownwards = false;
         }else if(key == GLFW_KEY_LEFT_SHIFT){
-            app->PlayerPosition.z--;*/
+            goUpwards = false;
+            goDownwards = true;
         }else if(key == GLFW_KEY_MINUS){
             app->zfar -= 16.0f;
         }else if(key == GLFW_KEY_EQUAL){
@@ -119,6 +123,10 @@ void key_callback(
             goLeft = false;
         }else if(key == GLFW_KEY_D){
             goRight = false;
+        }else if(key == GLFW_KEY_SPACE){
+            goUpwards = false;
+        }else if(key == GLFW_KEY_LEFT_SHIFT){
+            goDownwards = false;
         }
     }
 }
@@ -1854,6 +1862,12 @@ void Application::mainLoop()
             PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 10.0f;
         }else if(goRight){
             PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 10.0f;
+        }
+
+        if(goUpwards){
+            PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[1])) * (float)glfwGetTime() * 10.0f;
+        }else if(goDownwards){
+            PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[1])) * (float)glfwGetTime() * 10.0f;
         }
 
         glfwSetTime(0);
