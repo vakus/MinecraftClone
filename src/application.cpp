@@ -1841,22 +1841,22 @@ void Application::mainLoop()
 {
     while (!glfwWindowShouldClose(window))
     {
-        glfwSetTime(0);
         glfwPollEvents();
         //update the physics
 
         if(goForward){
-            PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 1000.0f;
+            PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 10.0f;
         }else if(goBackward){
-            PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 1000.0f;
+            PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 10.0f;
         }
 
         if(goLeft){
-            PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 1000.0f;
+            PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 10.0f;
         }else if(goRight){
-            PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 1000.0f;
+            PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 10.0f;
         }
 
+        glfwSetTime(0);
         //update the vertex and index buffer
         vkDeviceWaitIdle(device);
 
