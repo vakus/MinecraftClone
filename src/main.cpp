@@ -191,6 +191,11 @@ int main(int argc, char *argv[])
                 application.world.blocks[x][4][z] = application.BLOCKS[1];
             }
         }
+        application.world.blocks[3][1][4] = application.BLOCKS[1];
+        application.world.blocks[5][1][4] = application.BLOCKS[1];
+        application.world.blocks[4][1][3] = application.BLOCKS[1];
+        application.world.blocks[4][1][5] = application.BLOCKS[1];
+        application.world.blocks[4][2][4] = application.BLOCKS[1];
     
         application.run(enableValidationLayers);
     }

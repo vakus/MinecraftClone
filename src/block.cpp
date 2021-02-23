@@ -1,5 +1,9 @@
 #include "block.hpp"
 
+#define SHADE_TOP {1.0f, 1.0f, 1.0f}
+#define SHADE_SIDE {0.8f, 0.8f, 0.8f}
+#define SHADE_BOTTOM {0.6f, 0.6f, 0.6f}
+
 void block::initialise(std::vector<block> *BLOCKS)
 {
     //BLOCKS.resize(2);
@@ -8,40 +12,40 @@ void block::initialise(std::vector<block> *BLOCKS)
     block dirt{
         {
             //top
-            {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
-            {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
+            {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT), SHADE_TOP},
+            {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT), SHADE_TOP},
+            {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_TOP},
+            {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT), SHADE_TOP},
 
             //front
-            {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
-            {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //back
-            {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
-            {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //left
-            {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
-            {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{1.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{1.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //right
-            {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)},
-            {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
-            {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{0.0f, 0.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{0.0f, 1.0f, 1.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //bottom
-            {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT)},
-            {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT)} //
+            {{0.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_LEFT), SHADE_BOTTOM},
+            {{1.0f, 0.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_LEFT), SHADE_BOTTOM},
+            {{1.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_BOTTOM},
+            {{0.0f, 1.0f, 0.0f}, getTextureCoord(0, 0, TextureCoordType::TOP_RIGHT), SHADE_BOTTOM} //
         },
         {
             2, 1, 0, 0, 3, 2,       //top
@@ -58,40 +62,40 @@ void block::initialise(std::vector<block> *BLOCKS)
     block stone{
         {
             //top
-            {{0.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT)},
-            {{1.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT)},
+            {{0.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT), SHADE_TOP},
+            {{1.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT), SHADE_TOP},
+            {{1.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_TOP},
+            {{0.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT), SHADE_TOP},
 
             //front
-            {{0.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT)},
-            {{1.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{0.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{1.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{0.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{1.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //back
-            {{0.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT)},
-            {{1.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{0.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{1.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{0.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{1.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //left
-            {{1.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT)},
-            {{1.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{1.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{1.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{1.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{1.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{1.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //right
-            {{0.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT)},
-            {{0.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT)},
-            {{0.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT)},
+            {{0.0f, 0.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT), SHADE_SIDE},
+            {{0.0f, 1.0f, 1.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_SIDE},
+            {{0.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT), SHADE_SIDE},
+            {{0.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT), SHADE_SIDE},
 
             //bottom
-            {{0.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT)},
-            {{1.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT)},
-            {{1.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT)},
-            {{0.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT)} //
+            {{0.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_LEFT), SHADE_BOTTOM},
+            {{1.0f, 0.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_LEFT), SHADE_BOTTOM},
+            {{1.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::BOTTOM_RIGHT), SHADE_BOTTOM},
+            {{0.0f, 1.0f, 0.0f}, getTextureCoord(1, 0, TextureCoordType::TOP_RIGHT), SHADE_BOTTOM} //
         },
         {
             2, 1, 0, 0, 3, 2,       //top
