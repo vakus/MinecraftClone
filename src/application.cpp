@@ -99,9 +99,9 @@ void key_callback(
         }else if(key == GLFW_KEY_X){
             app->PlayerRotation = glm::quat(0,0,0,0);
         }else if(key == GLFW_KEY_MINUS){
-            app->zfar -= 1.0f;
+            app->zfar -= 16.0f;
         }else if(key == GLFW_KEY_EQUAL){
-            app->zfar += 1.0f;
+            app->zfar += 16.0f;
         }
     }
 }

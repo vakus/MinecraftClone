@@ -61,7 +61,7 @@ class Application{
          * The near and far plane for rendering along z axis
          */
         float znear = 0.1f;
-        float zfar = 10.0f;
+        float zfar = 16.0f;
 
         /**
          * The position of the player
