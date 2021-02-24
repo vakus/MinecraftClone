@@ -3,18 +3,46 @@
 
 #include <vector>
 #include "vertex.hpp"
+#include "logger.hpp"
+#include "GameObject3D.hpp"
 
-class block{
-    public:
-    std::vector<Vertex> verticies;
-    std::vector<uint32_t> indicies;
+#define BLOCK_SHADE_NO_SHADE \
+    {                        \
+        1.0f, 1.0f, 1.0f     \
+    }
+#define BLOCK_SHADE_TOP  \
+    {                    \
+        1.0f, 1.0f, 1.0f \
+    }
+#define BLOCK_SHADE_SIDE \
+    {                    \
+        0.8f, 0.8f, 0.8f \
+    }
+#define BLOCK_SHADE_BOTTOM \
+    {                      \
+        0.6f, 0.6f, 0.6f   \
+    }
 
-    int id;
-
-    static void initialise(std::vector<block> *BLOCKS);
+class block
+{
+public:
+    virtual int getId() { return 0; };
+    virtual bool isTransparent() { return true; };
+    virtual GameObject3D getMesh(int FaceFlags) { return GameObject3D{}; };
 };
 
-enum TextureCoordType{
+enum BlockFace
+{
+    TOP = 0b000001,
+    BOTTOM = 0b000010,
+    LEFT = 0b000100,
+    RIGHT = 0b001000,
+    FRONT = 0b010000,
+    BACK = 0b100000
+};
+
+enum TextureCoordType
+{
     TOP_LEFT,
     TOP_RIGHT,
     BOTTOM_LEFT,
@@ -22,5 +50,5 @@ enum TextureCoordType{
 };
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType);
-
+void blockInitialise(std::vector<block> *BLOCKS);
 #endif
