@@ -26,9 +26,9 @@
 class block
 {
 public:
-    virtual int getId() { return 0; };
-    virtual bool isTransparent() { return true; };
-    virtual GameObject3D getMesh(int FaceFlags) { return GameObject3D{}; };
+    virtual int getId() = 0;
+    virtual bool isTransparent() = 0;
+    virtual GameObject3D getMesh(int FaceFlags) = 0;
 };
 
 enum BlockFace
@@ -50,5 +50,5 @@ enum TextureCoordType
 };
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType);
-void blockInitialise(std::vector<block> *BLOCKS);
+void blockInitialise(std::vector<block*> *BLOCKS);
 #endif

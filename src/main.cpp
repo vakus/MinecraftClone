@@ -181,23 +181,32 @@ int main(int argc, char *argv[])
         logger::info("Dumping block ids. size: " + std::to_string(application.BLOCKS.size()));
         for (size_t x = 0; x < application.BLOCKS.size(); x++)
         {
-            logger::info("Index: " + std::to_string(x) + " BlockID: " + std::to_string(application.BLOCKS[x].getId()));
+            logger::info("Index: " + std::to_string(x) + " BlockID: " + std::to_string(application.BLOCKS[x]->getId()));
         }
 
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
             {
-                logger::finer("Setting [" + std::to_string(x) + "][0][" + std::to_string(z) + "] with Block ID: " + std::to_string(application.BLOCKS[0].getId()));
-                application.world.setBlock(x, 0, z, &application.BLOCKS[0]);
-                application.world.setBlock(x, 4, z, &application.BLOCKS[1]);
+                logger::finer("Setting [" + std::to_string(x) + "][0][" + std::to_string(z) + "] with Block ID: " + std::to_string(application.BLOCKS[0]->getId()));
+                application.world.setBlock(x, 0, z, application.BLOCKS[0]);
+                application.world.setBlock(x, 4, z, application.BLOCKS[1]);
             }
         }
-        application.world.setBlock(3, 1, 4, &application.BLOCKS[1]);
-        application.world.setBlock(5, 1, 4, &application.BLOCKS[1]);
-        application.world.setBlock(4, 1, 3, &application.BLOCKS[1]);
-        application.world.setBlock(4, 1, 5, &application.BLOCKS[1]);
-        application.world.setBlock(4, 2, 4, &application.BLOCKS[1]);
+        application.world.setBlock(3, 1, 4, application.BLOCKS[1]);
+        application.world.setBlock(5, 1, 4, application.BLOCKS[1]);
+        application.world.setBlock(4, 1, 3, application.BLOCKS[1]);
+        application.world.setBlock(4, 1, 5, application.BLOCKS[1]);
+        application.world.setBlock(4, 2, 4, application.BLOCKS[1]);
+
+        application.world.setBlock(4, 8, 4, application.BLOCKS[1]);
+        application.world.setBlock(4, 8, 5, application.BLOCKS[1]);
+
+        application.world.setBlock(8, 8, 4, application.BLOCKS[1]);
+        application.world.setBlock(7, 8, 4, application.BLOCKS[1]);
+
+        application.world.setBlock(8, 8, 8, application.BLOCKS[1]);
+        application.world.setBlock(8, 9, 8, application.BLOCKS[1]);
 
         application.run(enableValidationLayers);
     }
@@ -206,6 +215,5 @@ int main(int argc, char *argv[])
         logger::critical(e.what());
         return EXIT_FAILURE;
     }
-
     return EXIT_SUCCESS;
 }

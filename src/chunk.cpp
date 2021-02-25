@@ -1,6 +1,10 @@
 #include "chunk.hpp"
 #include "logger.hpp"
 
+bool isTransparent(block* block){
+    return (block == NULL ? true : block->isTransparent());
+}
+
 chunk::chunk(){
     blocks.resize(CHUNK_BLOCK_WIDTH);
     for(size_t x = 0; x < CHUNK_BLOCK_WIDTH; x++){
@@ -26,29 +30,29 @@ GameObject3D chunk::getMesh(){
         for(size_t x = 0; x < blocks.size(); x++){
             for(size_t y = 0; y < blocks[x].size(); y++){
                 for(size_t z = 0; z < blocks[x][y].size(); z++){
-                    if(blocks[x][y][z]->getId() != 0){
+                    if(blocks[x][y][z] != NULL){
                         int VerticiesOffset = cachedMesh.verticies.size();
 
                         logger::finer("Creating Mesh [" + std::to_string(x) + "][" + std::to_string(y) + "][" + std::to_string(z) + "]");
 
                         int faces = 0;
-                        if(y == 15 || !blocks[x][y+1][z]->isTransparent()){
+                        if(y == 15 || isTransparent(blocks[x][y+1][z])){
                             faces |= BlockFace::TOP;
                         }
-                        if(y == 0 || !blocks[x][y-1][z]->isTransparent()){
+                        if(y == 0 || isTransparent(blocks[x][y-1][z])){
                             faces |= BlockFace::BOTTOM;
                         }
-                        if(x == 15 || !blocks[x+1][y][z]->isTransparent()){
-                            faces |= BlockFace::RIGHT;
-                        }
-                        if(x == 0 || !blocks[x-1][y][z]->isTransparent()){
-                            faces |= BlockFace::LEFT;
-                        }
-                        if(z == 15 || !blocks[x][y][z+1]->isTransparent()){
+                        if(x == 15 || isTransparent(blocks[x+1][y][z])){
                             faces |= BlockFace::BACK;
                         }
-                        if(z == 0 || !blocks[x][y][z-1]->isTransparent()){
+                        if(x == 0 || isTransparent(blocks[x-1][y][z])){
                             faces |= BlockFace::FRONT;
+                        }
+                        if(z == 15 || isTransparent(blocks[x][y][z+1])){
+                            faces |= BlockFace::LEFT;
+                        }
+                        if(z == 0 || isTransparent(blocks[x][y][z-1])){
+                            faces |= BlockFace::RIGHT;
                         }
 
 

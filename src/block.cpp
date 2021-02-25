@@ -3,12 +3,12 @@
 #include "blocks/dirt.cpp"
 #include "blocks/stone.cpp"
 
-void blockInitialise(std::vector<block> *BLOCKS)
+void blockInitialise(std::vector<block*> *BLOCKS)
 {
-    BlockDirt dirt;
+    BlockDirt *dirt = new BlockDirt();
     BLOCKS->push_back(dirt);
 
-    BlockStone stone;
+    BlockStone *stone = new BlockStone();
     BLOCKS->push_back(stone);
 }
 

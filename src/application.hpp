@@ -76,7 +76,7 @@ class Application{
         /**
          * List of all known blocks
          */
-        std::vector<block> BLOCKS{};
+        std::vector<block*> BLOCKS{};
 
         /**
          * world
