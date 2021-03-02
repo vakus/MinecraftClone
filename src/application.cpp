@@ -217,7 +217,7 @@ void Application::initWindow(uint32_t width, uint32_t height)
 void Application::initVulkan(bool enableValidationLayers)
 {
     logger::finer("Initialising Vulkan");
-    GameObject3D gameObject = world.getMesh();
+    GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), zfar/16);
 
     createInstance(enableValidationLayers);
     setupDebugMessenger(enableValidationLayers);
@@ -1880,7 +1880,7 @@ void Application::mainLoop()
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
         
-        GameObject3D gameObject = world.getMesh();
+        GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), zfar/16);
 
         createVertexBuffer(gameObject);
         createIndexBuffer(gameObject);
@@ -1997,7 +1997,7 @@ void Application::recreateSwapChain()
     createUniformBuffers();
     createDescriptorPool();
     createDescriptorSet();
-    createCommandBuffers(world.getMesh());
+    createCommandBuffers(gameWorld.getMesh(glm::ivec3(PlayerPosition), zfar/16));
 }
 
 void Application::cleanupSwapChain()

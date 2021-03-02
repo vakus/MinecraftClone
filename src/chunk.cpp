@@ -6,6 +6,7 @@ bool isTransparent(block* block){
 }
 
 chunk::chunk(){
+    recreate = true;
     blocks.resize(CHUNK_BLOCK_WIDTH);
     for(size_t x = 0; x < CHUNK_BLOCK_WIDTH; x++){
         blocks[x].resize(CHUNK_BLOCK_HEIGHT);

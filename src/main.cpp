@@ -7,6 +7,7 @@
 #include "logger.hpp"
 #include "application.hpp"
 #include "block.hpp"
+#include "world.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -189,24 +190,24 @@ int main(int argc, char *argv[])
             for (int z = 0; z < 16; z++)
             {
                 logger::finer("Setting [" + std::to_string(x) + "][0][" + std::to_string(z) + "] with Block ID: " + std::to_string(application.BLOCKS[0]->getId()));
-                application.world.setBlock(x, 0, z, application.BLOCKS[0]);
-                application.world.setBlock(x, 4, z, application.BLOCKS[1]);
+                application.gameWorld.setBlock(x, 0, z, application.BLOCKS[0]);
+                application.gameWorld.setBlock(x, 4, z, application.BLOCKS[1]);
             }
         }
-        application.world.setBlock(3, 1, 4, application.BLOCKS[1]);
-        application.world.setBlock(5, 1, 4, application.BLOCKS[1]);
-        application.world.setBlock(4, 1, 3, application.BLOCKS[1]);
-        application.world.setBlock(4, 1, 5, application.BLOCKS[1]);
-        application.world.setBlock(4, 2, 4, application.BLOCKS[1]);
+        application.gameWorld.setBlock(3, 1, 4, application.BLOCKS[1]);
+        application.gameWorld.setBlock(5, 1, 4, application.BLOCKS[1]);
+        application.gameWorld.setBlock(4, 1, 3, application.BLOCKS[1]);
+        application.gameWorld.setBlock(4, 1, 5, application.BLOCKS[1]);
+        application.gameWorld.setBlock(4, 2, 4, application.BLOCKS[1]);
 
-        application.world.setBlock(4, 8, 4, application.BLOCKS[1]);
-        application.world.setBlock(4, 8, 5, application.BLOCKS[1]);
+        application.gameWorld.setBlock(4, 8, 4, application.BLOCKS[1]);
+        application.gameWorld.setBlock(4, 8, 5, application.BLOCKS[1]);
 
-        application.world.setBlock(8, 8, 4, application.BLOCKS[1]);
-        application.world.setBlock(7, 8, 4, application.BLOCKS[1]);
+        application.gameWorld.setBlock(8, 8, 4, application.BLOCKS[1]);
+        application.gameWorld.setBlock(7, 8, 4, application.BLOCKS[1]);
 
-        application.world.setBlock(8, 8, 8, application.BLOCKS[1]);
-        application.world.setBlock(8, 9, 8, application.BLOCKS[1]);
+        application.gameWorld.setBlock(8, 8, 8, application.BLOCKS[1]);
+        application.gameWorld.setBlock(8, 9, 8, application.BLOCKS[1]);
 
         application.run(enableValidationLayers);
     }

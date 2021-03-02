@@ -14,9 +14,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include "world.hpp"
 #include "chunk.hpp"
 #include "block.hpp"
 #include "GameObject3D.hpp"
+
 
 struct QueueFamilyIndices
 {
@@ -66,7 +68,7 @@ class Application{
         /**
          * The position of the player
          */
-        glm::vec3 PlayerPosition;
+        glm::vec3 PlayerPosition = glm::vec3(0,0,0);
 
         /**
          * The rotation of the player's camera
@@ -82,7 +84,7 @@ class Application{
          * world
          * TODO: replace chunk with actual world; chunk is fine for testing purposes
          */
-        chunk world{};
+        world gameWorld{};
 
         /**
          * GLFW window handle for the application

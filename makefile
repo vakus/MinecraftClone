@@ -2,13 +2,13 @@ CFLAGS = -std=c++17 -fmax-errors=1
 #`isystem include` to prevent warnings for libraries to be displayed.
 # im not very interested in those
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -isystem include
-COMPILEFILES = src/main.cpp src/logger.cpp src/application.cpp src/block.cpp src/chunk.cpp
+COMPILEFILES = src/main.cpp src/logger.cpp src/application.cpp src/block.cpp src/chunk.cpp src/world.cpp
 
 release: src/main.cpp shaders textures
 	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -O3
 
 debug: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O3 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION
+	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION
 
 textures:
 	mkdir -p build/textures
