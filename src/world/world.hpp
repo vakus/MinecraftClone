@@ -9,7 +9,7 @@
 
 #include "block.hpp"
 #include "chunk.hpp"
-#include "../GameObject3D.hpp"
+#include "../graphics/GameObject3D.hpp"
 
 struct ivec3Comparator{
     size_t operator()(glm::ivec3 const& k)const{

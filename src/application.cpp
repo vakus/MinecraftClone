@@ -11,7 +11,7 @@
 #include <stb_image.h>
 
 #include "logger.hpp"
-#include "vertex.hpp"
+#include "graphics/vertex.hpp"
 #include "application.hpp"
 
 /**

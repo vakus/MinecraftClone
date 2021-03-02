@@ -17,7 +17,8 @@
 #include "world/world.hpp"
 #include "world/chunk.hpp"
 #include "world/block.hpp"
-#include "GameObject3D.hpp"
+
+#include "graphics/GameObject3D.hpp"
 
 
 struct QueueFamilyIndices
