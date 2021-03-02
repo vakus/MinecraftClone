@@ -1,7 +1,7 @@
 #include "block.hpp"
 
-#include "blocks/dirt.cpp"
-#include "blocks/stone.cpp"
+#include "../blocks/dirt.cpp"
+#include "../blocks/stone.cpp"
 
 void blockInitialise(std::vector<block*> *BLOCKS)
 {

@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "block.hpp"
-#include "GameObject3D.hpp"
+#include "../GameObject3D.hpp"
 
 class chunk{
     public:

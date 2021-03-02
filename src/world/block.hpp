@@ -2,9 +2,9 @@
 #define BLOCK_H
 
 #include <vector>
-#include "vertex.hpp"
-#include "logger.hpp"
-#include "GameObject3D.hpp"
+#include "../vertex.hpp"
+#include "../logger.hpp"
+#include "../GameObject3D.hpp"
 
 #define BLOCK_SHADE_NO_SHADE \
     {                        \

@@ -1,4 +1,4 @@
-#include "../block.hpp"
+#include "../world/block.hpp"
 
 class BlockStone : public block
 {

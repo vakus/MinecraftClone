@@ -6,8 +6,8 @@
 
 #include "logger.hpp"
 #include "application.hpp"
-#include "block.hpp"
-#include "world.hpp"
+#include "world/block.hpp"
+#include "world/world.hpp"
 
 int main(int argc, char *argv[])
 {

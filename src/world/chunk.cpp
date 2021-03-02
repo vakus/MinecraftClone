@@ -1,5 +1,5 @@
 #include "chunk.hpp"
-#include "logger.hpp"
+#include "../logger.hpp"
 
 bool isTransparent(block* block){
     return (block == NULL ? true : block->isTransparent());

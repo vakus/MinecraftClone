@@ -14,9 +14,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-#include "world.hpp"
-#include "chunk.hpp"
-#include "block.hpp"
+#include "world/world.hpp"
+#include "world/chunk.hpp"
+#include "world/block.hpp"
 #include "GameObject3D.hpp"
 
 
