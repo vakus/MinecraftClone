@@ -3,13 +3,13 @@
 #include "../blocks/dirt.cpp"
 #include "../blocks/stone.cpp"
 
-void blockInitialise(std::vector<block*> *BLOCKS)
+void blockInitialise()
 {
     BlockDirt *dirt = new BlockDirt();
-    BLOCKS->push_back(dirt);
+    block::BLOCKS.push_back(dirt);
 
     BlockStone *stone = new BlockStone();
-    BLOCKS->push_back(stone);
+    block::BLOCKS.push_back(stone);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)

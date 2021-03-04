@@ -77,11 +77,6 @@ class Application{
         glm::quat PlayerRotation = glm::quat(0,0,0,0);
 
         /**
-         * List of all known blocks
-         */
-        std::vector<block*> BLOCKS{};
-
-        /**
          * world
          * TODO: replace chunk with actual world; chunk is fine for testing purposes
          */

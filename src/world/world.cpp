@@ -5,13 +5,16 @@ void world::setBlock(glm::ivec3 pos, block* block){
     int ChunkY = pos.y / CHUNK_BLOCK_HEIGHT;
     int ChunkZ = pos.z / CHUNK_BLOCK_DEPTH;
 
-    chunk* c = chunks[glm::ivec3(ChunkX, ChunkY, ChunkZ)];
+    glm::ivec3 chunkPos = glm::ivec3(ChunkX, ChunkY, ChunkZ);
+
+    chunk* c = chunks[chunkPos];
 
     if(c == NULL){
         //if chunk doesnt exist simply create it
-        c = new chunk();
-        chunks[glm::ivec3(ChunkX, ChunkY, ChunkZ)] = c;
-        //chunks.insert(std::make_pair(glm::ivec3(ChunkX, ChunkY, ChunkZ), c));
+        c = new chunk(chunkPos);
+        c->generate();
+
+        chunks[chunkPos] = c;
     }
 
     c->setBlock(pos.x % CHUNK_BLOCK_WIDTH, pos.y % CHUNK_BLOCK_HEIGHT, pos.z % CHUNK_BLOCK_DEPTH, block);

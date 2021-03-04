@@ -14,13 +14,15 @@
 
 class chunk{
     public:
-        chunk();
+        chunk(glm::ivec3 position);
         void setBlock(int x, int y, int z, block* b);
         GameObject3D getMesh();
+        void generate();
     private:
         bool recreate;
         GameObject3D cachedMesh;
         std::vector<std::vector<std::vector<block*>>> blocks;
+        glm::ivec3 pos;
 };
 
 #endif

@@ -5,7 +5,8 @@ bool isTransparent(block* block){
     return (block == NULL ? true : block->isTransparent());
 }
 
-chunk::chunk(){
+chunk::chunk(glm::ivec3 position){
+    pos = position;
     recreate = true;
     blocks.resize(CHUNK_BLOCK_WIDTH);
     for(size_t x = 0; x < CHUNK_BLOCK_WIDTH; x++){
@@ -79,3 +80,13 @@ GameObject3D chunk::getMesh(){
     }
     return cachedMesh;
 };
+
+void chunk::generate(){
+    if(pos.y == 0){
+        for(int x = 0; x < CHUNK_BLOCK_WIDTH; x++){
+            for(int z = 0; z < CHUNK_BLOCK_DEPTH; z++){
+                blocks[x][0][z] = block::BLOCKS[0];
+            }
+        }
+    }
+}
