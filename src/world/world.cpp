@@ -12,7 +12,6 @@ void world::setBlock(glm::ivec3 pos, block* block){
     if(c == NULL){
         //if chunk doesnt exist simply create it
         c = new chunk(chunkPos);
-        c->generate();
 
         chunks[chunkPos] = c;
     }
@@ -28,10 +27,12 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
 
     GameObject3D mesh;
 
+    glm::ivec3 targetChunk = glm::ivec3(pos/16);
+
     for(int x = -distance; x <= distance; x++){
         for(int y = -distance; y <= distance; y++){
             for(int z = -distance; z <= distance; z++){
-                glm::ivec3 actualPos = glm::ivec3(pos/16);
+                glm::ivec3 actualPos = glm::ivec3(targetChunk);
                 actualPos.x += x;
                 actualPos.y += y;
                 actualPos.z += z;
@@ -39,17 +40,23 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 logger::finer("Getting Chunk X: " + std::to_string(actualPos.x) + " Y: " + std::to_string(actualPos.y) + " Z: " + std::to_string(actualPos.z));
 
                 chunk* c = chunks[actualPos];
+                if(c == NULL){
+                    logger::fine("Creating chunk");
+                    c = new chunk(actualPos);
+                    c->generate();
+                    chunks[actualPos] = c;
+                }
+                GameObject3D chunkMesh = c->getMesh();
 
-                if(c != NULL){
-                    GameObject3D chunkMesh = c->getMesh();
+                int verticiesOffset = mesh.verticies.size();
+                for(size_t i = 0; i < chunkMesh.indicies.size(); i++){
+                    mesh.indicies.push_back(chunkMesh.indicies[i] + verticiesOffset);
+                }
+                for(size_t i = 0; i < chunkMesh.verticies.size(); i++){
 
-                    int verticiesOffset = mesh.verticies.size();
-                    for(size_t i = 0; i < chunkMesh.indicies.size(); i++){
-                        mesh.indicies.push_back(chunkMesh.indicies[i] + verticiesOffset);
-                    }
-                    for(size_t i = 0; i < chunkMesh.verticies.size(); i++){
-                        mesh.verticies.push_back(chunkMesh.verticies[i]);
-                    }
+                    Vertex v = chunkMesh.verticies[i];
+                    v.pos += actualPos * glm::ivec3(16, 16, 16);
+                    mesh.verticies.push_back(v);
                 }
             }
         }

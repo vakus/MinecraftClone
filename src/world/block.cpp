@@ -6,10 +6,10 @@
 void blockInitialise()
 {
     BlockDirt *dirt = new BlockDirt();
-    block::BLOCKS.push_back(dirt);
+    BLOCKS.push_back(dirt);
 
     BlockStone *stone = new BlockStone();
-    block::BLOCKS.push_back(stone);
+    BLOCKS.push_back(stone);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
@@ -34,3 +34,5 @@ glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
 
     return glm::vec2(baseX, baseY);
 }
+
+std::vector<block*> BLOCKS{};

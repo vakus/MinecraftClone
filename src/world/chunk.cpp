@@ -85,7 +85,7 @@ void chunk::generate(){
     if(pos.y == 0){
         for(int x = 0; x < CHUNK_BLOCK_WIDTH; x++){
             for(int z = 0; z < CHUNK_BLOCK_DEPTH; z++){
-                blocks[x][0][z] = block::BLOCKS[0];
+                blocks[x][0][z] = BLOCKS[0];
             }
         }
     }
