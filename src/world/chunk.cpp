@@ -45,16 +45,16 @@ GameObject3D chunk::getMesh(){
                             faces |= BlockFace::BOTTOM;
                         }
                         if(x == 15 || isTransparent(blocks[x+1][y][z])){
-                            faces |= BlockFace::BACK;
-                        }
-                        if(x == 0 || isTransparent(blocks[x-1][y][z])){
-                            faces |= BlockFace::FRONT;
-                        }
-                        if(z == 15 || isTransparent(blocks[x][y][z+1])){
                             faces |= BlockFace::LEFT;
                         }
-                        if(z == 0 || isTransparent(blocks[x][y][z-1])){
+                        if(x == 0 || isTransparent(blocks[x-1][y][z])){
                             faces |= BlockFace::RIGHT;
+                        }
+                        if(z == 15 || isTransparent(blocks[x][y][z+1])){
+                            faces |= BlockFace::BACK;
+                        }
+                        if(z == 0 || isTransparent(blocks[x][y][z-1])){
+                            faces |= BlockFace::FRONT;
                         }
 
 
@@ -63,9 +63,9 @@ GameObject3D chunk::getMesh(){
 
                         for(size_t i = 0; i < blockObject.verticies.size(); i++){
                             Vertex v = blockObject.verticies[i];
-                            v.pos.x += z;
-                            v.pos.y += x;
-                            v.pos.z = (v.pos.z + y) * -1;
+                            v.pos.x += x;
+                            v.pos.y += y;
+                            v.pos.z += z;
                             logger::finer("Block Verticies[" + std::to_string(i) + "]: X: " + std::to_string(v.pos.x) + " Y:" + std::to_string(v.pos.y) + " Z:" + std::to_string(v.pos.z));
                             cachedMesh.verticies.push_back(v);
                         }
