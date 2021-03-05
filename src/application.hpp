@@ -61,10 +61,9 @@ class Application{
         float fov = 45.0f;
 
         /**
-         * The near and far plane for rendering along z axis
+         * 
          */
-        float znear = 0.1f;
-        float zfar = 16.0f;
+        int renderDistance = 1;
 
         /**
          * The position of the player

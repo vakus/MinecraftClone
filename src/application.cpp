@@ -14,6 +14,8 @@
 #include "graphics/vertex.hpp"
 #include "application.hpp"
 
+#include <algorithm>
+
 /**
  * This function reads file as array of chars.
  */
@@ -108,9 +110,9 @@ void key_callback(
             goUpwards = false;
             goDownwards = true;
         }else if(key == GLFW_KEY_MINUS){
-            app->zfar -= 16.0f;
+            app->renderDistance = std::clamp(app->renderDistance - 1, 1, 16);
         }else if(key == GLFW_KEY_EQUAL){
-            app->zfar += 16.0f;
+            app->renderDistance = std::clamp(app->renderDistance + 1, 1, 16);
         }
     }else if(action == GLFW_RELEASE){
         
@@ -216,7 +218,7 @@ void Application::initWindow(uint32_t width, uint32_t height)
 void Application::initVulkan(bool enableValidationLayers)
 {
     logger::finer("Initialising Vulkan");
-    GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), zfar/16);
+    GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), renderDistance);
 
     createInstance(enableValidationLayers);
     setupDebugMessenger(enableValidationLayers);
@@ -623,7 +625,7 @@ void Application::updateUniformBuffer(uint32_t currentImage)
     //ubo.view = glm::lookAt(PlayerPosition + glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.view = glm::mat4_cast(PlayerRotation) * glm::translate(glm::mat4(1.0f), glm::vec3(0,0,2)+PlayerPosition);
     //perspective
-    ubo.proj = glm::perspective(glm::radians(fov), swapChainExtent.width / (float)swapChainExtent.height, znear, zfar);
+    ubo.proj = glm::perspective(glm::radians(fov), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, (float)renderDistance * 16);
     //we do not want to tint the model
     ubo.colorTint = {1.0f, 1.0f, 1.0f};
 
@@ -1887,7 +1889,7 @@ void Application::mainLoop()
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
         
-        GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), zfar/16);
+        GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), renderDistance);
 
         createVertexBuffer(gameObject);
         createIndexBuffer(gameObject);
@@ -2004,7 +2006,7 @@ void Application::recreateSwapChain()
     createUniformBuffers();
     createDescriptorPool();
     createDescriptorSet();
-    createCommandBuffers(gameWorld.getMesh(glm::ivec3(PlayerPosition), zfar/16));
+    createCommandBuffers(gameWorld.getMesh(glm::ivec3(PlayerPosition), renderDistance));
 }
 
 void Application::cleanupSwapChain()
