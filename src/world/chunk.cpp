@@ -101,8 +101,10 @@ void chunk::generate(uint32_t seed){
             logger::warn("Height: " + std::to_string(height));
             
             for(int y = 0; y < CHUNK_BLOCK_HEIGHT; y++){
-                if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y){
+                if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y -3){
                     blocks[x][y][z] = BLOCKS[1];
+                }else if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y){
+                    blocks[x][y][z] = BLOCKS[0];
                 }else if(chunkOffsetY + y < CHUNK_GENERATION_SEA_LEVEL){
                     //add water here
                 }
