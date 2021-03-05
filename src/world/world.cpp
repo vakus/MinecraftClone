@@ -33,6 +33,27 @@ void world::setBlock(int x, int y, int z, block* block){
     world::setBlock(glm::ivec3(x, y, z), block);
 }
 
+block* world::getBlock(glm::ivec3 pos){
+    int ChunkX = pos.x / CHUNK_BLOCK_WIDTH;
+    int ChunkY = pos.y / CHUNK_BLOCK_HEIGHT;
+    int ChunkZ = pos.z / CHUNK_BLOCK_DEPTH;
+
+    glm::ivec3 chunkPos = glm::ivec3(ChunkX, ChunkY, ChunkZ);
+
+    chunk* c = chunks[chunkPos];
+
+    if(c == NULL){
+        //if the chunk doesnt exist we dont want to generate it (could cause cascading generation)
+        return nullptr;
+    }
+
+    return c->getBlock(pos.x % CHUNK_BLOCK_WIDTH, pos.y % CHUNK_BLOCK_HEIGHT, pos.z % CHUNK_BLOCK_DEPTH);
+}
+
+block* world::getBlock(int x, int y, int z){
+    return getBlock(glm::ivec3(x,y,z));
+}
+
 GameObject3D world::getMesh(glm::ivec3 pos, int distance){
 
     GameObject3D mesh;

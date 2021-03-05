@@ -20,6 +20,8 @@ class chunk{
     public:
         chunk(glm::ivec3 position);
         void setBlock(int x, int y, int z, block* b);
+        block* getBlock(glm::ivec3 pos);
+        block* getBlock(int x, int y, int z);
         GameObject3D getMesh();
         void generate(uint32_t seed);
     private:

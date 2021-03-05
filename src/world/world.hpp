@@ -32,6 +32,8 @@ class world{
         world(uint32_t seed);
         void setBlock(glm::ivec3 pos, block* block);
         void setBlock(int x, int y, int z, block* block);
+        block* getBlock(glm::ivec3 pos);
+        block* getBlock(int x, int y, int z);
         GameObject3D getMesh(glm::ivec3 pos, int distance);
     private:
         std::unordered_map<glm::ivec3, chunk*, ivec3Comparator, ivec3Comparator> chunks;

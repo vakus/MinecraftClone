@@ -23,6 +23,14 @@ void chunk::setBlock(int x, int y, int z, block* b){
     blocks[x][y][z] = b;
 };
 
+block* chunk::getBlock(glm::ivec3 pos){
+    return blocks[pos.x][pos.y][pos.z];
+}
+
+block* chunk::getBlock(int x, int y, int z){
+    return getBlock(glm::ivec3(x, y, z));
+}
+
 GameObject3D chunk::getMesh(){
     if(recreate){
         logger::fine("Regenerating mesh");
@@ -84,7 +92,7 @@ GameObject3D chunk::getMesh(){
 
 void chunk::generate(uint32_t seed){
     //for now only generate a single chunk
-    if(pos.y < 0 || pos.x != 0 || pos.z != 0){
+    if(pos.y < 0){
         return;
     }
     int chunkOffsetX = pos.x * 16;
@@ -98,7 +106,6 @@ void chunk::generate(uint32_t seed){
 
             //terrain height
             int height = (perlin.accumulatedOctaveNoise2D((float)(chunkOffsetX + x)/16, (float)(chunkOffsetZ + z)/16, CHUNK_GENERATION_OCTAVES) + 1.0f) * ((CHUNK_GENERATION_MAX_Y - CHUNK_GENERATION_MIN_Y) / 2);
-            logger::warn("Height: " + std::to_string(height));
             
             for(int y = 0; y < CHUNK_BLOCK_HEIGHT; y++){
                 if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y -3){
