@@ -1,5 +1,15 @@
 #include "world.hpp"
 
+#include <stdlib.h>
+
+world::world(){
+    seed = rand();
+}
+
+world::world(uint32_t wseed){
+    seed = wseed;
+}
+
 void world::setBlock(glm::ivec3 pos, block* block){
     int ChunkX = pos.x / CHUNK_BLOCK_WIDTH;
     int ChunkY = pos.y / CHUNK_BLOCK_HEIGHT;
@@ -36,14 +46,14 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 actualPos.x += x;
                 actualPos.y += y;
                 actualPos.z += z;
-
+                actualPos *= -1;
                 logger::finer("Getting Chunk X: " + std::to_string(actualPos.x) + " Y: " + std::to_string(actualPos.y) + " Z: " + std::to_string(actualPos.z));
 
                 chunk* c = chunks[actualPos];
                 if(c == NULL){
                     logger::fine("Creating chunk");
                     c = new chunk(actualPos);
-                    c->generate();
+                    c->generate(seed);
                     chunks[actualPos] = c;
                 }
                 GameObject3D chunkMesh = c->getMesh();

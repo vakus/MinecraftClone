@@ -27,6 +27,9 @@ struct ivec3Comparator{
 
 class world{
     public:
+        uint32_t seed;
+        world();
+        world(uint32_t seed);
         void setBlock(glm::ivec3 pos, block* block);
         void setBlock(int x, int y, int z, block* block);
         GameObject3D getMesh(glm::ivec3 pos, int distance);

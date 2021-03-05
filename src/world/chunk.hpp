@@ -4,6 +4,10 @@
 #define CHUNK_BLOCK_WIDTH 16 //x
 #define CHUNK_BLOCK_HEIGHT 16 //y
 #define CHUNK_BLOCK_DEPTH 16 //z
+#define CHUNK_GENERATION_SEA_LEVEL 64
+#define CHUNK_GENERATION_MIN_Y 48
+#define CHUNK_GENERATION_MAX_Y 80
+#define CHUNK_GENERATION_OCTAVES 4
 
 #include <array>
 #include <vector>
@@ -17,7 +21,7 @@ class chunk{
         chunk(glm::ivec3 position);
         void setBlock(int x, int y, int z, block* b);
         GameObject3D getMesh();
-        void generate();
+        void generate(uint32_t seed);
     private:
         bool recreate;
         GameObject3D cachedMesh;

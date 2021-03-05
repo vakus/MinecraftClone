@@ -1,5 +1,6 @@
 #include "chunk.hpp"
 #include "../logger.hpp"
+#include <PerlinNoise/PerlinNoise.hpp>
 
 bool isTransparent(block* block){
     return (block == NULL ? true : block->isTransparent());
@@ -81,11 +82,30 @@ GameObject3D chunk::getMesh(){
     return cachedMesh;
 };
 
-void chunk::generate(){
-    if(pos.y == 0){
-        for(int x = 0; x < CHUNK_BLOCK_WIDTH; x++){
-            for(int z = 0; z < CHUNK_BLOCK_DEPTH; z++){
-                blocks[x][0][z] = BLOCKS[0];
+void chunk::generate(uint32_t seed){
+    //for now only generate a single chunk
+    if(pos.y < 0 || pos.x != 0 || pos.z != 0){
+        return;
+    }
+    int chunkOffsetX = pos.x * 16;
+    int chunkOffsetY = pos.y * 16;
+    int chunkOffsetZ = pos.z * 16;
+
+    const siv::PerlinNoise perlin(seed);
+
+    for(int x = 0; x < CHUNK_BLOCK_WIDTH; x++){
+        for(int z = 0; z < CHUNK_BLOCK_DEPTH; z++){
+
+            //terrain height
+            int height = (perlin.accumulatedOctaveNoise2D((float)(chunkOffsetX + x)/16, (float)(chunkOffsetZ + z)/16, CHUNK_GENERATION_OCTAVES) + 1.0f) * ((CHUNK_GENERATION_MAX_Y - CHUNK_GENERATION_MIN_Y) / 2);
+            logger::warn("Height: " + std::to_string(height));
+            
+            for(int y = 0; y < CHUNK_BLOCK_HEIGHT; y++){
+                if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y){
+                    blocks[x][y][z] = BLOCKS[1];
+                }else if(chunkOffsetY + y < CHUNK_GENERATION_SEA_LEVEL){
+                    //add water here
+                }
             }
         }
     }
