@@ -1,15 +1,19 @@
 #include "block.hpp"
 
-#include "../blocks/dirt.cpp"
+#include "../blocks/grassBlock.cpp"
 #include "../blocks/stone.cpp"
+#include "../blocks/dirt.cpp"
 
 void blockInitialise()
 {
-    BlockDirt *dirt = new BlockDirt();
-    BLOCKS.push_back(dirt);
+    BlockGrass *grass = new BlockGrass();
+    BLOCKS.push_back(grass);
 
     BlockStone *stone = new BlockStone();
     BLOCKS.push_back(stone);
+
+    BlockDirt *dirt = new BlockDirt();
+    BLOCKS.push_back(dirt);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
