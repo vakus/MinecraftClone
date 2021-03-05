@@ -1,0 +1,8 @@
+# Ignore everything in this folder
+*
+
+#Except the following files which are required for the project
+!LICENSE
+!PerlinNoise.hpp
+!README.md
+!.gitignore
