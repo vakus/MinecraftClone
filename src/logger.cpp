@@ -7,6 +7,7 @@ namespace logger
 {
     logtype min = INFO;
     logtype max = CRITICAL;
+    bool profiling = true;
 
     void setMinLog(logtype log)
     {
@@ -30,6 +31,10 @@ namespace logger
         {
             max = log;
         }
+    }
+
+    void setProfiling(bool prof){
+        profiling = prof;
     }
 
     void finer(std::string message)
@@ -96,6 +101,15 @@ namespace logger
 
             const std::tm cnow = *std::localtime(std::addressof(now));
             std::cout << "[" << cnow.tm_hour << ":" << cnow.tm_min << ":" << cnow.tm_sec << "] [CRITICAL] " << message << std::endl;
+        }
+    }
+
+    void profile(std::string message){
+        if(profiling){
+            const std::time_t now = std::time(nullptr);
+
+            const std::tm cnow = *std::localtime(std::addressof(now));
+            std::cout << "[" << cnow.tm_hour << ":" << cnow.tm_min << ":" << cnow.tm_sec << "] [PROFILE] " << message << std::endl;
         }
     }
 

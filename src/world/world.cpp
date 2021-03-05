@@ -1,6 +1,7 @@
 #include "world.hpp"
 
 #include <stdlib.h>
+#include <chrono>
 
 world::world(){
     seed = rand();
@@ -55,7 +56,7 @@ block* world::getBlock(int x, int y, int z){
 }
 
 GameObject3D world::getMesh(glm::ivec3 pos, int distance){
-
+    auto start = std::chrono::high_resolution_clock::now();
     GameObject3D mesh;
 
     glm::ivec3 targetChunk = glm::ivec3(pos/16);
@@ -68,11 +69,9 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 actualPos.y += y;
                 actualPos.z += z;
                 actualPos *= -1;
-                logger::finer("Getting Chunk X: " + std::to_string(actualPos.x) + " Y: " + std::to_string(actualPos.y) + " Z: " + std::to_string(actualPos.z));
 
                 chunk* c = chunks[actualPos];
                 if(c == NULL){
-                    logger::fine("Creating chunk");
                     c = new chunk(actualPos);
                     c->generate(seed);
                     chunks[actualPos] = c;
@@ -92,6 +91,9 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
             }
         }
     }
-
+    auto end = std::chrono::high_resolution_clock::now();
+    logger::profile("world::getMesh() took " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()));
+    logger::profile("world::getMesh() has " + std::to_string(mesh.indicies.size()) + " indicies");
+    logger::profile("world::getMesh() has " + std::to_string(mesh.verticies.size()) + " verticies");
     return mesh;
 }

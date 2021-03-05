@@ -157,6 +157,9 @@ int main(int argc, char *argv[])
                 enableValidationLayers = true;
                 application.validationLayers.push_back("VK_LAYER_LUNARG_api_dump");
             }
+            else if(parg.compare("--profile") == 0){
+                logger::setProfiling(true);
+            }
         }
     }
 

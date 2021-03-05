@@ -19,6 +19,7 @@ namespace logger
 
     void setMinLog(logtype log);
     void setMaxLog(logtype log);
+    void setProfiling(bool profiling);
 
     void finer(std::string message);
     void fine(std::string message);
@@ -26,6 +27,7 @@ namespace logger
     void warn(std::string message);
     void error(std::string message);
     void critical(std::string message);
+    void profile(std::string message);
 
 } // namespace logger
 

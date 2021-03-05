@@ -1,6 +1,7 @@
 #include "chunk.hpp"
 #include "../logger.hpp"
 #include <PerlinNoise/PerlinNoise.hpp>
+#include <chrono>
 
 bool isTransparent(block* block){
     return (block == NULL ? true : block->isTransparent());
@@ -32,6 +33,7 @@ block* chunk::getBlock(int x, int y, int z){
 }
 
 GameObject3D chunk::getMesh(){
+    auto start = std::chrono::high_resolution_clock::now();
     if(recreate){
         logger::fine("Regenerating mesh");
         recreate = false;
@@ -87,6 +89,8 @@ GameObject3D chunk::getMesh(){
             }
         }
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    //logger::profile("chunk::getMesh() took " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()));
     return cachedMesh;
 };
 
