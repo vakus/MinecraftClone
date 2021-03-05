@@ -83,10 +83,7 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                     mesh.indicies.push_back(chunkMesh.indicies[i] + verticiesOffset);
                 }
                 for(size_t i = 0; i < chunkMesh.verticies.size(); i++){
-
-                    Vertex v = chunkMesh.verticies[i];
-                    v.pos += actualPos * glm::ivec3(16, 16, 16);
-                    mesh.verticies.push_back(v);
+                    mesh.verticies.push_back(chunkMesh.verticies[i]);
                 }
             }
         }
