@@ -113,6 +113,10 @@ void key_callback(
             app->renderDistance = std::clamp(app->renderDistance - 1, 1, 16);
         }else if(key == GLFW_KEY_EQUAL){
             app->renderDistance = std::clamp(app->renderDistance + 1, 1, 16);
+        }else if(key == GLFW_KEY_X){
+            //print info about current chunk
+            glm::ivec3 chunkPos = app->gameWorld.convertToChunk(app->PlayerPosition);
+            logger::info("Current chunk position X: " + std::to_string(chunkPos.x) + " Y: " + std::to_string(chunkPos.y) + " Z: " + std::to_string(chunkPos.z));
         }
     }else if(action == GLFW_RELEASE){
         
