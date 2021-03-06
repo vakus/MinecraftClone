@@ -48,7 +48,10 @@ block* world::getBlock(int x, int y, int z){
 }
 
 GameObject3D world::getMesh(glm::ivec3 pos, int distance){
+    #ifdef PROFILE
     auto start = std::chrono::high_resolution_clock::now();
+    #endif
+
     GameObject3D mesh;
 
     glm::ivec3 targetChunk = glm::ivec3(pos/16);
@@ -100,10 +103,13 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
             }
         }
     }
+
+    #ifdef PROFILE
     auto end = std::chrono::high_resolution_clock::now();
     logger::profile("world::getMesh() took " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()));
     logger::profile("world::getMesh() has " + std::to_string(mesh.indicies.size()) + " indicies");
     logger::profile("world::getMesh() has " + std::to_string(mesh.verticies.size()) + " verticies");
+    #endif
     return mesh;
 }
 

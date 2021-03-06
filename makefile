@@ -10,6 +10,9 @@ release: src/main.cpp shaders textures
 debug: src/main.cpp shaders textures
 	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION
 
+profile: src/main.cpp shaders textures
+	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D PROFILE
+
 textures:
 	mkdir -p build/textures
 	cp -rv src/textures/* build/textures
