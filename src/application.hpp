@@ -68,7 +68,7 @@ class Application{
         /**
          * The position of the player
          */
-        glm::vec3 PlayerPosition = glm::vec3(0,0,0);
+        glm::vec3 PlayerPosition = glm::vec3(0,-64,0);
 
         /**
          * The rotation of the player's camera
