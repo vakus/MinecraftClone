@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
+class world;
 #include "block.hpp"
 #include "chunk.hpp"
 #include "../graphics/GameObject3D.hpp"
@@ -35,6 +36,8 @@ class world{
         block* getBlock(glm::ivec3 pos);
         block* getBlock(int x, int y, int z);
         GameObject3D getMesh(glm::ivec3 pos, int distance);
+        glm::ivec3 convertToChunk(glm::ivec3 pos);
+        glm::ivec3 convertToChunkRelative(glm::ivec3 pos);
     private:
         std::unordered_map<glm::ivec3, chunk*, ivec3Comparator, ivec3Comparator> chunks;
 };

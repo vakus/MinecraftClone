@@ -11,24 +11,28 @@
 
 #include <array>
 #include <vector>
-
+class chunk;
 #include "block.hpp"
+#include "world.hpp"
 
 #include "../graphics/GameObject3D.hpp"
 
 class chunk{
     public:
-        chunk(glm::ivec3 position);
+        chunk(glm::ivec3 position, world* w);
+        void setBlock(glm::ivec3 pos, block* b);
         void setBlock(int x, int y, int z, block* b);
         block* getBlock(glm::ivec3 pos);
         block* getBlock(int x, int y, int z);
         GameObject3D getMesh();
         void generate(uint32_t seed);
+        void forceRecreate();
     private:
         bool recreate;
         GameObject3D cachedMesh;
         std::vector<std::vector<std::vector<block*>>> blocks;
         glm::ivec3 pos;
+        world* worldo;
 };
 
 #endif
