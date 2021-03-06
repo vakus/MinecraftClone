@@ -7,7 +7,7 @@ namespace logger
 {
     logtype min = INFO;
     logtype max = CRITICAL;
-    bool profiling = true;
+    bool profiling = false;
 
     void setMinLog(logtype log)
     {
