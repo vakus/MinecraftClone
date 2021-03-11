@@ -5,10 +5,18 @@
 
 world::world(){
     seed = rand();
+    worldGenThread.resize(WORLDGEN_THREAD_COUNT_MAX);
+    for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
+        pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
+    }
 }
 
 world::world(uint32_t wseed){
     seed = wseed;
+    worldGenThread.resize(WORLDGEN_THREAD_COUNT_MAX);
+    for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
+        pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
+    }
 }
 
 void world::setBlock(glm::ivec3 pos, block* block){
@@ -68,28 +76,13 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 chunk* c = chunks[actualPos];
                 if(c == NULL){
                     c = new chunk(actualPos, this);
-                    c->generate(seed);
-                    chunks[actualPos] = c;
+                    
+                    auto lock = std::unique_lock<std::mutex>(WorldGenMutex);
+                    WorldGenQueue.push_back(c);
+                    lock.unlock();
+                    WorldGenCond.notify_all();
 
-                    //we also would want to regenerate nearby chunks
-                    if(chunks[glm::ivec3(1,0,0) + actualPos] != NULL){
-                        chunks[glm::ivec3(1,0,0) + actualPos]->forceRecreate();
-                    }
-                    if(chunks[glm::ivec3(-1,0,0) + actualPos] != NULL){
-                        chunks[glm::ivec3(-1,0,0) + actualPos]->forceRecreate();
-                    }
-                    if(chunks[glm::ivec3(0,1,0) + actualPos] != NULL){
-                        chunks[glm::ivec3(0,1,0) + actualPos]->forceRecreate();
-                    }
-                    if(chunks[glm::ivec3(0,-1,0) + actualPos] != NULL){
-                        chunks[glm::ivec3(0,-1,0) + actualPos]->forceRecreate();
-                    }
-                    if(chunks[glm::ivec3(0,0,1) + actualPos] != NULL){
-                        chunks[glm::ivec3(0,0,1) + actualPos]->forceRecreate();
-                    }
-                    if(chunks[glm::ivec3(0,0,-1) + actualPos] != NULL){
-                        chunks[glm::ivec3(0,0,-1) + actualPos]->forceRecreate();
-                    }
+                    chunks[actualPos] = c;
                 }
                 GameObject3D chunkMesh = c->getMesh();
 
@@ -103,6 +96,26 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
             }
         }
     }
+    //FIXME this allows at least one chunk generated per frame
+    // the problem however is that when a chunk is added to
+    // worldgen queue and then thread is notified
+    // the worldgen thread may miss next notifications
+    //
+    // while this prevents chunks from never being generated
+    // this doesnt feel right
+    WorldGenCond.notify_all();
+
+    //unfortunately if we try to render empty frame, vulkan will crash due to empty buffer
+    //lets add junk triangle to make it not crash
+    uint offset = mesh.verticies.size();
+    mesh.verticies.insert(mesh.verticies.end(), {
+             {pos, {0,0}, {0,0,0}},
+             {pos, {0,0}, {0,0,0}},
+             {pos, {0,0}, {0,0,0}},
+    });
+    mesh.indicies.insert(mesh.indicies.end(), {
+        offset, offset+1, offset+2
+    });
 
     #ifdef PROFILE
     auto end = std::chrono::high_resolution_clock::now();
@@ -148,4 +161,52 @@ glm::ivec3 world::convertToChunkRelative(glm::ivec3 pos){
         pos.z += CHUNK_BLOCK_DEPTH;
     }
     return pos;
+}
+
+void world::stop(){
+    auto lock = std::unique_lock<std::mutex>(WorldGenMutex);
+    WorldGenContinue = false;
+    lock.unlock();
+    WorldGenCond.notify_all();
+}
+
+void *world::WorldGenHelper(void* context){
+    return ((world *) context)->WorldGen();
+}
+
+void *world::WorldGen(){
+    while(WorldGenContinue){
+        auto lock = std::unique_lock<std::mutex>(WorldGenMutex);
+        WorldGenCond.wait(lock);
+        if(!WorldGenQueue.empty()){
+            chunk* c = WorldGenQueue.front();
+            WorldGenQueue.pop_front();
+            lock.unlock();
+            //seed should not suffer from concurrency
+            //as it *should* only be changed before world is created
+            c->generate(seed);
+            c->forceRecreate();
+
+            //we also would want to regenerate nearby chunks
+            if(chunks[glm::ivec3(1,0,0) + c->pos] != NULL){
+                chunks[glm::ivec3(1,0,0) + c->pos]->forceRecreate();
+            }
+            if(chunks[glm::ivec3(-1,0,0) + c->pos] != NULL){
+                chunks[glm::ivec3(-1,0,0) + c->pos]->forceRecreate();
+            }
+            if(chunks[glm::ivec3(0,1,0) + c->pos] != NULL){
+                chunks[glm::ivec3(0,1,0) + c->pos]->forceRecreate();
+            }
+            if(chunks[glm::ivec3(0,-1,0) + c->pos] != NULL){
+                chunks[glm::ivec3(0,-1,0) + c->pos]->forceRecreate();
+            }
+            if(chunks[glm::ivec3(0,0,1) + c->pos] != NULL){
+                chunks[glm::ivec3(0,0,1) + c->pos]->forceRecreate();
+            }
+            if(chunks[glm::ivec3(0,0,-1) + c->pos] != NULL){
+                chunks[glm::ivec3(0,0,-1) + c->pos]->forceRecreate();
+            }
+        }
+    }
+    pthread_exit(NULL);
 }

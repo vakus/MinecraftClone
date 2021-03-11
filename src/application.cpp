@@ -2052,6 +2052,8 @@ void Application::cleanupSwapChain()
  */
 void Application::cleanup(bool enableValidationLayers)
 {
+    Application::gameWorld.stop();
+
     cleanupSwapChain();
 
     vkDestroySampler(device, textureSampler, nullptr);

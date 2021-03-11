@@ -19,6 +19,8 @@ class chunk;
 
 class chunk{
     public:
+        const glm::ivec3 pos;
+
         chunk(glm::ivec3 position, world* w);
         void setBlock(glm::ivec3 pos, block* b);
         void setBlock(int x, int y, int z, block* b);
@@ -28,10 +30,10 @@ class chunk{
         void generate(uint32_t seed);
         void forceRecreate();
     private:
+        bool generated;
         bool recreate;
         GameObject3D cachedMesh;
         std::vector<std::vector<std::vector<block*>>> blocks;
-        glm::ivec3 pos;
         world* worldo;
 };
 
