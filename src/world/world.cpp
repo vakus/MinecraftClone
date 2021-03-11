@@ -147,5 +147,5 @@ glm::ivec3 world::convertToChunkRelative(glm::ivec3 pos){
     if(pos.z < 0){
         pos.z += CHUNK_BLOCK_DEPTH;
     }
-
+    return pos;
 }
