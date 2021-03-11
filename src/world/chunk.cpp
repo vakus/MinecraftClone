@@ -11,6 +11,7 @@ chunk::chunk(glm::ivec3 position, world* w) : pos(position){
     worldo = w;
     recreate = true;
     generated = false;
+    std::unique_lock<std::mutex>(MeshMutex);
     blocks.resize(CHUNK_BLOCK_WIDTH);
     for(size_t x = 0; x < CHUNK_BLOCK_WIDTH; x++){
         blocks[x].resize(CHUNK_BLOCK_HEIGHT);
@@ -51,6 +52,11 @@ GameObject3D chunk::getMesh(){
     auto start = std::chrono::high_resolution_clock::now();
     #endif
     
+    if(!MeshMutex.try_lock()){
+        //mutex is already running
+        return GameObject3D{};
+    }
+
     if(recreate){
         logger::fine("Regenerating mesh");
         recreate = false;
@@ -136,6 +142,9 @@ GameObject3D chunk::getMesh(){
     auto end = std::chrono::high_resolution_clock::now();
     logger::profile("chunk::getMesh() took " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()));
     #endif
+
+    MeshMutex.unlock();
+
     return cachedMesh;
 };
 

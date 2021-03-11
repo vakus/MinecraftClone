@@ -17,6 +17,8 @@ class chunk;
 
 #include "../graphics/GameObject3D.hpp"
 
+#include <mutex>
+
 class chunk{
     public:
         const glm::ivec3 pos;
@@ -35,6 +37,8 @@ class chunk{
         GameObject3D cachedMesh;
         std::vector<std::vector<std::vector<block*>>> blocks;
         world* worldo;
+
+        std::mutex MeshMutex;
 };
 
 #endif

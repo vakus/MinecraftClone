@@ -186,25 +186,33 @@ void *world::WorldGen(){
             //as it *should* only be changed before world is created
             c->generate(seed);
             c->forceRecreate();
+            //flush cache
+            c->getMesh();
 
             //we also would want to regenerate nearby chunks
             if(chunks[glm::ivec3(1,0,0) + c->pos] != NULL){
                 chunks[glm::ivec3(1,0,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(1,0,0) + c->pos]->getMesh();
             }
             if(chunks[glm::ivec3(-1,0,0) + c->pos] != NULL){
                 chunks[glm::ivec3(-1,0,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(-1,0,0) + c->pos]->getMesh();
             }
             if(chunks[glm::ivec3(0,1,0) + c->pos] != NULL){
                 chunks[glm::ivec3(0,1,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,1,0) + c->pos]->getMesh();
             }
             if(chunks[glm::ivec3(0,-1,0) + c->pos] != NULL){
                 chunks[glm::ivec3(0,-1,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,-1,0) + c->pos]->getMesh();
             }
             if(chunks[glm::ivec3(0,0,1) + c->pos] != NULL){
                 chunks[glm::ivec3(0,0,1) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,0,1) + c->pos]->getMesh();
             }
             if(chunks[glm::ivec3(0,0,-1) + c->pos] != NULL){
                 chunks[glm::ivec3(0,0,-1) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,0,-1) + c->pos]->getMesh();
             }
         }
     }
