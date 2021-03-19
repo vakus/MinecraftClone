@@ -311,7 +311,7 @@ void Application::createImageSampler()
     createInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
     createInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 
-    createInfo.anisotropyEnable = VK_TRUE;
+    createInfo.anisotropyEnable = VK_FALSE;
 
     VkPhysicalDeviceProperties properties{};
     vkGetPhysicalDeviceProperties(physicalDevice, &properties);
