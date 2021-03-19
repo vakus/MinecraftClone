@@ -166,6 +166,9 @@ void chunk::generate(uint32_t seed){
                     blocks[x][y][z] = BLOCKS[2];
                 }else if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y){
                     blocks[x][y][z] = BLOCKS[0];
+                }else if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y + 1){
+                    //add flower
+                    blocks[x][y][z] = BLOCKS[3];
                 }else if(chunkOffsetY + y < CHUNK_GENERATION_SEA_LEVEL){
                     //add water here
                 }

@@ -3,6 +3,7 @@
 #include "../blocks/grassBlock.cpp"
 #include "../blocks/stone.cpp"
 #include "../blocks/dirt.cpp"
+#include "../blocks/flower.cpp"
 
 void blockInitialise()
 {
@@ -14,6 +15,9 @@ void blockInitialise()
 
     BlockDirt *dirt = new BlockDirt();
     BLOCKS.push_back(dirt);
+
+    BlockFlower *flower = new BlockFlower();
+    BLOCKS.push_back(flower);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
