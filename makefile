@@ -1,17 +1,21 @@
 CFLAGS = -std=c++17 -fmax-errors=1
 #`isystem include` to prevent warnings for libraries to be displayed.
-# im not very interested in those
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -isystem include
-COMPILEFILES = src/main.cpp src/logger.cpp src/application.cpp src/world/block.cpp src/world/chunk.cpp src/world/world.cpp
+MAIN_DEFAULT = src/main.cpp
+MAIN_TEST = src/test/main.cpp
+COMPILEFILES = src/logger.cpp src/application.cpp src/world/block.cpp src/world/chunk.cpp src/world/world.cpp
 
 release: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -O3
+	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -O3
 
 debug: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION
+	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION
 
 profile: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/VulkanTest $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D PROFILE
+	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D PROFILE
+
+test: src/test/main.cpp
+	g++ $(CFLAGS) -o build/VulkanTest $(MAIN_TEST) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0
 
 textures:
 	mkdir -p build/textures
