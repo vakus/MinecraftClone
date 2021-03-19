@@ -57,8 +57,8 @@ class world{
         block* getBlock(glm::ivec3 pos);
         block* getBlock(int x, int y, int z);
         GameObject3D getMesh(glm::ivec3 pos, int distance);
-        glm::ivec3 convertToChunk(glm::ivec3 pos);
-        glm::ivec3 convertToChunkRelative(glm::ivec3 pos);
+        static glm::ivec3 convertToChunk(glm::ivec3 pos);
+        static glm::ivec3 convertToChunkRelative(glm::ivec3 pos);
         void stop();
     private:
         std::unordered_map<glm::ivec3, chunk*, ivec3Comparator, ivec3Comparator> chunks;
