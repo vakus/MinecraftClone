@@ -51,3 +51,33 @@
             gameObject.indicies.insert(gameObject.indicies.end(), {8,10,9,11,10,8}); \
         }
 
+/**
+ * This defines optimised list of vertecies to be used in a flower
+ * This definition should be used either as argument for insert or list creation
+ */
+#define BLOCK_FLOWER_VERTEX(x,y) { \
+             /* back - 0 */ \
+             {{0.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE}, \
+             /* front - 4 */ \
+             {{0.0f, 0.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE} \
+            }
+
+/**
+ * This definition should be used in combination with BLOCK_FLOWER_VERTEX.
+ * This definition contains list of indicies that should be used for flower.
+ * This definition should be used either as argument for insert or list creation
+ * The indicies must be listed both ways to make sure that the mesh is displayed
+ * on both sides.
+ */
+#define BLOCK_FLOWER_INDICIES { \
+            6,3,0,0,3,6, \
+            6,5,0,0,5,6, \
+            7,2,1,1,2,7, \
+            1,4,7,7,4,1 \
+        }

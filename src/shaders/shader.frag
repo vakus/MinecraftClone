@@ -9,6 +9,11 @@ layout(location = 1) in vec2 fragTexCoord;
 layout(location = 0) out vec4 outColor;
 
 void main(){
-    outColor = vec4(fragColor * texture(texSampler, fragTexCoord).rgb, 1.0f);
+    vec4 color = texture(texSampler, fragTexCoord);
     //outColor = vec4(fragTexCoord.x, fragTexCoord.y, (fragTexCoord.x + fragTexCoord.y) / 2.0f, 1.0f);
+    if(color.w < 1){
+        discard;
+    }else{
+        outColor = color;
+    }
 }
