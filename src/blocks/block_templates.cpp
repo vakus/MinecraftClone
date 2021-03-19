@@ -1,6 +1,7 @@
 
 /**
  * This defines optimised list of vertecies to be used in a block
+ * This definition should be used either as argument for insert or list creation
  * WARNING: this list only works if all faces have the same texture
  * This will work e.g. for stone where each face has the same texture
  * But this will not work for e.g. grass block which has different top, sides and bottom
@@ -28,8 +29,9 @@
  * This should be used in combination with BLOCK_STANDARD_VERTEX.
  * It defines optimisations for face addition to prevent drawing
  * faces which are unnecessary
+ * This definition should be used within function to fill in block optimisation checks
  */
-#define BLOCK_STANDARD_INDICIES(FaceFlags, gameObject) \
+#define INCLUDE_BLOCK_STANDARD_INDICIES(FaceFlags, gameObject) \
         if((FaceFlags & BlockFace::BACK) == BlockFace::BACK){ \
             gameObject.indicies.insert(gameObject.indicies.end(), {0,1,3,1,2,3}); \
         } \
@@ -48,3 +50,4 @@
         if((FaceFlags & BlockFace::FRONT) == BlockFace::FRONT){ \
             gameObject.indicies.insert(gameObject.indicies.end(), {8,10,9,11,10,8}); \
         }
+

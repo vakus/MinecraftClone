@@ -24,7 +24,7 @@ public:
             {}
         };
 
-        BLOCK_STANDARD_INDICIES(FaceFlags, gameObject)
+        INCLUDE_BLOCK_STANDARD_INDICIES(FaceFlags, gameObject)
         return gameObject;
     }
 };
