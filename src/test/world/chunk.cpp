@@ -1,9 +1,9 @@
 #ifndef CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
+#include "../../blocks/dirt.cpp"
 #endif
 
 #include "../../world/chunk.hpp"
-#include "../../blocks/dirt.cpp"
 
 
 TEST_CASE("Testing world/chunk.cpp", "[chunk]"){
