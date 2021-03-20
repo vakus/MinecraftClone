@@ -9,6 +9,8 @@
 #include "world/block.hpp"
 #include "world/world.hpp"
 
+#include "world/generators/generator_flat.cpp"
+
 int main(int argc, char *argv[])
 {
 
@@ -62,7 +64,7 @@ int main(int argc, char *argv[])
     //check runtime arguments
     if (argc > 0)
     {
-        for (int x = 0; x < argc - 1; x++)
+        for (int x = 0; x < argc; x++)
         {
             std::string parg = argv[x];
 
@@ -156,6 +158,10 @@ int main(int argc, char *argv[])
             {
                 enableValidationLayers = true;
                 application.validationLayers.push_back("VK_LAYER_LUNARG_api_dump");
+            }
+            else if(parg.compare("--flatland") == 0){
+                application.gameWorld.worldGenerator = new GeneratorFlat();
+                application.PlayerPosition = glm::vec3(0, -10, 0);
             }
             #ifdef PROFILE
             else if(parg.compare("--profile") == 0){

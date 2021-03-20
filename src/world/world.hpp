@@ -18,6 +18,8 @@ class world;
 #include <deque>
 #include <condition_variable>
 
+#include "generators/generator.hpp"
+
 /**
  * specifies how many threads should be used for World Gen
  * I ran the test with 1 thread, 2 threads and 4 threads.
@@ -52,6 +54,7 @@ class world{
         uint32_t seed;
         world();
         world(uint32_t seed);
+        world(uint32_t wseed, Generator* wworldGenerator);
         void setBlock(glm::ivec3 pos, block* block);
         void setBlock(int x, int y, int z, block* block);
         block* getBlock(glm::ivec3 pos);
@@ -60,6 +63,7 @@ class world{
         static glm::ivec3 convertToChunk(glm::ivec3 pos);
         static glm::ivec3 convertToChunkRelative(glm::ivec3 pos);
         void stop();
+        Generator* worldGenerator;
     private:
         std::unordered_map<glm::ivec3, chunk*, ivec3Comparator, ivec3Comparator> chunks;
 

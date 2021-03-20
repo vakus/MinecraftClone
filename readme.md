@@ -7,6 +7,7 @@
 | --validation-layers                                                | Enables Vulkan Validation Layers    |
 | --validation-layer-khronos                                         | Enables VK_LAYER_KHRONOS_validation |
 | --validation-layer-api-dump                                        | Enables VK_LAYER_LUNARG_api_dump    |
+| --flatland                                                         | Makes the world flat                |
 
 
 **NOTE:** to enable Vulkan Validation Layers you are required to have VulkanSDK, otherwise the application may result with a crash.

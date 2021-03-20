@@ -11,11 +11,11 @@ chunk::chunk(glm::ivec3 position, world* w) : pos(position){
     worldo = w;
     recreate = true;
     generated = false;
-    blocks.resize(CHUNK_BLOCK_WIDTH);
-    for(size_t x = 0; x < CHUNK_BLOCK_WIDTH; x++){
-        blocks[x].resize(CHUNK_BLOCK_HEIGHT);
-        for(size_t y = 0; y < CHUNK_BLOCK_HEIGHT; y++){
-            blocks[x][y].resize(CHUNK_BLOCK_DEPTH, NULL);
+    blocks.resize(CHUNK_BLOCK_SIZE);
+    for(size_t x = 0; x < CHUNK_BLOCK_SIZE; x++){
+        blocks[x].resize(CHUNK_BLOCK_SIZE);
+        for(size_t y = 0; y < CHUNK_BLOCK_SIZE; y++){
+            blocks[x][y].resize(CHUNK_BLOCK_SIZE, NULL);
         }
     }
 };
@@ -31,13 +31,13 @@ void chunk::setBlock(int x, int y, int z, block* b){
 
 block* chunk::getBlock(glm::ivec3 pos){
     if(pos.x < 0){
-        pos.x += CHUNK_BLOCK_WIDTH;
+        pos.x += CHUNK_BLOCK_SIZE;
     }
     if(pos.y < 0){
-        pos.y += CHUNK_BLOCK_HEIGHT;
+        pos.y += CHUNK_BLOCK_SIZE;
     }
     if(pos.z < 0){
-        pos.z += CHUNK_BLOCK_DEPTH;
+        pos.z += CHUNK_BLOCK_SIZE;
     }
     return blocks[pos.x][pos.y][pos.z];
 }
@@ -139,7 +139,7 @@ GameObject3D chunk::getMesh(){
     return cachedMesh;
 };
 
-void chunk::generate(uint32_t seed){
+void chunk::generate(){
     if(generated){
         return;
     }
@@ -147,36 +147,7 @@ void chunk::generate(uint32_t seed){
     if(pos.y < 0){
         return;
     }
-    int chunkOffsetX = pos.x * 16;
-    int chunkOffsetY = pos.y * 16;
-    int chunkOffsetZ = pos.z * 16;
-
-    const siv::PerlinNoise perlin(seed);
-
-    for(int x = 0; x < CHUNK_BLOCK_WIDTH; x++){
-        for(int z = 0; z < CHUNK_BLOCK_DEPTH; z++){
-
-            //terrain height
-            int height = (perlin.accumulatedOctaveNoise2D((float)(chunkOffsetX + x)/16, (float)(chunkOffsetZ + z)/16, CHUNK_GENERATION_OCTAVES) + 1.0f) * ((CHUNK_GENERATION_MAX_Y - CHUNK_GENERATION_MIN_Y) / 2);
-            
-            for(int y = 0; y < CHUNK_BLOCK_HEIGHT; y++){
-                if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y -3){
-                    blocks[x][y][z] = BLOCKS[1];
-                }else if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y - 1){
-                    blocks[x][y][z] = BLOCKS[2];
-                }else if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y){
-                    blocks[x][y][z] = BLOCKS[0];
-                }else if(chunkOffsetY + y < height + CHUNK_GENERATION_MIN_Y + 1){
-                    //add flower
-                    if(perlin.accumulatedOctaveNoise3D((float)(chunkOffsetX + x)/16, (float)(chunkOffsetY + y)/16, (float)(chunkOffsetZ + z)/16, CHUNK_GENERATION_OCTAVES) > 0.7f){
-                        blocks[x][y][z] = BLOCKS[3];
-                    }
-                }else if(chunkOffsetY + y < CHUNK_GENERATION_SEA_LEVEL){
-                    //add water here
-                }
-            }
-        }
-    }
+    worldo->worldGenerator->generate(blocks, pos);
 }
 
 void chunk::forceRecreate(){

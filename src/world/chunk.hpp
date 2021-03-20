@@ -1,9 +1,7 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
-#define CHUNK_BLOCK_WIDTH 16 //x
-#define CHUNK_BLOCK_HEIGHT 16 //y
-#define CHUNK_BLOCK_DEPTH 16 //z
+#define CHUNK_BLOCK_SIZE 16 //amount of blocks each dimension in chunk
 #define CHUNK_GENERATION_SEA_LEVEL 64
 #define CHUNK_GENERATION_MIN_Y 56
 #define CHUNK_GENERATION_MAX_Y 72
@@ -27,7 +25,7 @@ class chunk{
         block* getBlock(glm::ivec3 pos);
         block* getBlock(int x, int y, int z);
         GameObject3D getMesh();
-        void generate(uint32_t seed);
+        void generate();
         void forceRecreate();
     private:
         bool generated;

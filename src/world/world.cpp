@@ -3,12 +3,16 @@
 #include <stdlib.h>
 #include <chrono>
 
+#include "generators/generator_default.cpp"
+
 world::world(){
     seed = rand();
     worldGenThread.resize(WORLDGEN_THREAD_COUNT_MAX);
     for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
         pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
     }
+    worldGenerator = new GeneratorDefault();
+    worldGenerator->setSeed(seed);
 }
 
 world::world(uint32_t wseed){
@@ -17,6 +21,18 @@ world::world(uint32_t wseed){
     for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
         pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
     }
+    worldGenerator = new GeneratorDefault();
+    worldGenerator->setSeed(seed);
+}
+
+world::world(uint32_t wseed, Generator* wworldGenerator){
+    seed = wseed;
+    worldGenThread.resize(WORLDGEN_THREAD_COUNT_MAX);
+    for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
+        pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
+    }
+    worldGenerator = wworldGenerator;
+    worldGenerator->setSeed(seed);
 }
 
 void world::setBlock(glm::ivec3 pos, block* block){
@@ -48,7 +64,7 @@ block* world::getBlock(glm::ivec3 pos){
         return NULL;
     }
 
-    return c->getBlock(pos.x % CHUNK_BLOCK_WIDTH, pos.y % CHUNK_BLOCK_HEIGHT, pos.z % CHUNK_BLOCK_DEPTH);
+    return c->getBlock(pos.x % CHUNK_BLOCK_SIZE, pos.y % CHUNK_BLOCK_SIZE, pos.z % CHUNK_BLOCK_SIZE);
 }
 
 block* world::getBlock(int x, int y, int z){
@@ -127,38 +143,38 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
 }
 
 glm::ivec3 world::convertToChunk(glm::ivec3 pos){
-    if(pos.x % CHUNK_BLOCK_WIDTH < 0){
-        pos.x -= CHUNK_BLOCK_WIDTH - 1;
+    if(pos.x % CHUNK_BLOCK_SIZE < 0){
+        pos.x -= CHUNK_BLOCK_SIZE - 1;
     }
-    if(pos.y % CHUNK_BLOCK_HEIGHT < 0){
-        pos.y -= CHUNK_BLOCK_HEIGHT - 1;
+    if(pos.y % CHUNK_BLOCK_SIZE < 0){
+        pos.y -= CHUNK_BLOCK_SIZE - 1;
     }
-    if(pos.z % CHUNK_BLOCK_DEPTH < 0){
-        pos.z -= CHUNK_BLOCK_DEPTH - 1;
+    if(pos.z % CHUNK_BLOCK_SIZE < 0){
+        pos.z -= CHUNK_BLOCK_SIZE - 1;
     }
 
-    int ChunkX = floor(pos.x / CHUNK_BLOCK_WIDTH);
-    int ChunkY = floor(pos.y / CHUNK_BLOCK_HEIGHT);
-    int ChunkZ = floor(pos.z / CHUNK_BLOCK_DEPTH);
+    int ChunkX = floor(pos.x / CHUNK_BLOCK_SIZE);
+    int ChunkY = floor(pos.y / CHUNK_BLOCK_SIZE);
+    int ChunkZ = floor(pos.z / CHUNK_BLOCK_SIZE);
 
     return glm::ivec3(ChunkX, ChunkY, ChunkZ);
 }
 
 glm::ivec3 world::convertToChunkRelative(glm::ivec3 pos){
-    pos.x %= CHUNK_BLOCK_WIDTH;
-    pos.y %= CHUNK_BLOCK_HEIGHT;
-    pos.z %= CHUNK_BLOCK_DEPTH;
+    pos.x %= CHUNK_BLOCK_SIZE;
+    pos.y %= CHUNK_BLOCK_SIZE;
+    pos.z %= CHUNK_BLOCK_SIZE;
 
     if(pos.x < 0){
-        pos.x += CHUNK_BLOCK_WIDTH;
+        pos.x += CHUNK_BLOCK_SIZE;
     }
 
     if(pos.y < 0){
-        pos.y += CHUNK_BLOCK_HEIGHT;
+        pos.y += CHUNK_BLOCK_SIZE;
     }
 
     if(pos.z < 0){
-        pos.z += CHUNK_BLOCK_DEPTH;
+        pos.z += CHUNK_BLOCK_SIZE;
     }
     return pos;
 }
@@ -184,7 +200,7 @@ void *world::WorldGen(){
             lock.unlock();
             //seed should not suffer from concurrency
             //as it *should* only be changed before world is created
-            c->generate(seed);
+            c->generate();
             c->forceRecreate();
 
             //we also would want to regenerate nearby chunks
