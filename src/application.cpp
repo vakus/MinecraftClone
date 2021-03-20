@@ -945,7 +945,7 @@ void Application::createCommandBuffers(GameObject3D gameObject)
         }
 
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = {0.0f, 0.0f, 1.0f, 1.0f}; //background color fill
+        clearValues[0].color = {30/256.0, 133/256.0, 180/256.0, 1.0f}; //background color fill
         clearValues[1].depthStencil = {1.0f, 0};
 
         VkRenderPassBeginInfo renderPassInfo{};
