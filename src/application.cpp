@@ -1847,11 +1847,18 @@ VkExtent2D Application::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabil
         return actualExtent;
     }
 }
+
 /**
  * This function is a loop which will be looped until the window should be closed
  */
 void Application::mainLoop()
 {
+    #ifdef PROFILE
+    double maxTime = 0.0;
+    double minTime = 10.0;
+    double average = 0.0;
+    int count = 0;
+    #endif
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -1882,7 +1889,18 @@ void Application::mainLoop()
             PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[1])) * (float)glfwGetTime() * 10.0f;
             logger::fine("X: " + std::to_string(PlayerPosition.x) + " Y: " + std::to_string(PlayerPosition.y) + " Z:" + std::to_string(PlayerPosition.z));
         }
-
+        #ifdef PROFILE
+        double last = glfwGetTime();
+        logger::profile("Time since last frame: " + std::to_string(last));
+        if(last > maxTime){
+            maxTime = last;
+        }
+        if(last < minTime){
+            minTime = last;
+        }
+        average = ((average*count) + last)/(count+1);
+        count++;
+        #endif
         glfwSetTime(0);
         //update the vertex and index buffer
         vkDeviceWaitIdle(device);
@@ -1906,7 +1924,11 @@ void Application::mainLoop()
 
         drawFrame();
     }
-
+    #ifdef PROFILE
+    logger::profile("Min Frame: " + std::to_string(minTime));
+    logger::profile("Max Frame: " + std::to_string(maxTime));
+    logger::profile("Avg Frame: " + std::to_string(average));
+    #endif
     vkDeviceWaitIdle(device);
 }
 
