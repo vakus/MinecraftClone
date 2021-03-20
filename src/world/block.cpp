@@ -4,6 +4,8 @@
 #include "../blocks/stone.cpp"
 #include "../blocks/dirt.cpp"
 #include "../blocks/flower.cpp"
+#include "../blocks/OakLog.cpp"
+#include "../blocks/OakLeaves.cpp"
 
 void blockInitialise()
 {
@@ -18,6 +20,12 @@ void blockInitialise()
 
     BlockFlower *flower = new BlockFlower();
     BLOCKS.push_back(flower);
+
+    BlockOakLog *oakLog = new BlockOakLog();
+    BLOCKS.push_back(oakLog);
+
+    BlockOakLeaves *oakLeaves = new BlockOakLeaves();
+    BLOCKS.push_back(oakLeaves);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)

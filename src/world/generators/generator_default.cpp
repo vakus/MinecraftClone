@@ -34,17 +34,51 @@ public:
                     }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y){
                         blocks[x][y][z] = BLOCKS[0];
                     }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y + 1){
-                        //random flowers
+                        //random flowers / trees
                         //FIXME: current version only generates clumps of flowers
-                        if(perlin.accumulatedOctaveNoise3D(
-                            (float)(chunkPos.x + x)/16,
-                            (float)(chunkPos.y + y)/16,
-                            (float)(chunkPos.z + z)/16,
-                            CHUNK_GENERATION_OCTAVES) > 0.7f){
+                        int result = rand() % 1000;
+                        if(result >= 995){
+                            for(int i = 0; i < 5; i++){
+                                if(y+i < CHUNK_BLOCK_SIZE){
+                                    blocks[x][y+i][z] = BLOCKS[4];
+                                }
+                                if(y+2 < CHUNK_BLOCK_SIZE){
+                                    for(int xo = -2; xo <= 2; xo++){
+                                        for(int zo = -2; zo <= 2; zo++){
+                                            if(x+xo > 0 && x+xo < CHUNK_BLOCK_SIZE && z+zo > 0 && z+zo < CHUNK_BLOCK_SIZE && (xo!=0 || zo!=0)){
+                                                blocks[x+xo][y+2][z+zo] = BLOCKS[5];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if(y+3 < CHUNK_BLOCK_SIZE){
+                                    for(int xo = -2; xo <= 2; xo++){
+                                        for(int zo = -2; zo <= 2; zo++){
+                                            if(x+xo > 0 && x+xo < CHUNK_BLOCK_SIZE && z+zo > 0 && z+zo < CHUNK_BLOCK_SIZE && (xo!=0 || zo!=0)){
+                                                blocks[x+xo][y+3][z+zo] = BLOCKS[5];
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if(y+4 < CHUNK_BLOCK_SIZE){
+                                    for(int xo = -1; xo <= 1; xo++){
+                                        for(int zo = -1; zo <= 1; zo++){
+                                            if(x+xo > 0 && x+xo < CHUNK_BLOCK_SIZE && z+zo > 0 && z+zo < CHUNK_BLOCK_SIZE && (xo!=0 || zo!=0)){
+                                                blocks[x+xo][y+4][z+zo] = BLOCKS[5];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }else if(result >= 990){
                             blocks[x][y][z] = BLOCKS[3];
                         }
                     }else if(chunkPos.y + y < CHUNK_GENERATION_SEA_LEVEL){
                         //add water here
+                    }else{
+                        break;
                     }
                 }
             }

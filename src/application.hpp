@@ -63,7 +63,7 @@ class Application{
         /**
          * 
          */
-        int renderDistance = 1;
+        int renderDistance = 3;
 
         /**
          * The position of the player
