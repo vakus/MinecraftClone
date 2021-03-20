@@ -20,7 +20,7 @@ public:
     GameObject3D getMesh(int FaceFlags) override
     {
         GameObject3D gameObject{
-            BLOCK_STANDARD_VERTEX(3,0),
+            BLOCK_STANDARD_VERTEX(3,0,3,0,3,0),
             {}
         };
 

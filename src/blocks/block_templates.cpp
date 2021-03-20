@@ -6,23 +6,27 @@
  * This will work e.g. for stone where each face has the same texture
  * But this will not work for e.g. grass block which has different top, sides and bottom
  */
-#define BLOCK_STANDARD_VERTEX(x,y) { \
+#define BLOCK_STANDARD_VERTEX(xtop,ytop,xside,yside,xbottom,ybottom) { \
              /* back - 0 */ \
-             {{0.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE}, \
-             {{0.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 0.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
              /* bottom - 4 */  \
-             {{0.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_BOTTOM}, \
-             {{1.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_BOTTOM}, \
-             /* top - 6 */ \
-             {{0.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_TOP}, \
-             {{1.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_TOP}, \
-             /* front - 8 */ \
-             {{0.0f, 0.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 0.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 1.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{0.0f, 1.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE} \
+             {{0.0f, 0.0f, 0.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_BOTTOM}, \
+             {{1.0f, 0.0f, 0.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_BOTTOM}, \
+             {{0.0f, 0.0f, 1.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::TOP_LEFT), BLOCK_SHADE_BOTTOM}, \
+             {{1.0f, 0.0f, 1.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_BOTTOM}, \
+             /* top - 8 */ \
+             {{0.0f, 1.0f, 1.0f}, getTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_TOP}, \
+             {{1.0f, 1.0f, 1.0f}, getTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_TOP}, \
+             {{1.0f, 1.0f, 0.0f}, getTextureCoord(xtop, ytop, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_TOP}, \
+             {{0.0f, 1.0f, 0.0f}, getTextureCoord(xtop, ytop, TextureCoordType::TOP_LEFT), BLOCK_SHADE_TOP}, \
+             /* front - 12 */ \
+             {{0.0f, 0.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE} \
             }
 
 /**
@@ -36,19 +40,19 @@
             gameObject.indicies.insert(gameObject.indicies.end(), {0,1,3,1,2,3}); \
         } \
         if((FaceFlags & BlockFace::BOTTOM) == BlockFace::BOTTOM){ \
-            gameObject.indicies.insert(gameObject.indicies.end(), {8,5,4,8,9,5}); \
+            gameObject.indicies.insert(gameObject.indicies.end(), {4,7,6,4,5,7}); \
         } \
         if((FaceFlags & BlockFace::TOP) == BlockFace::TOP){ \
-            gameObject.indicies.insert(gameObject.indicies.end(), {10,11,7,11,6,7}); \
+            gameObject.indicies.insert(gameObject.indicies.end(), {11,8,10,8,9,10}); \
         } \
         if((FaceFlags & BlockFace::LEFT) == BlockFace::LEFT){ \
-            gameObject.indicies.insert(gameObject.indicies.end(), {9,2,1,9,10,2}); \
+            gameObject.indicies.insert(gameObject.indicies.end(), {13,2,1,13,14,2}); \
         } \
         if((FaceFlags & BlockFace::RIGHT) == BlockFace::RIGHT){ \
-            gameObject.indicies.insert(gameObject.indicies.end(), {0,3,8,3,11,8}); \
+            gameObject.indicies.insert(gameObject.indicies.end(), {0,3,12,3,15,12}); \
         } \
         if((FaceFlags & BlockFace::FRONT) == BlockFace::FRONT){ \
-            gameObject.indicies.insert(gameObject.indicies.end(), {8,10,9,11,10,8}); \
+            gameObject.indicies.insert(gameObject.indicies.end(), {12,14,13,15,14,12}); \
         }
 
 /**
