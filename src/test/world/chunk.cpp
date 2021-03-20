@@ -4,6 +4,7 @@
 #endif
 
 #include "../../world/chunk.hpp"
+#include "../../world/generators/generator.hpp"
 
 
 TEST_CASE("Testing setting using XYZ and getting blocks using glm::ivec3", "[chunk::setBlock/getBlock]"){
@@ -114,5 +115,46 @@ TEST_CASE("Testing setting using glm::ivec3 and getting blocks using XYZ", "[chu
         }
     }
 
+    w.stop();
+}
+
+class GeneratorTest: public Generator{
+    public:
+    void setSeed(uint32_t seed){}
+    uint32_t getSeed(){return 0;}
+    void generate(std::vector<std::vector<std::vector<block*>>> &blocks,
+                  glm::ivec3 chunkPos){
+        for(int x = 0; x < CHUNK_BLOCK_SIZE; x++){
+            for(int y = 0; y < CHUNK_BLOCK_SIZE; y++){
+                for(int z = 0; z < CHUNK_BLOCK_SIZE; z++){
+                    blocks[x][y][z] = b;
+                }
+            }
+        }
+    }
+    block* b;
+};
+
+TEST_CASE("Testing chunk generation", "[chunk::generate]"){
+    world w = world();
+    w.worldGenerator = new GeneratorTest();
+    chunk c = chunk(glm::ivec3(0,0,0), &w);
+
+    
+    //blocks to be used for tests
+    BlockDirt blockDirt = BlockDirt();
+
+    static_cast<GeneratorTest*>(w.worldGenerator)->b = &blockDirt;
+    c.generate();
+    for(int x = 0; x < CHUNK_BLOCK_SIZE; x++){
+        for(int y = 0; y < CHUNK_BLOCK_SIZE; y++){
+            for(int z = 0; z < CHUNK_BLOCK_SIZE; z++){
+                REQUIRE(
+                    c.getBlock(x,y,z)
+                    == &blockDirt
+                );
+            }
+        }
+    }
     w.stop();
 }
