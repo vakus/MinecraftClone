@@ -163,7 +163,6 @@ void cursor_callback(
     }else if(actualPosY < -1.5){
         actualPosY = -1.5;
     }
-    logger::finer("posx: " + std::to_string(actualPosX) + " posy: " + std::to_string(actualPosY));
     updateCamera(app->PlayerRotation, actualPosY, -actualPosX);
 }
 
@@ -1867,27 +1866,20 @@ void Application::mainLoop()
         if(goForward){
             PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 10.0f;
 
-            logger::fine("X: " + std::to_string(PlayerPosition.x) + " Y: " + std::to_string(PlayerPosition.y) + " Z:" + std::to_string(PlayerPosition.z));
-
         }else if(goBackward){
             PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[2])) * (float)glfwGetTime() * 10.0f;
-            logger::fine("X: " + std::to_string(PlayerPosition.x) + " Y: " + std::to_string(PlayerPosition.y) + " Z:" + std::to_string(PlayerPosition.z));
         }
 
         if(goLeft){
             PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 10.0f;
-            logger::fine("X: " + std::to_string(PlayerPosition.x) + " Y: " + std::to_string(PlayerPosition.y) + " Z:" + std::to_string(PlayerPosition.z));
         }else if(goRight){
             PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[0])) * (float)glfwGetTime() * 10.0f;
-            logger::fine("X: " + std::to_string(PlayerPosition.x) + " Y: " + std::to_string(PlayerPosition.y) + " Z:" + std::to_string(PlayerPosition.z));
         }
 
         if(goUpwards){
             PlayerPosition -= glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[1])) * (float)glfwGetTime() * 10.0f;
-            logger::fine("X: " + std::to_string(PlayerPosition.x) + " Y: " + std::to_string(PlayerPosition.y) + " Z:" + std::to_string(PlayerPosition.z));
         }else if(goDownwards){
             PlayerPosition += glm::normalize(glm::vec3(glm::inverse(glm::mat4_cast(PlayerRotation))[1])) * (float)glfwGetTime() * 10.0f;
-            logger::fine("X: " + std::to_string(PlayerPosition.x) + " Y: " + std::to_string(PlayerPosition.y) + " Z:" + std::to_string(PlayerPosition.z));
         }
         #ifdef PROFILE
         double last = glfwGetTime();

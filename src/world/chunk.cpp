@@ -52,7 +52,6 @@ GameObject3D chunk::getMesh(){
     #endif
     
     if(recreate){
-        logger::fine("Regenerating mesh");
         recreate = false;
         cachedMesh.indicies.clear();
         cachedMesh.verticies.clear();
@@ -112,21 +111,15 @@ GameObject3D chunk::getMesh(){
                         }
 
                         GameObject3D blockObject = blocks[x][y][z]->getMesh(faces);
-                        logger::finer("Block ID: " + std::to_string(blocks[x][y][z]->getId()));
 
-                        for(size_t i = 0; i < blockObject.verticies.size(); i++){
-                            Vertex v = blockObject.verticies[i];
-                            v.pos.x += x;
-                            v.pos.y += y;
-                            v.pos.z += z;
-                            v.pos += pos * 16;
-                            logger::finer("Block Verticies[" + std::to_string(i) + "]: X: " + std::to_string(v.pos.x) + " Y:" + std::to_string(v.pos.y) + " Z:" + std::to_string(v.pos.z));
-                            cachedMesh.verticies.push_back(v);
-                        }
-                        for(size_t i = 0; i < blockObject.indicies.size(); i++){
-                            logger::finer("Block indicie[" + std::to_string(i) + "]: " + std::to_string(blockObject.indicies[i] + VerticiesOffset));
-                            cachedMesh.indicies.push_back((blockObject.indicies[i] + VerticiesOffset));
-                        }
+                        std::for_each(blockObject.verticies.begin(), blockObject.verticies.end(), [absolutePosition, this](Vertex &v){
+                            v.pos+=absolutePosition;
+                        });
+                        cachedMesh.verticies.insert(cachedMesh.verticies.end(), blockObject.verticies.begin(), blockObject.verticies.end());
+
+
+                        std::for_each(blockObject.indicies.begin(), blockObject.indicies.end(), [VerticiesOffset](uint32_t &x){ x += VerticiesOffset;});
+                        cachedMesh.indicies.insert(cachedMesh.indicies.end(), blockObject.indicies.begin(), blockObject.indicies.end());
                     }
                 }
             }

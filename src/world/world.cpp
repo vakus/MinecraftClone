@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <chrono>
+#include <algorithm>
 
 #include "generators/generator_default.cpp"
 
@@ -102,13 +103,10 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 }
                 GameObject3D chunkMesh = c->getMesh();
 
-                int verticiesOffset = mesh.verticies.size();
-                for(size_t i = 0; i < chunkMesh.indicies.size(); i++){
-                    mesh.indicies.push_back(chunkMesh.indicies[i] + verticiesOffset);
-                }
-                for(size_t i = 0; i < chunkMesh.verticies.size(); i++){
-                    mesh.verticies.push_back(chunkMesh.verticies[i]);
-                }
+                const int verticiesOffset = mesh.verticies.size();
+                std::for_each(chunkMesh.indicies.begin(), chunkMesh.indicies.end(), [verticiesOffset](uint32_t &x){x += verticiesOffset;});
+                mesh.indicies.insert(mesh.indicies.end(), chunkMesh.indicies.begin(), chunkMesh.indicies.end());
+                mesh.verticies.insert(mesh.verticies.end(), chunkMesh.verticies.begin(), chunkMesh.verticies.end());
             }
         }
     }
