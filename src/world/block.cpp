@@ -1,11 +1,11 @@
 #include "block.hpp"
 
-#include "../blocks/grassBlock.cpp"
-#include "../blocks/stone.cpp"
-#include "../blocks/dirt.cpp"
-#include "../blocks/flower.cpp"
-#include "../blocks/OakLog.cpp"
-#include "../blocks/OakLeaves.cpp"
+#include "../blocks/BlockGrass.cpp"
+#include "../blocks/BlockStone.cpp"
+#include "../blocks/BlockDirt.cpp"
+#include "../blocks/BlockFlowerYellow.cpp"
+#include "../blocks/BlockOakLog.cpp"
+#include "../blocks/BlockOakLeaves.cpp"
 
 void blockInitialise()
 {
@@ -18,7 +18,7 @@ void blockInitialise()
     BlockDirt *dirt = new BlockDirt();
     BLOCKS.push_back(dirt);
 
-    BlockFlower *flower = new BlockFlower();
+    BlockFlowerYellow *flower = new BlockFlowerYellow();
     BLOCKS.push_back(flower);
 
     BlockOakLog *oakLog = new BlockOakLog();
