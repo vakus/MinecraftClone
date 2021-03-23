@@ -32,8 +32,12 @@ public:
                     }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y - 1){
                         blocks[x][y][z] = BLOCKS[2];
                     }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y){
-                        blocks[x][y][z] = BLOCKS[0];
-                    }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y + 1){
+                        if(chunkPos.y + y >= CHUNK_GENERATION_SEA_LEVEL - 1){
+                            blocks[x][y][z] = BLOCKS[0];
+                        }else{
+                            blocks[x][y][z] = BLOCKS[2];
+                        }
+                    }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y + 1 && chunkPos.y + y > CHUNK_GENERATION_SEA_LEVEL){
                         //random flowers / trees
                         //FIXME: current version only generates clumps of flowers
                         int result = rand() % 1000;
@@ -75,14 +79,8 @@ public:
                         }else if(result >= 990){
                             blocks[x][y][z] = BLOCKS[3];
                         }
-                    }else if(chunkPos.y + y - 1 < CHUNK_GENERATION_SEA_LEVEL){
-                        //something about this is wrong
-                        //if the y isnt lowered by one, the water seems to be placed above 
-                        //where it should be placed
-                        if(y==0){
-                            continue;
-                        }
-                        blocks[x][y-1][z] = BLOCKS[6];
+                    }else if(chunkPos.y + y < CHUNK_GENERATION_SEA_LEVEL){
+                        blocks[x][y][z] = BLOCKS[6];
                     }
                 }
             }
