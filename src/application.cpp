@@ -236,7 +236,7 @@ void Application::initVulkan(bool enableValidationLayers)
     createCommandPool();
     createDepthResources();
     createFramebuffers();
-    createTextureImage("textures/Dirt_Top.png");
+    createTextureImage("textures/Textures_16.png");
     createTextureImageView();
     createImageSampler();
     createVertexBuffer(gameObject);
