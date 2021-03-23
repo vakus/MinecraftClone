@@ -29,6 +29,14 @@ shaders:
 	glslc src/shaders/shader.vert -o build/shaders/vert.spv
 	glslc src/shaders/shader.frag -o build/shaders/frag.spv
 
+install:
+	sudo apt upgrade
+	sudo apt install vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools python3 python3-pip graphviz libglfw3-dev libglm-dev
+	pip3 install gprof2dot
+	@echo Please note that GLSLC was not installed by this process. Please install them from here https://github.com/google/shaderc/blob/main/downloads.md
+	@echo Please note this command does not install any graphics drivers which are recommended
+	@echo You can test Vulkan support by running `vkcube`
+
 .PHONY: clean
 clean:
 	rm -rf build/*
