@@ -8,6 +8,7 @@
 #include "../blocks/BlockOakLog.cpp"
 #include "../blocks/BlockOakLeaves.cpp"
 #include "../blocks/BlockWater.cpp"
+#include "../blocks/BlockSand.cpp"
 
 void blockInitialise()
 {
@@ -34,6 +35,9 @@ void blockInitialise()
 
     BlockFlowerRed *flowerRed = new BlockFlowerRed();
     BLOCKS.push_back(flowerRed);
+
+    BlockSand *sand = new BlockSand();
+    BLOCKS.push_back(sand);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
