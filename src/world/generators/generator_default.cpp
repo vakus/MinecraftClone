@@ -76,8 +76,12 @@ public:
                                     }
                                 }
                             }
-                        }else if(result >= 990){
+                        }else if(result >= 992){
+                            //yellow flower
                             blocks[x][y][z] = BLOCKS[3];
+                        }else if(result >= 990){
+                            //red flower
+                            blocks[x][y][z] = BLOCKS[7];
                         }
                     }else if(chunkPos.y + y < CHUNK_GENERATION_SEA_LEVEL){
                         blocks[x][y][z] = BLOCKS[6];
