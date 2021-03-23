@@ -7,10 +7,6 @@ public:
     BlockOakLog(){
     }
 
-    virtual int getId() override{
-        return 5;
-    }
-
     virtual bool isTransparent() override{
         return false;
     }

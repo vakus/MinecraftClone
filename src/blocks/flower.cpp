@@ -7,10 +7,6 @@ public:
     BlockFlower(){
     }
 
-    virtual int getId() override{
-        return 4;
-    }
-
     virtual bool isTransparent() override{
         return true;
     }

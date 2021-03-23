@@ -8,10 +8,6 @@ public:
     BlockGrass(){
     }
 
-    virtual int getId() override{
-        return 1;
-    }
-
     virtual bool isTransparent() override{
         return false;
     }

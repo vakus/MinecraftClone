@@ -7,10 +7,6 @@ public:
     BlockStone(){
     }
 
-    virtual int getId() override{
-        return 2;
-    }
-
     virtual bool isTransparent() override{
         return false;
     }

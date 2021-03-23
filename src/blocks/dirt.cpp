@@ -9,10 +9,6 @@ public:
     BlockDirt(){
     }
 
-    virtual int getId() override{
-        return 3;
-    }
-
     virtual bool isTransparent() override{
         return false;
     }

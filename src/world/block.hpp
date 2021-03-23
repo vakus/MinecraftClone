@@ -29,7 +29,6 @@
 class block
 {
 public:
-    virtual int getId() = 0;
     virtual bool isTransparent() = 0;
     virtual GameObject3D getMesh(int FaceFlags) = 0;
 };
