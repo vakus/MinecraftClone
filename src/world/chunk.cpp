@@ -14,6 +14,7 @@ bool needsFace(block* other, block* current){
 chunk::chunk(glm::ivec3 position, world* w) : pos(position){
     worldo = w;
     recreate = true;
+    recreateTranslucent = true;
     generated = false;
     blocks.resize(CHUNK_BLOCK_SIZE);
     for(size_t x = 0; x < CHUNK_BLOCK_SIZE; x++){
@@ -26,6 +27,7 @@ chunk::chunk(glm::ivec3 position, world* w) : pos(position){
 
 void chunk::setBlock(glm::ivec3 bpos, block* b){
     recreate = true;
+    recreateTranslucent = true;
     blocks[bpos.x][bpos.y][bpos.z] = b;
 }
 
@@ -63,7 +65,7 @@ GameObject3D chunk::getMesh(){
         for(size_t x = 0; x < blocks.size(); x++){
             for(size_t y = 0; y < blocks[x].size(); y++){
                 for(size_t z = 0; z < blocks[x][y].size(); z++){
-                    if(blocks[x][y][z] != NULL){
+                    if(blocks[x][y][z] != NULL && !(blocks[x][y][z]->isTransparent())){
                         int VerticiesOffset = cachedMesh.verticies.size();
 
                         glm::ivec3 absolutePosition = pos;
@@ -124,6 +126,80 @@ GameObject3D chunk::getMesh(){
     return cachedMesh;
 };
 
+GameObject3D chunk::getTranslucentMesh(){
+    #ifdef PROFILE
+    auto start = std::chrono::high_resolution_clock::now();
+    #endif
+    
+    if(recreateTranslucent){
+        recreateTranslucent = false;
+        cachedTranslucentMesh.indicies.clear();
+        cachedTranslucentMesh.verticies.clear();
+
+        for(size_t x = 0; x < blocks.size(); x++){
+            for(size_t y = 0; y < blocks[x].size(); y++){
+                for(size_t z = 0; z < blocks[x][y].size(); z++){
+                    if(blocks[x][y][z] != NULL && blocks[x][y][z]->isTransparent()){
+                        int VerticiesOffset = cachedTranslucentMesh.verticies.size();
+
+                        glm::ivec3 absolutePosition = pos;
+                        absolutePosition *= 16;
+                        absolutePosition.x += x;
+                        absolutePosition.y += y;
+                        absolutePosition.z += z;
+
+                        int faces = 0;
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,1,0) + absolutePosition), blocks[x][y][z])){
+                            faces |= BlockFace::TOP;
+                        }
+
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,-1,0) + absolutePosition), blocks[x][y][z])){
+                            faces |= BlockFace::BOTTOM;
+                        }
+
+                        if(needsFace(worldo->getBlock(glm::ivec3(1,0,0) + absolutePosition), blocks[x][y][z])){
+                            faces |= BlockFace::LEFT;
+                        }
+
+                        if(needsFace(worldo->getBlock(glm::ivec3(-1,0,0) + absolutePosition), blocks[x][y][z])){
+                            faces |= BlockFace::RIGHT;
+                        }
+
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,0,1) + absolutePosition), blocks[x][y][z])){
+                            faces |= BlockFace::BACK;
+                        }
+
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
+                            faces |= BlockFace::FRONT;
+                        }
+
+                        //this block has no faces, dont bother
+                        if(faces == 0){
+                            continue;
+                        }
+
+                        GameObject3D blockObject = blocks[x][y][z]->getMesh(faces);
+
+                        std::for_each(blockObject.verticies.begin(), blockObject.verticies.end(), [absolutePosition, this](Vertex &v){
+                            v.pos+=absolutePosition;
+                        });
+                        cachedTranslucentMesh.verticies.insert(cachedTranslucentMesh.verticies.end(), blockObject.verticies.begin(), blockObject.verticies.end());
+
+
+                        std::for_each(blockObject.indicies.begin(), blockObject.indicies.end(), [VerticiesOffset](uint32_t &x){ x += VerticiesOffset;});
+                        cachedTranslucentMesh.indicies.insert(cachedTranslucentMesh.indicies.end(), blockObject.indicies.begin(), blockObject.indicies.end());
+                    }
+                }
+            }
+        }
+    }
+    #ifdef PROFILE
+    auto end = std::chrono::high_resolution_clock::now();
+    logger::profile("chunk::getTranslucentMesh() took " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()));
+    #endif
+    return cachedTranslucentMesh;
+};
+
 void chunk::generate(){
     if(generated){
         return;
@@ -137,4 +213,5 @@ void chunk::generate(){
 
 void chunk::forceRecreate(){
     recreate = true;
+    recreateTranslucent = true;
 }

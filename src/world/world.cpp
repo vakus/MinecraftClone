@@ -72,12 +72,14 @@ block* world::getBlock(int x, int y, int z){
     return getBlock(glm::ivec3(x,y,z));
 }
 
+//this function sometimes segfaults on app start :(
 GameObject3D world::getMesh(glm::ivec3 pos, int distance){
     #ifdef PROFILE
     auto start = std::chrono::high_resolution_clock::now();
     #endif
 
     GameObject3D mesh;
+    GameObject3D translucentMesh;
 
     glm::ivec3 targetChunk = glm::ivec3(pos/16);
 
@@ -94,19 +96,27 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 if(c == NULL){
                     c = new chunk(actualPos, this);
                     
+                    chunks[actualPos] = c;
+                    
                     auto lock = std::unique_lock<std::mutex>(WorldGenMutex);
                     WorldGenQueue.push_back(c);
                     lock.unlock();
                     WorldGenCond.notify_all();
-
-                    chunks[actualPos] = c;
+                    continue;
                 }
                 GameObject3D chunkMesh = c->getMesh();
 
-                const int verticiesOffset = mesh.verticies.size();
+                int verticiesOffset = mesh.verticies.size();
                 std::for_each(chunkMesh.indicies.begin(), chunkMesh.indicies.end(), [verticiesOffset](uint32_t &x){x += verticiesOffset;});
                 mesh.indicies.insert(mesh.indicies.end(), chunkMesh.indicies.begin(), chunkMesh.indicies.end());
                 mesh.verticies.insert(mesh.verticies.end(), chunkMesh.verticies.begin(), chunkMesh.verticies.end());
+
+                GameObject3D translucentChunkMesh = c->getTranslucentMesh();
+
+                verticiesOffset = translucentMesh.verticies.size();
+                std::for_each(translucentChunkMesh.indicies.begin(), translucentChunkMesh.indicies.end(), [verticiesOffset](uint32_t &x){x += verticiesOffset;});
+                translucentMesh.indicies.insert(translucentMesh.indicies.end(), translucentChunkMesh.indicies.begin(), translucentChunkMesh.indicies.end());
+                translucentMesh.verticies.insert(translucentMesh.verticies.end(), translucentChunkMesh.verticies.begin(), translucentChunkMesh.verticies.end());
             }
         }
     }
@@ -118,6 +128,13 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
     // while this prevents chunks from never being generated
     // this doesnt feel right
     WorldGenCond.notify_all();
+
+    //we need to add translucent layer after normal layer
+    
+    int verticiesOffset = mesh.verticies.size();
+    std::for_each(translucentMesh.indicies.begin(), translucentMesh.indicies.end(), [verticiesOffset](uint32_t &x){x += verticiesOffset;});
+    mesh.indicies.insert(mesh.indicies.end(), translucentMesh.indicies.begin(), translucentMesh.indicies.end());
+    mesh.verticies.insert(mesh.verticies.end(), translucentMesh.verticies.begin(), translucentMesh.verticies.end());
 
     //unfortunately if we try to render empty frame, vulkan will crash due to empty buffer
     //lets add junk triangle to make it not crash
