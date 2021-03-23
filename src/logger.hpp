@@ -20,9 +20,6 @@ namespace logger
     void setMinLog(logtype log);
     void setMaxLog(logtype log);
 
-    #ifdef PROFILE
-    void setProfiling(bool profiling);
-    #endif
 
     void finer(std::string message);
     void fine(std::string message);
@@ -30,10 +27,6 @@ namespace logger
     void warn(std::string message);
     void error(std::string message);
     void critical(std::string message);
-
-    #ifdef PROFILE
-    void profile(std::string message);
-    #endif
 
 } // namespace logger
 

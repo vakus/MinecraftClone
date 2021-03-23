@@ -163,11 +163,6 @@ int main(int argc, char *argv[])
                 application.gameWorld.worldGenerator = new GeneratorFlat();
                 application.PlayerPosition = glm::vec3(0, -10, 0);
             }
-            #ifdef PROFILE
-            else if(parg.compare("--profile") == 0){
-                logger::setProfiling(true);
-            }
-            #endif
         }
     }
 

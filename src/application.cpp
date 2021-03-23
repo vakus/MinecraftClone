@@ -1870,7 +1870,6 @@ void Application::mainLoop()
         }
         #ifdef PROFILE
         double last = glfwGetTime();
-        logger::profile("Time since last frame: " + std::to_string(last));
         if(last > maxTime){
             maxTime = last;
         }
@@ -1879,6 +1878,9 @@ void Application::mainLoop()
         }
         average = ((average*count) + last)/(count+1);
         count++;
+        if(count == 200){
+            break;
+        }
         #endif
         glfwSetTime(0);
         //update the vertex and index buffer
@@ -1904,9 +1906,9 @@ void Application::mainLoop()
         drawFrame();
     }
     #ifdef PROFILE
-    logger::profile("Min Frame: " + std::to_string(minTime));
-    logger::profile("Max Frame: " + std::to_string(maxTime));
-    logger::profile("Avg Frame: " + std::to_string(average));
+    logger::info("Min Frame: " + std::to_string(minTime));
+    logger::info("Max Frame: " + std::to_string(maxTime));
+    logger::info("Avg Frame: " + std::to_string(average));
     #endif
     vkDeviceWaitIdle(device);
 }

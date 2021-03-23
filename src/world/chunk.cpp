@@ -53,9 +53,6 @@ block* chunk::getBlock(int x, int y, int z){
 }
 
 GameObject3D chunk::getMesh(){
-    #ifdef PROFILE
-    auto start = std::chrono::high_resolution_clock::now();
-    #endif
     
     if(recreate){
         recreate = false;
@@ -119,17 +116,10 @@ GameObject3D chunk::getMesh(){
             }
         }
     }
-    #ifdef PROFILE
-    auto end = std::chrono::high_resolution_clock::now();
-    logger::profile("chunk::getMesh() took " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()));
-    #endif
     return cachedMesh;
 };
 
 GameObject3D chunk::getTranslucentMesh(){
-    #ifdef PROFILE
-    auto start = std::chrono::high_resolution_clock::now();
-    #endif
     
     if(recreateTranslucent){
         recreateTranslucent = false;
@@ -193,10 +183,6 @@ GameObject3D chunk::getTranslucentMesh(){
             }
         }
     }
-    #ifdef PROFILE
-    auto end = std::chrono::high_resolution_clock::now();
-    logger::profile("chunk::getTranslucentMesh() took " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()));
-    #endif
     return cachedTranslucentMesh;
 };
 

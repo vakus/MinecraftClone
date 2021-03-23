@@ -12,10 +12,13 @@ debug: src/main.cpp shaders textures
 	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION
 
 profile: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D PROFILE
+	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -pg -O0 -D PROFILE
+	cd build; ./Vulkan;	gprof ./Vulkan > profile.log; (gprof2dot profile.log | dot -Tpng -o profile.png)
+	rm build/gmon.out
 
 test: src/test/main.cpp
 	g++ $(CFLAGS) -o build/VulkanTest $(MAIN_TEST) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0
+
 
 textures:
 	mkdir -p build/textures
