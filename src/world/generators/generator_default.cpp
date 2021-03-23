@@ -75,10 +75,14 @@ public:
                         }else if(result >= 990){
                             blocks[x][y][z] = BLOCKS[3];
                         }
-                    }else if(chunkPos.y + y < CHUNK_GENERATION_SEA_LEVEL){
-                        //add water here
-                    }else{
-                        break;
+                    }else if(chunkPos.y + y - 1 < CHUNK_GENERATION_SEA_LEVEL){
+                        //something about this is wrong
+                        //if the y isnt lowered by one, the water seems to be placed above 
+                        //where it should be placed
+                        if(y==0){
+                            continue;
+                        }
+                        blocks[x][y-1][z] = BLOCKS[6];
                     }
                 }
             }

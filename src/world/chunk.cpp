@@ -7,6 +7,10 @@ bool isTransparent(block* block){
     return (block == NULL ? true : block->isTransparent());
 }
 
+bool needsFace(block* other, block* current){
+    return (other == current ? false : isTransparent(other));
+}
+
 chunk::chunk(glm::ivec3 position, world* w) : pos(position){
     worldo = w;
     recreate = true;
@@ -69,39 +73,27 @@ GameObject3D chunk::getMesh(){
                         absolutePosition.z += z;
 
                         int faces = 0;
-                        if(y == 15 && isTransparent(worldo->getBlock(glm::ivec3(0,1,0) + absolutePosition))){
-                            faces |= BlockFace::TOP;
-                        }else if(y != 15 && isTransparent(blocks[x][y+1][z])){
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,1,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::TOP;
                         }
 
-                        if(y == 0 && isTransparent(worldo->getBlock(glm::ivec3(0,-1,0) + absolutePosition))){
-                            faces |= BlockFace::BOTTOM;
-                        }else if(y != 0 && isTransparent(blocks[x][y-1][z])){
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,-1,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::BOTTOM;
                         }
 
-                        if(x == 15 && isTransparent(worldo->getBlock(glm::ivec3(1,0,0) + absolutePosition))){
-                            faces |= BlockFace::LEFT;
-                        }else if(x != 15 && isTransparent(blocks[x+1][y][z])){
+                        if(needsFace(worldo->getBlock(glm::ivec3(1,0,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::LEFT;
                         }
 
-                        if(x == 0 &&  isTransparent(worldo->getBlock(glm::ivec3(-1,0,0) + absolutePosition))){
-                            faces |= BlockFace::RIGHT;
-                        }else if(x != 0 && isTransparent(blocks[x-1][y][z])){
+                        if(needsFace(worldo->getBlock(glm::ivec3(-1,0,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::RIGHT;
                         }
 
-                        if(z == 15 && isTransparent(worldo->getBlock(glm::ivec3(0,0,1) + absolutePosition))){
-                            faces |= BlockFace::BACK;
-                        }else if(z != 15 && isTransparent(blocks[x][y][z+1])){
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,0,1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::BACK;
                         }
 
-                        if(z == 0 && isTransparent(worldo->getBlock(glm::ivec3(0,0,-1) + absolutePosition))){
-                            faces |= BlockFace::FRONT;
-                        }else if(z != 00 && isTransparent(blocks[x][y][z-1])){
+                        if(needsFace(worldo->getBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
                         }
 
