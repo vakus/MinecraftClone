@@ -12,7 +12,7 @@ world::world(){
     for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
         pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
     }
-    worldGenerator = new GeneratorDefault();
+    worldGenerator = new GeneratorDefault(this);
     worldGenerator->setSeed(seed);
 }
 
@@ -22,7 +22,7 @@ world::world(uint32_t wseed){
     for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
         pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
     }
-    worldGenerator = new GeneratorDefault();
+    worldGenerator = new GeneratorDefault(this);
     worldGenerator->setSeed(seed);
 }
 
