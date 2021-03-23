@@ -104,7 +104,7 @@ GameObject3D chunk::getMesh(){
 
                         if(z == 0 && needsFace(worldo->getBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
-                        }else if(z != 00 && needsFace(blocks[x][y][z-1], blocks[x][y][z])){
+                        }else if(z != 0 && needsFace(blocks[x][y][z-1], blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
                         }
 
@@ -183,7 +183,7 @@ GameObject3D chunk::getTranslucentMesh(){
 
                         if(z == 0 && needsFace(worldo->getBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
-                        }else if(z != 00 && needsFace(blocks[x][y][z-1], blocks[x][y][z])){
+                        }else if(z != 0 && needsFace(blocks[x][y][z-1], blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
                         }
 
