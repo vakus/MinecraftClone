@@ -1,14 +1,10 @@
 #include "../world/block.hpp"
 #include "block_templates.cpp"
 
-class BlockFlower : public block
+class BlockFlowerRed : public block
 {
 public:
-    BlockFlower(){
-    }
-
-    virtual int getId() override{
-        return 4;
+    BlockFlowerRed(){
     }
 
     virtual bool isTransparent() override{
@@ -18,7 +14,7 @@ public:
     GameObject3D getMesh(__attribute__((unused)) int FaceFlags) override
     {
         GameObject3D gameObject{
-            BLOCK_FLOWER_VERTEX(0,1),
+            BLOCK_FLOWER_VERTEX(1,1),
             BLOCK_FLOWER_INDICIES
             };
         //flowers should not optimise faces away,

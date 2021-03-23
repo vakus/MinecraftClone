@@ -189,13 +189,6 @@ int main(int argc, char *argv[])
     try
     {
         blockInitialise();
-
-        logger::info("Dumping block ids. size: " + std::to_string(BLOCKS.size()));
-        for (size_t x = 0; x < BLOCKS.size(); x++)
-        {
-            logger::info("Index: " + std::to_string(x) + " BlockID: " + std::to_string(BLOCKS[x]->getId()));
-        }
-
         application.run(enableValidationLayers);
     }
     catch (std::exception &e)

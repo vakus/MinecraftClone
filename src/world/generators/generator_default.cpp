@@ -30,10 +30,18 @@ public:
                     if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y -3){
                         blocks[x][y][z] = BLOCKS[1];
                     }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y - 1){
-                        blocks[x][y][z] = BLOCKS[2];
+                        if(height + CHUNK_GENERATION_MIN_Y < CHUNK_GENERATION_SEA_LEVEL + 1){
+                            blocks[x][y][z] = BLOCKS[8];
+                        }else{
+                            blocks[x][y][z] = BLOCKS[2];
+                        }
                     }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y){
-                        blocks[x][y][z] = BLOCKS[0];
-                    }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y + 1){
+                        if(chunkPos.y + y >= CHUNK_GENERATION_SEA_LEVEL){
+                            blocks[x][y][z] = BLOCKS[0];
+                        }else{
+                            blocks[x][y][z] = BLOCKS[8];
+                        }
+                    }else if(chunkPos.y + y < height + CHUNK_GENERATION_MIN_Y + 1 && chunkPos.y + y > CHUNK_GENERATION_SEA_LEVEL){
                         //random flowers / trees
                         //FIXME: current version only generates clumps of flowers
                         int result = rand() % 1000;
@@ -72,13 +80,15 @@ public:
                                     }
                                 }
                             }
-                        }else if(result >= 990){
+                        }else if(result >= 992){
+                            //yellow flower
                             blocks[x][y][z] = BLOCKS[3];
+                        }else if(result >= 990){
+                            //red flower
+                            blocks[x][y][z] = BLOCKS[7];
                         }
                     }else if(chunkPos.y + y < CHUNK_GENERATION_SEA_LEVEL){
-                        //add water here
-                    }else{
-                        break;
+                        blocks[x][y][z] = BLOCKS[6];
                     }
                 }
             }

@@ -7,10 +7,6 @@ public:
     BlockOakLeaves(){
     }
 
-    virtual int getId() override{
-        return 6;
-    }
-
     virtual bool isTransparent() override{
         return true;
     }

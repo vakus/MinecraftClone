@@ -1,11 +1,14 @@
 #include "block.hpp"
 
-#include "../blocks/grassBlock.cpp"
-#include "../blocks/stone.cpp"
-#include "../blocks/dirt.cpp"
-#include "../blocks/flower.cpp"
-#include "../blocks/OakLog.cpp"
-#include "../blocks/OakLeaves.cpp"
+#include "../blocks/BlockGrass.cpp"
+#include "../blocks/BlockStone.cpp"
+#include "../blocks/BlockDirt.cpp"
+#include "../blocks/BlockFlowerYellow.cpp"
+#include "../blocks/BlockFlowerRed.cpp"
+#include "../blocks/BlockOakLog.cpp"
+#include "../blocks/BlockOakLeaves.cpp"
+#include "../blocks/BlockWater.cpp"
+#include "../blocks/BlockSand.cpp"
 
 void blockInitialise()
 {
@@ -18,7 +21,7 @@ void blockInitialise()
     BlockDirt *dirt = new BlockDirt();
     BLOCKS.push_back(dirt);
 
-    BlockFlower *flower = new BlockFlower();
+    BlockFlowerYellow *flower = new BlockFlowerYellow();
     BLOCKS.push_back(flower);
 
     BlockOakLog *oakLog = new BlockOakLog();
@@ -26,6 +29,15 @@ void blockInitialise()
 
     BlockOakLeaves *oakLeaves = new BlockOakLeaves();
     BLOCKS.push_back(oakLeaves);
+
+    BlockWater *water = new BlockWater();
+    BLOCKS.push_back(water);
+
+    BlockFlowerRed *flowerRed = new BlockFlowerRed();
+    BLOCKS.push_back(flowerRed);
+
+    BlockSand *sand = new BlockSand();
+    BLOCKS.push_back(sand);
 }
 
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)

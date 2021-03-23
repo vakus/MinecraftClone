@@ -1,25 +1,20 @@
 #include "../world/block.hpp"
-
 #include "block_templates.cpp"
 
-class BlockGrass : public block
+class BlockWater : public block
 {
 public:
-    BlockGrass(){
-    }
-
-    virtual int getId() override{
-        return 1;
+    BlockWater(){
     }
 
     virtual bool isTransparent() override{
-        return false;
+        return true;
     }
 
     GameObject3D getMesh(int FaceFlags) override
     {
         GameObject3D gameObject{
-            BLOCK_STANDARD_VERTEX(0,0,2,0,3,0),
+            BLOCK_STANDARD_VERTEX(0,2,0,2,0,2),
             {}
             };
 

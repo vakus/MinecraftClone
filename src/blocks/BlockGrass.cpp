@@ -1,14 +1,11 @@
 #include "../world/block.hpp"
+
 #include "block_templates.cpp"
 
-class BlockStone : public block
+class BlockGrass : public block
 {
 public:
-    BlockStone(){
-    }
-
-    virtual int getId() override{
-        return 2;
+    BlockGrass(){
     }
 
     virtual bool isTransparent() override{
@@ -18,7 +15,7 @@ public:
     GameObject3D getMesh(int FaceFlags) override
     {
         GameObject3D gameObject{
-            BLOCK_STANDARD_VERTEX(1,0,1,0,1,0),
+            BLOCK_STANDARD_VERTEX(0,0,2,0,3,0),
             {}
             };
 

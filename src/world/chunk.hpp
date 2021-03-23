@@ -25,12 +25,15 @@ class chunk{
         block* getBlock(glm::ivec3 pos);
         block* getBlock(int x, int y, int z);
         GameObject3D getMesh();
+        GameObject3D getTranslucentMesh();
         void generate();
         void forceRecreate();
     private:
         bool generated;
         bool recreate;
+        bool recreateTranslucent;
         GameObject3D cachedMesh;
+        GameObject3D cachedTranslucentMesh;
         std::vector<std::vector<std::vector<block*>>> blocks;
         world* worldo;
 };
