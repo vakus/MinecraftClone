@@ -1,6 +1,6 @@
 #ifndef CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
-#include "../../blocks/dirt.cpp"
+#include "../../blocks/BlockDirt.cpp"
 #endif
 
 #include "../../world/chunk.hpp"
