@@ -19,7 +19,7 @@ test: src/test/main.cpp
 
 textures:
 	mkdir -p build/textures
-	cp -rv src/textures/* build/textures
+	cp -rv assets/textures/* build/textures
 
 shaders:
 	mkdir -p build/shaders
