@@ -236,7 +236,10 @@ void Application::initVulkan(bool enableValidationLayers)
     createCommandPool();
     createDepthResources();
     createFramebuffers();
-    createTextureImage("textures/Textures_16.png");
+    createTextureImage("textures/Textures_16.png", 0);
+    createTextureImage("textures/Textures_8.png", 1);
+    createTextureImage("textures/Textures_4.png", 2);
+    createTextureImage("textures/Textures_1.png", 3);
     createTextureImageView();
     createImageSampler();
     createVertexBuffer(gameObject);
@@ -255,6 +258,7 @@ void Application::createDepthResources()
     createImage(
         swapChainExtent.width,
         swapChainExtent.height,
+        1,
         depthFormat,
         VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
@@ -262,9 +266,9 @@ void Application::createDepthResources()
         depthImage,
         depthImageMemory);
 
-    depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+    depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 
-    transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+    transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, 1);
 }
 
 VkFormat Application::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
@@ -325,7 +329,7 @@ void Application::createImageSampler()
     createInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
     createInfo.mipLodBias = 0.0f;
     createInfo.minLod = 0.0f;
-    createInfo.maxLod = 0.0f;
+    createInfo.maxLod = 4.0f;
 
     if (vkCreateSampler(device, &createInfo, nullptr, &textureSampler) != VK_SUCCESS)
     {
@@ -336,10 +340,14 @@ void Application::createImageSampler()
 void Application::createTextureImageView()
 {
     logger::finer("Creating Texture Image View");
-    textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+    textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, 4);
 }
 
-VkImageView Application::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+VkImageView Application::createImageView(
+    VkImage image,
+    VkFormat format,
+    VkImageAspectFlags aspectFlags,
+    uint32_t mipLevels)
 {
     logger::finer("Creating Image View");
     VkImageViewCreateInfo createInfo{};
@@ -353,7 +361,7 @@ VkImageView Application::createImageView(VkImage image, VkFormat format, VkImage
     createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
     createInfo.subresourceRange.aspectMask = aspectFlags;
     createInfo.subresourceRange.baseMipLevel = 0;
-    createInfo.subresourceRange.levelCount = 1;
+    createInfo.subresourceRange.levelCount = mipLevels;
     createInfo.subresourceRange.baseArrayLayer = 0;
     createInfo.subresourceRange.layerCount = 1;
 
@@ -365,14 +373,17 @@ VkImageView Application::createImageView(VkImage image, VkFormat format, VkImage
     return imageView;
 }
 
-void Application::createTextureImage(const char *pathToTexture)
+void Application::createTextureImage(const char *pathToTexture, uint32_t mipmap)
 {
     logger::finer("Creating Texture Image");
     int texWidth, texHeight, texChannels;
-    stbi_uc *pixels = stbi_load(pathToTexture, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc *pixels = stbi_load("textures/Textures_16.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc *pixels2 = stbi_load("textures/Textures_8.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc *pixels3 = stbi_load("textures/Textures_4.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc *pixels4 = stbi_load("textures/Textures_1.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
 
-    if (!pixels)
+    if (!pixels || !pixels2 || !pixels3 || !pixels4);
     {
         std::string error = "failed to load texture: ";
         error += pathToTexture;
@@ -398,16 +409,17 @@ void Application::createTextureImage(const char *pathToTexture)
     createImage(
         texWidth,
         texHeight,
+        mipmap,
         VK_FORMAT_R8G8B8A8_SRGB,
         VK_IMAGE_TILING_OPTIMAL,
-        VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+        VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         textureImage,
         textureImageMemory);
 
-    transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipmap);
     copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-    transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, mipmap);
 
     vkDestroyBuffer(device, stagingBuffer, nullptr);
     vkFreeMemory(device, stagingBufferMemory, nullptr);
@@ -448,6 +460,7 @@ void Application::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wid
 void Application::createImage(
     uint32_t width,
     uint32_t height,
+    uint32_t mipLevels,
     VkFormat format,
     VkImageTiling tiling,
     VkImageUsageFlags usage,
@@ -462,7 +475,7 @@ void Application::createImage(
     createInfo.extent.width = static_cast<uint32_t>(width);
     createInfo.extent.height = static_cast<uint32_t>(height);
     createInfo.extent.depth = 1;
-    createInfo.mipLevels = 1;
+    createInfo.mipLevels = mipLevels;
     createInfo.arrayLayers = 1;
     createInfo.format = format;
     createInfo.tiling = tiling;
@@ -754,7 +767,8 @@ void Application::transitionImageLayout(
     VkImage image,
     VkFormat format,
     VkImageLayout oldLayout,
-    VkImageLayout newLayout)
+    VkImageLayout newLayout,
+    uint32_t mipLevels)
 {
     VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
@@ -784,7 +798,7 @@ void Application::transitionImageLayout(
         barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     }
     barrier.subresourceRange.baseMipLevel = 0;
-    barrier.subresourceRange.levelCount = 1;
+    barrier.subresourceRange.levelCount = mipLevels;
     barrier.subresourceRange.baseArrayLayer = 0;
     barrier.subresourceRange.layerCount = 1;
 
@@ -1255,7 +1269,7 @@ void Application::createImageViews()
 
     for (size_t x = 0; x < swapChainImages.size(); x++)
     {
-        swapChainImageViews[x] = createImageView(swapChainImages[x], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+        swapChainImageViews[x] = createImageView(swapChainImages[x], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
     }
 }
 

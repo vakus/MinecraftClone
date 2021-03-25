@@ -290,7 +290,6 @@ class Application{
          * Map where all textures are stored
          */
         VkImage textureImage;
-
         /**
          * Information about memory where textureImage is stored
          */
@@ -347,10 +346,11 @@ class Application{
         VkImageView createImageView(
             VkImage image,
             VkFormat format,
-            VkImageAspectFlags aspectFlags
+            VkImageAspectFlags aspectFlags,
+            uint32_t mipLevels
         );
 
-        void createTextureImage(const char *pathToTexture);
+        void createTextureImage(const char *pathToTexture, uint32_t mipmap);
 
         void copyBufferToImage(
             VkBuffer buffer,
@@ -362,6 +362,7 @@ class Application{
         void createImage(
             uint32_t width,
             uint32_t height,
+            uint32_t mipLevels,
             VkFormat format,
             VkImageTiling tiling,
             VkImageUsageFlags usage,
@@ -404,7 +405,8 @@ class Application{
             VkImage image,
             VkFormat format,
             VkImageLayout oldLayout,
-            VkImageLayout newLayout
+            VkImageLayout newLayout,
+            uint32_t mipLevels
         );
 
         void createVertexBuffer(GameObject3D gameObject);
