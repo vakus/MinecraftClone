@@ -16,6 +16,9 @@ profile: src/main.cpp shaders textures
 	cd build; ./Vulkan;	gprof ./Vulkan > profile.log; (gprof2dot profile.log | dot -Tpng -o profile.png)
 	rm build/gmon.out
 
+sprofile: src/main.cpp shaders textures
+	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -pg -O0 -D PROFILE
+
 test: src/test/main.cpp
 	g++ $(CFLAGS) -o build/VulkanTest $(MAIN_TEST) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0
 

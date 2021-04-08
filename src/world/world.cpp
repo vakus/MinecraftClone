@@ -78,7 +78,7 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
     GameObject3D mesh;
     GameObject3D translucentMesh;
 
-    glm::ivec3 targetChunk = glm::ivec3(pos/16);
+    glm::ivec3 targetChunk = convertToChunk(pos);
 
     for(int x = -distance; x <= distance; x++){
         for(int y = -distance; y <= distance; y++){
@@ -114,6 +114,7 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 std::for_each(translucentChunkMesh.indicies.begin(), translucentChunkMesh.indicies.end(), [verticiesOffset](uint32_t &x){x += verticiesOffset;});
                 translucentMesh.indicies.insert(translucentMesh.indicies.end(), translucentChunkMesh.indicies.begin(), translucentChunkMesh.indicies.end());
                 translucentMesh.verticies.insert(translucentMesh.verticies.end(), translucentChunkMesh.verticies.begin(), translucentChunkMesh.verticies.end());
+         
             }
         }
     }

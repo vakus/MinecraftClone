@@ -219,6 +219,7 @@ void chunk::generate(){
         return;
     }
     worldo->worldGenerator->generate(blocks, pos);
+    forceRecreate();
 }
 
 void chunk::forceRecreate(){
