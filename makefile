@@ -6,10 +6,10 @@ MAIN_TEST = src/test/main.cpp
 COMPILEFILES = src/logger.cpp src/application.cpp src/world/block.cpp src/world/chunk.cpp src/world/world.cpp
 
 release: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -O3
+	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -O3 -pthread
 
 debug: src/main.cpp shaders textures
-	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION
+	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -O0 -D VALIDATIONLAYERS -D LOGMIN=2 -D LAYERS_KHRONOS_VALIDATION -pthread
 
 profile: src/main.cpp shaders textures
 	g++ $(CFLAGS) -o build/Vulkan $(MAIN_DEFAULT) $(COMPILEFILES) $(LDFLAGS) -Wall -W -g -pg -O0 -D PROFILE

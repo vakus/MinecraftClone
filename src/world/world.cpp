@@ -48,19 +48,21 @@ World::World(uint32_t seed, Generator* worldGenerator){
 /**
  * Sets `block` at absolute `pos`
  * If chunk does not exist, it will be created
- * 
- * FIXME: World::chunks is not thread safe
  */
 void World::SetBlock(glm::ivec3 pos, Block* block){
     glm::ivec3 chunkPos = ConvertToChunk(pos);
 
+    auto lock = std::unique_lock<std::mutex>(worldGenMutex);
     Chunk* c = chunks[chunkPos];
+    lock.unlock();
 
     if(c == NULL){
         //if chunk doesnt exist simply create it
         c = new Chunk(chunkPos, this);
 
+        auto lock = std::unique_lock<std::mutex>(worldGenMutex);
         chunks[chunkPos] = c;
+        lock.unlock();
     }
 
     c->SetBlock(ConvertToChunkRelative(pos), block);
@@ -81,7 +83,9 @@ void World::SetBlock(int x, int y, int z, Block* block){
 Block* World::GetBlock(glm::ivec3 pos){
     glm::ivec3 chunkPos = ConvertToChunk(pos);
 
+    auto lock = std::unique_lock<std::mutex>(worldGenMutex);
     Chunk* c = chunks[chunkPos];
+    lock.unlock();
 
     if(c == NULL){
         //if the chunk doesnt exist we dont want to generate it (could cause cascading generation)
@@ -103,8 +107,6 @@ Block* World::GetBlock(int x, int y, int z){
  * e.g. `distance` set to 3 would cause 7 by 7 by 7 chunks to be returned
  * (chunk in which `pos` is plus 3 chunks each direction)
  * 
- * FIXME: sometimes causes segmentation fault
- * FIXME: World::chunks is not thread safe (possibly causing segfault)
  * FIXME: Currently worldGenCond is notified at least once per call to prevent notifications being missed by other threads.
  */
 GameObject3D World::GetMesh(glm::ivec3 pos, int distance){
@@ -123,13 +125,14 @@ GameObject3D World::GetMesh(glm::ivec3 pos, int distance){
                 actualPos.z += z;
                 actualPos *= -1;
 
+                auto lock = std::unique_lock<std::mutex>(worldGenMutex);
                 Chunk* c = chunks[actualPos];
+                lock.unlock();
                 if(c == NULL){
                     c = new Chunk(actualPos, this);
                     
-                    chunks[actualPos] = c;
-                    
                     auto lock = std::unique_lock<std::mutex>(worldGenMutex);
+                    chunks[actualPos] = c;
                     worldGenQueue.push_back(c);
                     lock.unlock();
                     worldGenCond.notify_all();
@@ -259,24 +262,32 @@ void *World::WorldGen(){
             c->Generate();
 
             //we also would want to regenerate nearby chunks
-            if(chunks[glm::ivec3(1,0,0) + c->pos] != NULL){
-                chunks[glm::ivec3(1,0,0) + c->pos]->ForceRecreate();
+            lock = std::unique_lock<std::mutex>(worldGenMutex);
+            Chunk* oc = chunks[glm::ivec3(1,0,0) + c->pos];
+            if(oc != NULL){
+                oc->ForceRecreate();
             }
-            if(chunks[glm::ivec3(-1,0,0) + c->pos] != NULL){
-                chunks[glm::ivec3(-1,0,0) + c->pos]->ForceRecreate();
+            oc = chunks[glm::ivec3(-1,0,0) + c->pos];
+            if(oc != NULL){
+                oc->ForceRecreate();
             }
-            if(chunks[glm::ivec3(0,1,0) + c->pos] != NULL){
-                chunks[glm::ivec3(0,1,0) + c->pos]->ForceRecreate();
+            oc = chunks[glm::ivec3(0,1,0) + c->pos];
+            if(oc != NULL){
+                oc->ForceRecreate();
             }
-            if(chunks[glm::ivec3(0,-1,0) + c->pos] != NULL){
-                chunks[glm::ivec3(0,-1,0) + c->pos]->ForceRecreate();
+            oc = chunks[glm::ivec3(0,-1,0) + c->pos];
+            if(oc != NULL){
+                oc->ForceRecreate();
             }
-            if(chunks[glm::ivec3(0,0,1) + c->pos] != NULL){
-                chunks[glm::ivec3(0,0,1) + c->pos]->ForceRecreate();
+            oc = chunks[glm::ivec3(0,0,1) + c->pos];
+            if(oc != NULL){
+                oc->ForceRecreate();
             }
-            if(chunks[glm::ivec3(0,0,-1) + c->pos] != NULL){
-                chunks[glm::ivec3(0,0,-1) + c->pos]->ForceRecreate();
+            oc = chunks[glm::ivec3(0,0,-1) + c->pos];
+            if(oc != NULL){
+                oc->ForceRecreate();
             }
+            lock.unlock();
         }
     }
     pthread_exit(NULL);
