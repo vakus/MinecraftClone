@@ -152,13 +152,15 @@ GameObject3D World::GetMesh(glm::ivec3 pos, int distance){
             }
         }
     }
-    //FIXME this allows at least one chunk generated per frame
-    // the problem however is that when a chunk is added to
-    // worldgen queue and then thread is notified
-    // the worldgen thread may miss next notifications
-    //
-    // while this prevents chunks from never being generated
-    // this doesnt feel right
+    /*
+     * FIXME: this allows at least one chunk generated per frame
+     * the problem however is that when a chunk is added to
+     * worldgen queue and then thread is notified
+     * the worldgen thread may miss next notifications
+     *
+     * while this prevents chunks from never being generated
+     * this doesnt feel right
+     */
     worldGenCond.notify_all();
 
     //we need to add translucent layer after normal layer

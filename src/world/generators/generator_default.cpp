@@ -73,7 +73,6 @@ public:
                         }
                     }else if(absoluteBlockPos.y + y < height + CHUNK_GENERATION_MIN_Y + 1 && absoluteBlockPos.y + y > CHUNK_GENERATION_SEA_LEVEL){
                         //random flowers / trees
-                        //FIXME: current version only generates clumps of flowers
                         int result = rand() % 1000;
                         if(result >= 995){
                             for(int yo = 2; yo < 4; yo++){

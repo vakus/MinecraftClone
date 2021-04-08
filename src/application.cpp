@@ -1573,6 +1573,9 @@ void Application::pickPhysicalDevice()
  *      - If the device doesnt support required extensions then the device is rated as 0
  *      - If the device doesnt have all required indices then the device is rated as 0
  *      - If the device doesnt have swap chain format or present mode then the device is rated as 0
+ * 
+ * FIXME: There is rare scenario where Dedicated GPU that does not support all
+ * required features may be preferred over Integrated GPU that supports all features
  */
 int Application::rateDeviceSuitability(VkPhysicalDevice device)
 {
