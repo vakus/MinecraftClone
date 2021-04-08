@@ -8,52 +8,52 @@
 
 #include <array>
 #include <vector>
-class chunk;
+class Chunk;
 #include "block.hpp"
 #include "world.hpp"
 
 #include "../graphics/GameObject3D.hpp"
 
-class chunk{
+class Chunk{
     public:
         /**
          * The position of chunk in the world
          */
         const glm::ivec3 pos;
 
-        chunk(glm::ivec3 position, world* w);
+        Chunk(glm::ivec3 position, World* w);
         /**
          * Sets block at relative `pos` to `b`
          */
-        void setBlock(glm::ivec3 pos, block* b);
+        void SetBlock(glm::ivec3 pos, Block* b);
         /**
          * Sets block at relative `x`/`y`/`z` to `b`
          */
-        void setBlock(int x, int y, int z, block* b);
+        void SetBlock(int x, int y, int z, Block* b);
         /**
          * Gets block at relative `pos`.
          */
-        block* getBlock(glm::ivec3 pos);
+        Block* GetBlock(glm::ivec3 pos);
         /**
          * Gets block at relative `x`/`y`/`z`.
          */
-        block* getBlock(int x, int y, int z);
+        Block* GetBlock(int x, int y, int z);
         /**
          * Gets chunk's non-transparent and non-translucent mesh
          */
-        GameObject3D getMesh();
+        GameObject3D GetMesh();
         /**
          * Gets chunk's transparent and translucent mesh
          */
-        GameObject3D getTranslucentMesh();
+        GameObject3D GetTranslucentMesh();
         /**
          * Generates terrain in the chunk
          */
-        void generate();
+        void Generate();
         /**
          * Marks chunk meshes to be recreated
          */
-        void forceRecreate();
+        void ForceRecreate();
     private:
         /**
          * Stores whatever chunk has been already generated
@@ -78,11 +78,11 @@ class chunk{
         /**
          * Stores blocks within the chunk
          */
-        std::vector<std::vector<std::vector<block*>>> blocks;
+        std::vector<std::vector<std::vector<Block*>>> blocks;
         /**
          * Stores pointer to World object
          */
-        world* worldo;
+        World* world;
 };
 
 #endif

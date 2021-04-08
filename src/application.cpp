@@ -51,7 +51,7 @@ namespace vulkan
         }
         else
         {
-            logger::error("handle for vkCreateDebugUtilsMessengerEXT could not be obtained");
+            Logger::Error("handle for vkCreateDebugUtilsMessengerEXT could not be obtained");
             return VK_ERROR_EXTENSION_NOT_PRESENT;
         }
     }
@@ -115,8 +115,8 @@ void key_callback(
             app->renderDistance = std::clamp(app->renderDistance + 1, 1, 16);
         }else if(key == GLFW_KEY_X){
             //print info about current chunk
-            glm::ivec3 chunkPos = app->gameWorld.convertToChunk(app->PlayerPosition);
-            logger::info("Current chunk position X: " + std::to_string(chunkPos.x) + " Y: " + std::to_string(chunkPos.y) + " Z: " + std::to_string(chunkPos.z));
+            glm::ivec3 chunkPos = app->gameWorld.ConvertToChunk(app->PlayerPosition);
+            Logger::Info("Current chunk position X: " + std::to_string(chunkPos.x) + " Y: " + std::to_string(chunkPos.y) + " Z: " + std::to_string(chunkPos.z));
         }
     }else if(action == GLFW_RELEASE){
         
@@ -197,7 +197,7 @@ void Application::run(bool enableValidationLayers)
  */
 void Application::initWindow(uint32_t width, uint32_t height)
 {
-    logger::finer("Initialising Window");
+    Logger::Finer("Initialising Window");
     glfwInit();
 
     //dont create OpenGL context (we are using Vulkan)
@@ -220,8 +220,8 @@ void Application::initWindow(uint32_t width, uint32_t height)
  */
 void Application::initVulkan(bool enableValidationLayers)
 {
-    logger::finer("Initialising Vulkan");
-    GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), renderDistance);
+    Logger::Finer("Initialising Vulkan");
+    GameObject3D gameObject = gameWorld.GetMesh(glm::ivec3(PlayerPosition), renderDistance);
 
     createInstance(enableValidationLayers);
     setupDebugMessenger(enableValidationLayers);
@@ -250,7 +250,7 @@ void Application::initVulkan(bool enableValidationLayers)
 
 void Application::createDepthResources()
 {
-    logger::finer("Creating Depth Resources");
+    Logger::Finer("Creating Depth Resources");
     VkFormat depthFormat = findDepthFormat();
     createImage(
         swapChainExtent.width,
@@ -300,7 +300,7 @@ bool Application::hasStencilComponent(VkFormat format)
 
 void Application::createImageSampler()
 {
-    logger::finer("Creating Image Sampler");
+    Logger::Finer("Creating Image Sampler");
     VkSamplerCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
     createInfo.magFilter = VK_FILTER_NEAREST; //more fitting than linear, we want art to pixelate
@@ -335,13 +335,13 @@ void Application::createImageSampler()
 
 void Application::createTextureImageView()
 {
-    logger::finer("Creating Texture Image View");
+    Logger::Finer("Creating Texture Image View");
     textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 VkImageView Application::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
 {
-    logger::finer("Creating Image View");
+    Logger::Finer("Creating Image View");
     VkImageViewCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     createInfo.image = image;
@@ -367,7 +367,7 @@ VkImageView Application::createImageView(VkImage image, VkFormat format, VkImage
 
 void Application::createTextureImage(const char *pathToTexture)
 {
-    logger::finer("Creating Texture Image");
+    Logger::Finer("Creating Texture Image");
     int texWidth, texHeight, texChannels;
     stbi_uc *pixels = stbi_load(pathToTexture, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -415,7 +415,7 @@ void Application::createTextureImage(const char *pathToTexture)
 
 void Application::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
 {
-    logger::finer("Copying Buffer to Image");
+    Logger::Finer("Copying Buffer to Image");
     VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
     VkBufferImageCopy region{};
@@ -455,7 +455,7 @@ void Application::createImage(
     VkImage &image,
     VkDeviceMemory &imageMemory)
 {
-    logger::finer("Creating Image");
+    Logger::Finer("Creating Image");
     VkImageCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     createInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -495,7 +495,7 @@ void Application::createImage(
 
 VkCommandBuffer Application::beginSingleTimeCommands()
 {
-    logger::finer("Beginning Command Buffer");
+    Logger::Finer("Beginning Command Buffer");
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -516,7 +516,7 @@ VkCommandBuffer Application::beginSingleTimeCommands()
 
 void Application::endSingleTimeBuffer(VkCommandBuffer commandBuffer)
 {
-    logger::finer("Ending Command Buffer");
+    Logger::Finer("Ending Command Buffer");
     vkEndCommandBuffer(commandBuffer);
 
     VkSubmitInfo submitInfo{};
@@ -532,7 +532,7 @@ void Application::endSingleTimeBuffer(VkCommandBuffer commandBuffer)
 
 void Application::createDescriptorSet()
 {
-    logger::finer("Creating Descriptor Set");
+    Logger::Finer("Creating Descriptor Set");
     std::vector<VkDescriptorSetLayout> layouts(swapChainImages.size(), descriptorLayout);
 
     VkDescriptorSetAllocateInfo allocInfo{};
@@ -584,7 +584,7 @@ void Application::createDescriptorSet()
 
 void Application::createDescriptorPool()
 {
-    logger::finer("Creating Descriptor Pool");
+    Logger::Finer("Creating Descriptor Pool");
     std::array<VkDescriptorPoolSize, 2> poolSizes{};
     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     poolSizes[0].descriptorCount = static_cast<uint32_t>(swapChainImages.size());
@@ -605,7 +605,7 @@ void Application::createDescriptorPool()
 
 void Application::updateUniformBuffer(uint32_t currentImage)
 {
-    logger::finer("Updating Uniform Buffer");
+    Logger::Finer("Updating Uniform Buffer");
 
     UniformBufferObject ubo{};
     ubo.model = glm::mat4(1.0f);
@@ -632,7 +632,7 @@ void Application::updateUniformBuffer(uint32_t currentImage)
 
 void Application::createUniformBuffers()
 {
-    logger::finer("Creating Uniform Buffers");
+    Logger::Finer("Creating Uniform Buffers");
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
     uniformBuffers.resize(swapChainImages.size());
@@ -650,7 +650,7 @@ void Application::createUniformBuffers()
 
 void Application::createDescriptorSetLayout()
 {
-    logger::finer("Creating Descriptor Set Layout");
+    Logger::Finer("Creating Descriptor Set Layout");
     VkDescriptorSetLayoutBinding uboLayoutBinding{};
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorCount = 1;
@@ -680,7 +680,7 @@ void Application::createDescriptorSetLayout()
 
 void Application::createIndexBuffer(GameObject3D gameObject)
 {
-    logger::finer("Creating Index Buffer");
+    Logger::Finer("Creating Index Buffer");
     VkDeviceSize bufferSize = sizeof(gameObject.indicies[0]) * gameObject.indicies.size();
 
     VkBuffer stagingBuffer;
@@ -710,7 +710,7 @@ void Application::createIndexBuffer(GameObject3D gameObject)
 
 void Application::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory)
 {
-    logger::finer("Creating Buffer");
+    Logger::Finer("Creating Buffer");
     VkBufferCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     createInfo.size = size;
@@ -740,7 +740,7 @@ void Application::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMe
 
 void Application::copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size)
 {
-    logger::finer("Copying Buffer");
+    Logger::Finer("Copying Buffer");
     VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
     VkBufferCopy copyRegion{};
@@ -834,7 +834,7 @@ void Application::transitionImageLayout(
 
 void Application::createVertexBuffer(GameObject3D gameObject)
 {
-    logger::finer("Creating Vertex Buffer");
+    Logger::Finer("Creating Vertex Buffer");
     VkDeviceSize bufferSize = sizeof(gameObject.verticies[0]) * gameObject.verticies.size();
 
     VkBuffer stagingBuffer;
@@ -881,7 +881,7 @@ uint32_t Application::findMemoryType(uint32_t filter, VkMemoryPropertyFlags prop
 
 void Application::createSyncObjects()
 {
-    logger::finer("Creating Sync Objects");
+    Logger::Finer("Creating Sync Objects");
     imageAvailableSemaphores.resize(MAX_FRAMES);
     renderFinishSemaphores.resize(MAX_FRAMES);
     inFlightFences.resize(MAX_FRAMES);
@@ -905,7 +905,7 @@ void Application::createSyncObjects()
 
 void Application::createCommandBuffers(GameObject3D gameObject)
 {
-    logger::finer("Creating Command Buffers");
+    Logger::Finer("Creating Command Buffers");
     commandBuffers.resize(swapChainFramebuffers.size());
 
     VkCommandBufferAllocateInfo allocInfo{};
@@ -975,7 +975,7 @@ void Application::createCommandBuffers(GameObject3D gameObject)
 
 void Application::createCommandPool()
 {
-    logger::finer("Creating Command Pool");
+    Logger::Finer("Creating Command Pool");
     QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
 
     VkCommandPoolCreateInfo poolInfo{};
@@ -991,7 +991,7 @@ void Application::createCommandPool()
 
 void Application::createFramebuffers()
 {
-    logger::finer("Creating Framebuffers");
+    Logger::Finer("Creating Framebuffers");
     swapChainFramebuffers.resize(swapChainImageViews.size());
 
     for (size_t x = 0; x < swapChainImageViews.size(); x++)
@@ -1019,7 +1019,7 @@ void Application::createFramebuffers()
 
 void Application::createRenderPass()
 {
-    logger::finer("Creating Render Pass");
+    Logger::Finer("Creating Render Pass");
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = swapChainImageFormat;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -1081,7 +1081,7 @@ void Application::createRenderPass()
 
 void Application::createGraphicsPipeline()
 {
-    logger::finer("Creating Graphics Pipeline");
+    Logger::Finer("Creating Graphics Pipeline");
     std::vector<char> vertShaderCode = readFile("shaders/vert.spv");
     std::vector<char> fragShaderCode = readFile("shaders/frag.spv");
 
@@ -1102,8 +1102,8 @@ void Application::createGraphicsPipeline()
 
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderCreateInfo, fragShaderCreateInfo};
 
-    auto bidningDescription = Vertex::getBindingDescription();
-    auto attributeDescription = Vertex::getAttributeDescriptions();
+    auto bidningDescription = Vertex::GetBindingDescription();
+    auto attributeDescription = Vertex::GetAttributeDescriptions();
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -1233,7 +1233,7 @@ void Application::createGraphicsPipeline()
 
 VkShaderModule Application::createShaderModule(const std::vector<char> &code)
 {
-    logger::finer("Creating Shader Module");
+    Logger::Finer("Creating Shader Module");
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = code.size();
@@ -1250,7 +1250,7 @@ VkShaderModule Application::createShaderModule(const std::vector<char> &code)
 
 void Application::createImageViews()
 {
-    logger::finer("Creating Image Views");
+    Logger::Finer("Creating Image Views");
     swapChainImageViews.resize(swapChainImages.size());
 
     for (size_t x = 0; x < swapChainImages.size(); x++)
@@ -1261,7 +1261,7 @@ void Application::createImageViews()
 
 void Application::createSwapChain()
 {
-    logger::finer("Creating swap chain");
+    Logger::Finer("Creating swap chain");
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -1327,7 +1327,7 @@ void Application::createSwapChain()
  */
 void Application::createInstance(bool enableValidationLayers)
 {
-    logger::finer("Creating Vulkan Instance");
+    Logger::Finer("Creating Vulkan Instance");
     if (enableValidationLayers && !checkValidationLayerSupport(validationLayers))
     {
         throw std::runtime_error("Validation layers requested, but not available.");
@@ -1349,12 +1349,12 @@ void Application::createInstance(bool enableValidationLayers)
     std::vector<VkExtensionProperties> instanceExtensions(extensionCount);
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, instanceExtensions.data());
 
-    logger::finer("Available Extensions:");
+    Logger::Finer("Available Extensions:");
 
     for (const auto &extension : instanceExtensions)
     {
         std::string tab = "\t\t";
-        logger::finer(tab.append(extension.extensionName));
+        Logger::Finer(tab.append(extension.extensionName));
     }
 
     // Vulkan Global Extensions
@@ -1400,11 +1400,11 @@ bool Application::checkValidationLayerSupport(std::vector<const char *> validati
     std::vector<VkLayerProperties> availableLayers(layerCount);
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-    logger::finer("Available Vulkan Validation Layers:");
+    Logger::Finer("Available Vulkan Validation Layers:");
     for (const auto &layerProperties : availableLayers)
     {
         std::string tab = "\t\t";
-        logger::finer(tab.append(layerProperties.layerName));
+        Logger::Finer(tab.append(layerProperties.layerName));
     }
 
     for (const char *layerName : validationLayers)
@@ -1454,7 +1454,7 @@ std::vector<const char *> Application::getRequiredExtensions(bool enableValidati
 
 /**
  * This function will automatically log all messages from Validation Layers
- * to the logger.
+ * to the Logger.
  * 
  * Currently the mapping is as follows:
  *      - verbose messages are considered finer log
@@ -1470,19 +1470,19 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityF
 
     if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
     {
-        logger::finer(pCallbackData->pMessage);
+        Logger::Finer(pCallbackData->pMessage);
     }
     else if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
     {
-        logger::fine(pCallbackData->pMessage);
+        Logger::Fine(pCallbackData->pMessage);
     }
     else if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
     {
-        logger::warn(pCallbackData->pMessage);
+        Logger::Warn(pCallbackData->pMessage);
     }
     else if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
     {
-        logger::error(pCallbackData->pMessage);
+        Logger::Error(pCallbackData->pMessage);
     }
 
     return VK_FALSE;
@@ -1514,7 +1514,7 @@ void Application::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateIn
  */
 void Application::setupDebugMessenger(bool enableValidationLayers)
 {
-    logger::finer("Setting up debug messenger");
+    Logger::Finer("Setting up debug messenger");
     if (enableValidationLayers)
     {
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
@@ -1536,7 +1536,7 @@ void Application::setupDebugMessenger(bool enableValidationLayers)
  */
 void Application::pickPhysicalDevice()
 {
-    logger::finer("Picking Physical Device");
+    Logger::Finer("Picking Physical Device");
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
@@ -1675,7 +1675,7 @@ bool Application::checkDeviceExtensionSupport(VkPhysicalDevice device)
  */
 void Application::createLogicalDevice(bool enableValidationLayers)
 {
-    logger::finer("Creating Logical Device");
+    Logger::Finer("Creating Logical Device");
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -1729,7 +1729,7 @@ void Application::createLogicalDevice(bool enableValidationLayers)
  */
 void Application::createSurface()
 {
-    logger::finer("Creating surface");
+    Logger::Finer("Creating surface");
     if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS)
     {
         throw new std::runtime_error("Failed to create window surface");
@@ -1892,7 +1892,7 @@ void Application::mainLoop()
         vkDestroyBuffer(device, vertexBuffer, nullptr);
         vkFreeMemory(device, vertexBufferMemory, nullptr);
         
-        GameObject3D gameObject = gameWorld.getMesh(glm::ivec3(PlayerPosition), renderDistance);
+        GameObject3D gameObject = gameWorld.GetMesh(glm::ivec3(PlayerPosition), renderDistance);
 
         createVertexBuffer(gameObject);
         createIndexBuffer(gameObject);
@@ -1906,9 +1906,9 @@ void Application::mainLoop()
         drawFrame();
     }
     #ifdef PROFILE
-    logger::info("Min Frame: " + std::to_string(minTime));
-    logger::info("Max Frame: " + std::to_string(maxTime));
-    logger::info("Avg Frame: " + std::to_string(average));
+    Logger::Info("Min Frame: " + std::to_string(minTime));
+    Logger::Info("Max Frame: " + std::to_string(maxTime));
+    Logger::Info("Avg Frame: " + std::to_string(average));
     #endif
     vkDeviceWaitIdle(device);
 }
@@ -2013,7 +2013,7 @@ void Application::recreateSwapChain()
     createUniformBuffers();
     createDescriptorPool();
     createDescriptorSet();
-    createCommandBuffers(gameWorld.getMesh(glm::ivec3(PlayerPosition), renderDistance));
+    createCommandBuffers(gameWorld.GetMesh(glm::ivec3(PlayerPosition), renderDistance));
 }
 
 void Application::cleanupSwapChain()
@@ -2055,7 +2055,7 @@ void Application::cleanupSwapChain()
  */
 void Application::cleanup(bool enableValidationLayers)
 {
-    Application::gameWorld.stop();
+    Application::gameWorld.Stop();
 
     cleanupSwapChain();
 

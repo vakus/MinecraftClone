@@ -3,10 +3,10 @@
 
 #include <string>
 
-namespace logger
+namespace Logger
 {
 
-    enum logtype
+    enum LogType
     {
         FINER,    //all information
         FINE,     //most information
@@ -20,42 +20,42 @@ namespace logger
     /**
      * Sets minimum log level to be reported
      */
-    void setMinLog(logtype log);
+    void SetMinLog(LogType log);
     /**
      * Sets maximum log level to be reported
      */
-    void setMaxLog(logtype log);
+    void SetMaxLog(LogType log);
 
     /**
      * Reports FINER log
      */
-    void finer(std::string message);
+    void Finer(std::string message);
 
     /**
      * Reports FINE log
      */
-    void fine(std::string message);
+    void Fine(std::string message);
     
     /**
      * Reports INFO log
      */
-    void info(std::string message);
+    void Info(std::string message);
 
     /**
      * Reports WARN log
      */
-    void warn(std::string message);
+    void Warn(std::string message);
 
     /**
      * Reports ERROR log
      */
-    void error(std::string message);
+    void Error(std::string message);
 
     /**
      * Reports CRITICAL log
      */
-    void critical(std::string message);
+    void Critical(std::string message);
 
-} // namespace logger
+} // namespace Logger
 
 #endif

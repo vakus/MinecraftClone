@@ -3,20 +3,20 @@
 #include <string>
 #include <ctime>
 
-namespace logger
+namespace Logger
 {
-    logtype min = INFO;
-    logtype max = CRITICAL;
+    LogType min = INFO;
+    LogType max = CRITICAL;
 
     /**
      * Sets minimum level of log
      * If min-log is set above max-log it will log a warning instead
      */
-    void setMinLog(logtype log)
+    void SetMinLog(LogType log)
     {
         if (log > max)
         {
-            warn("Attempting to set minimum log level above maximum log level.");
+            Warn("Attempting to set minimum log level above maximum log level.");
         }
         else
         {
@@ -27,11 +27,11 @@ namespace logger
      * Sets maximum level of log
      * If max-log is set below min-log it will log a warning instead
      */
-    void setMaxLog(logtype log)
+    void SetMaxLog(LogType log)
     {
         if (log < min)
         {
-            warn("Attempting to set maximum log level below minimum log level.");
+            Warn("Attempting to set maximum log level below minimum log level.");
         }
         else
         {
@@ -42,9 +42,9 @@ namespace logger
     /**
      * if min log is lower or equal than FINER and max log is higher or equal than FINER, this will generate FINER log
      */
-    void finer(std::string message)
+    void Finer(std::string message)
     {
-        if (min <= logtype::FINER && logtype::FINER <= max)
+        if (min <= LogType::FINER && LogType::FINER <= max)
         {
             const std::time_t now = std::time(nullptr);
 
@@ -57,9 +57,9 @@ namespace logger
     /**
      * if min log is lower or equal than FINE and max log is higher or equal than FINE, this will generate FINE log
      */
-    void fine(std::string message)
+    void Fine(std::string message)
     {
-        if (min <= logtype::FINE && logtype::FINE <= max)
+        if (min <= LogType::FINE && LogType::FINE <= max)
         {
             const std::time_t now = std::time(nullptr);
 
@@ -71,9 +71,9 @@ namespace logger
     /**
      * if min log is lower or equal than INFO and max log is higher or equal than INFO, this will generate INFO log
      */
-    void info(std::string message)
+    void Info(std::string message)
     {
-        if (min <= logtype::INFO && logtype::INFO <= max)
+        if (min <= LogType::INFO && LogType::INFO <= max)
         {
             const std::time_t now = std::time(nullptr);
 
@@ -85,9 +85,9 @@ namespace logger
     /**
      * if min log is lower or equal than WARN and max log is higher or equal than WARN, this will generate WARN log
      */
-    void warn(std::string message)
+    void Warn(std::string message)
     {
-        if (min <= logtype::WARNING && logtype::WARNING<= max)
+        if (min <= LogType::WARNING && LogType::WARNING<= max)
         {
             const std::time_t now = std::time(nullptr);
 
@@ -99,9 +99,9 @@ namespace logger
     /**
      * if min log is lower or equal than ERROR and max log is higher or equal than ERROR, this will generate ERROR log
      */
-    void error(std::string message)
+    void Error(std::string message)
     {
-        if (min <= logtype::ERROR && logtype::ERROR <= max)
+        if (min <= LogType::ERROR && LogType::ERROR <= max)
         {
             const std::time_t now = std::time(nullptr);
 
@@ -113,9 +113,9 @@ namespace logger
     /**
      * if min log is lower or equal than CRITICAL and max log is higher or equal than CRITICAL, this will generate CRITICAL log
      */
-    void critical(std::string message)
+    void Critical(std::string message)
     {
-        if (min <= logtype::CRITICAL && logtype::CRITICAL <= max)
+        if (min <= LogType::CRITICAL && LogType::CRITICAL <= max)
         {
             const std::time_t now = std::time(nullptr);
 
@@ -124,4 +124,4 @@ namespace logger
         }
     }
 
-} // namespace logger
+} // namespace Logger

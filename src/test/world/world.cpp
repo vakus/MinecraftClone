@@ -5,152 +5,152 @@
 
 #include "../../world/world.hpp"
 
-TEST_CASE("Testing converting coordinates to Chunk Coordinate", "[world::convertToChunk]"){
+TEST_CASE("Testing converting coordinates to Chunk Coordinate", "[World::ConvertToChunk]"){
     SECTION("Testing positive coordinates"){
         REQUIRE(
-            world::convertToChunk(glm::ivec3(0,0,0))
+            World::ConvertToChunk(glm::ivec3(0,0,0))
             == glm::ivec3(0,0,0)
         );
         REQUIRE(
-            world::convertToChunk(glm::ivec3(15,15,15))
+            World::ConvertToChunk(glm::ivec3(15,15,15))
             == glm::ivec3(0,0,0)
         );
         REQUIRE(
-            world::convertToChunk(glm::ivec3(12, 4, 6))
+            World::ConvertToChunk(glm::ivec3(12, 4, 6))
             == glm::ivec3(0,0,0)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(16,16,16))
+            World::ConvertToChunk(glm::ivec3(16,16,16))
             == glm::ivec3(1,1,1)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(16, 0, 32))
+            World::ConvertToChunk(glm::ivec3(16, 0, 32))
             == glm::ivec3(1,0,2)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(20, 10, 40))
+            World::ConvertToChunk(glm::ivec3(20, 10, 40))
             == glm::ivec3(1,0,2)
         );
     }
 
     SECTION("Testing negative coordinates"){
         REQUIRE(
-            world::convertToChunk(glm::ivec3(-1,-1,-1))
+            World::ConvertToChunk(glm::ivec3(-1,-1,-1))
             == glm::ivec3(-1,-1,-1)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(-15,-15,-15))
+            World::ConvertToChunk(glm::ivec3(-15,-15,-15))
             == glm::ivec3(-1, -1, -1)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(-16, -16, -16))
+            World::ConvertToChunk(glm::ivec3(-16, -16, -16))
             == glm::ivec3(-1,-1,-1)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(-20, -10, -40))
+            World::ConvertToChunk(glm::ivec3(-20, -10, -40))
             == glm::ivec3(-2, -1, -3)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(-17,-17,-17))
+            World::ConvertToChunk(glm::ivec3(-17,-17,-17))
             == glm::ivec3(-2,-2,-2)
         );
     }
 
     SECTION("Testing mixed coordinates"){
         REQUIRE(
-            world::convertToChunk(glm::ivec3(-16, 0, 16))
+            World::ConvertToChunk(glm::ivec3(-16, 0, 16))
             == glm::ivec3(-1, 0, 1)
         );
 
         REQUIRE(
-            world::convertToChunk(glm::ivec3(-17, 33, 23))
+            World::ConvertToChunk(glm::ivec3(-17, 33, 23))
             == glm::ivec3(-2, 2, 1)
         );
     }
 }
 
-TEST_CASE("Testing converting coordinates to Chunk Relative Coordinate", "[world::convertToChunkRelative]"){
+TEST_CASE("Testing converting coordinates to Chunk Relative Coordinate", "[World::ConvertToChunkRelative]"){
     SECTION("Testing positive coordinates"){
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(0,0,0))
+            World::ConvertToChunkRelative(glm::ivec3(0,0,0))
             == glm::ivec3(0,0,0)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(15,15,15))
+            World::ConvertToChunkRelative(glm::ivec3(15,15,15))
             == glm::ivec3(15,15,15)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(16,16,16))
+            World::ConvertToChunkRelative(glm::ivec3(16,16,16))
             == glm::ivec3(0,0,0)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(3, 7, 11))
+            World::ConvertToChunkRelative(glm::ivec3(3, 7, 11))
             == glm::ivec3(3, 7, 11)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(3, 18, 37))
+            World::ConvertToChunkRelative(glm::ivec3(3, 18, 37))
             == glm::ivec3(3, 2, 5)
         );
     }
 
     SECTION("Testing negative coordinates"){
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(-1,-1,-1))
+            World::ConvertToChunkRelative(glm::ivec3(-1,-1,-1))
             == glm::ivec3(15,15,15)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(-16,-16,-16))
+            World::ConvertToChunkRelative(glm::ivec3(-16,-16,-16))
             == glm::ivec3(0,0,0)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(-17,-17,-17))
+            World::ConvertToChunkRelative(glm::ivec3(-17,-17,-17))
             == glm::ivec3(15,15,15)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(-3, -7, -11))
+            World::ConvertToChunkRelative(glm::ivec3(-3, -7, -11))
             == glm::ivec3(13, 9, 5)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(-3,-18,-37))
+            World::ConvertToChunkRelative(glm::ivec3(-3,-18,-37))
             == glm::ivec3(13, 14, 11)
         );
     }
 
     SECTION("Testing mixed coordinates"){
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(-3, 0, 12))
+            World::ConvertToChunkRelative(glm::ivec3(-3, 0, 12))
             == glm::ivec3(13, 0, 12)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(0, -3, 12))
+            World::ConvertToChunkRelative(glm::ivec3(0, -3, 12))
             == glm::ivec3(0, 13, 12)
         );
 
         REQUIRE(
-            world::convertToChunkRelative(glm::ivec3(0, 12, -3))
+            World::ConvertToChunkRelative(glm::ivec3(0, 12, -3))
             == glm::ivec3(0, 12, 13)
         );
     }
 }
 
-TEST_CASE("Testing setBlock and getBlock using glm::ivec3", "[world::getBlock/setBlock]"){
-    world w = world();
+TEST_CASE("Testing SetBlock and GetBlock using glm::ivec3", "[World::GetBlock/SetBlock]"){
+    World w = World();
 
     //blocks to be used for tests
     BlockDirt blockDirt = BlockDirt();
@@ -160,22 +160,22 @@ TEST_CASE("Testing setBlock and getBlock using glm::ivec3", "[world::getBlock/se
             for(int z = 0; z < 16; z++){
                 glm::ivec3 pos = glm::ivec3(x,y,z);
 
-                w.setBlock(pos, &blockDirt);
+                w.SetBlock(pos, &blockDirt);
 
-                REQUIRE(w.getBlock(pos) == &blockDirt);
+                REQUIRE(w.GetBlock(pos) == &blockDirt);
 
-                w.setBlock(pos, NULL);
+                w.SetBlock(pos, NULL);
 
-                REQUIRE(w.getBlock(pos) == NULL);
+                REQUIRE(w.GetBlock(pos) == NULL);
             }
         }
     }
 
-    w.stop();
+    w.Stop();
 }
 
-TEST_CASE("Testing setBlock and getBlock using XYZ", "[world::getBlock/setBlock]"){
-    world w = world();
+TEST_CASE("Testing SetBlock and GetBlock using XYZ", "[World::GetBlock/SetBlock]"){
+    World w = World();
 
     //blocks to be used for tests
     BlockDirt blockDirt = BlockDirt();
@@ -184,47 +184,22 @@ TEST_CASE("Testing setBlock and getBlock using XYZ", "[world::getBlock/setBlock]
         for(int y = 0; y < 16; y++){
             for(int z = 0; z < 16; z++){
 
-                w.setBlock(x,y,z, &blockDirt);
+                w.SetBlock(x,y,z, &blockDirt);
 
-                REQUIRE(w.getBlock(x,y,z) == &blockDirt);
+                REQUIRE(w.GetBlock(x,y,z) == &blockDirt);
 
-                w.setBlock(x,y,z, NULL);
+                w.SetBlock(x,y,z, NULL);
 
-                REQUIRE(w.getBlock(x,y,z) == NULL);
+                REQUIRE(w.GetBlock(x,y,z) == NULL);
             }
         }
     }
 
-    w.stop();
+    w.Stop();
 }
 
-TEST_CASE("Testing setBlock using glm::ivec3 and getBlock using XYZ", "[world::getBlock/setBlock]"){
-    world w = world();
-
-    //blocks to be used for tests
-    BlockDirt blockDirt = BlockDirt();
-
-    for(int x = 0; x < 16; x++){
-        for(int y = 0; y < 16; y++){
-            for(int z = 0; z < 16; z++){
-                glm::ivec3 pos = glm::ivec3(x,y,z);
-
-                w.setBlock(pos, &blockDirt);
-
-                REQUIRE(w.getBlock(x,y,z) == &blockDirt);
-
-                w.setBlock(pos, NULL);
-
-                REQUIRE(w.getBlock(x,y,z) == NULL);
-            }
-        }
-    }
-
-    w.stop();
-}
-
-TEST_CASE("Testing setBlock using XYZ and getBlock using glm::ivec3", "[world::getBlock/setBlock]"){
-    world w = world();
+TEST_CASE("Testing SetBlock using glm::ivec3 and GetBlock using XYZ", "[World::GetBlock/SetBlock]"){
+    World w = World();
 
     //blocks to be used for tests
     BlockDirt blockDirt = BlockDirt();
@@ -234,16 +209,41 @@ TEST_CASE("Testing setBlock using XYZ and getBlock using glm::ivec3", "[world::g
             for(int z = 0; z < 16; z++){
                 glm::ivec3 pos = glm::ivec3(x,y,z);
 
-                w.setBlock(x,y,z, &blockDirt);
+                w.SetBlock(pos, &blockDirt);
 
-                REQUIRE(w.getBlock(pos) == &blockDirt);
+                REQUIRE(w.GetBlock(x,y,z) == &blockDirt);
 
-                w.setBlock(x,y,z, NULL);
+                w.SetBlock(pos, NULL);
 
-                REQUIRE(w.getBlock(pos) == NULL);
+                REQUIRE(w.GetBlock(x,y,z) == NULL);
             }
         }
     }
 
-    w.stop();
+    w.Stop();
+}
+
+TEST_CASE("Testing SetBlock using XYZ and GetBlock using glm::ivec3", "[World::GetBlock/SetBlock]"){
+    World w = World();
+
+    //blocks to be used for tests
+    BlockDirt blockDirt = BlockDirt();
+
+    for(int x = 0; x < 16; x++){
+        for(int y = 0; y < 16; y++){
+            for(int z = 0; z < 16; z++){
+                glm::ivec3 pos = glm::ivec3(x,y,z);
+
+                w.SetBlock(x,y,z, &blockDirt);
+
+                REQUIRE(w.GetBlock(pos) == &blockDirt);
+
+                w.SetBlock(x,y,z, NULL);
+
+                REQUIRE(w.GetBlock(pos) == NULL);
+            }
+        }
+    }
+
+    w.Stop();
 }

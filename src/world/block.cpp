@@ -14,7 +14,7 @@
  * This function sets up list of all blocks available in the game
  * The blocks are stored in global variable `BLOCKS`
  */
-void blockInitialise()
+void BlockInitialise()
 {
     BlockGrass *grass = new BlockGrass();
     BLOCKS.push_back(grass);
@@ -48,7 +48,7 @@ void blockInitialise()
  * This function is a helper function that calculates normalised position in texture map,
  * based on provided X and Y coordinate where 0,0 is top left.
  */
-glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
+glm::vec2 GetTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
 {
 
     if (textureCoordType == TextureCoordType::TOP_RIGHT)
@@ -74,4 +74,4 @@ glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
 /**
  * This list stores all blocks available in the game
  */
-std::vector<block*> BLOCKS{};
+std::vector<Block*> BLOCKS{};

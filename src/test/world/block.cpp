@@ -4,73 +4,73 @@
 
 #include "../../world/block.hpp"
 
-TEST_CASE("Testing getTextureCoord from world/block.cpp", "[getTextureCoord]"){
+TEST_CASE("Testing GetTextureCoord from world/Block.cpp", "[GetTextureCoord]"){
     REQUIRE(
-        getTextureCoord(0,0, TextureCoordType::TOP_LEFT)
+        GetTextureCoord(0,0, TextureCoordType::TOP_LEFT)
         == glm::vec2(0.0, 0.0)
     );
     REQUIRE(
-        getTextureCoord(0,0, TextureCoordType::TOP_RIGHT)
+        GetTextureCoord(0,0, TextureCoordType::TOP_RIGHT)
         == glm::vec2(0.1, 0.0)
     );
     REQUIRE(
-        getTextureCoord(0,0, TextureCoordType::BOTTOM_LEFT)
+        GetTextureCoord(0,0, TextureCoordType::BOTTOM_LEFT)
         == glm::vec2(0.0, 0.1)
     );
     REQUIRE(
-        getTextureCoord(0,0, TextureCoordType::BOTTOM_RIGHT)
+        GetTextureCoord(0,0, TextureCoordType::BOTTOM_RIGHT)
         == glm::vec2(0.1, 0.1)
     );
 
 
     REQUIRE(
-        getTextureCoord(1,0, TextureCoordType::TOP_LEFT)
+        GetTextureCoord(1,0, TextureCoordType::TOP_LEFT)
         == glm::vec2(0.1, 0.0)
     );
     REQUIRE(
-        getTextureCoord(1,0, TextureCoordType::TOP_RIGHT)
+        GetTextureCoord(1,0, TextureCoordType::TOP_RIGHT)
         == glm::vec2(0.2, 0.0)
     );
     REQUIRE(
-        getTextureCoord(1,0, TextureCoordType::BOTTOM_LEFT)
+        GetTextureCoord(1,0, TextureCoordType::BOTTOM_LEFT)
         == glm::vec2(0.1, 0.1)
     );
     REQUIRE(
-        getTextureCoord(1,0, TextureCoordType::BOTTOM_RIGHT)
+        GetTextureCoord(1,0, TextureCoordType::BOTTOM_RIGHT)
         == glm::vec2(0.2, 0.1)
     );
 
     REQUIRE(
-        getTextureCoord(0, 1, TextureCoordType::TOP_LEFT)
+        GetTextureCoord(0, 1, TextureCoordType::TOP_LEFT)
         == glm::vec2(0.0, 0.1)
     );
     REQUIRE(
-        getTextureCoord(0, 1, TextureCoordType::TOP_RIGHT)
+        GetTextureCoord(0, 1, TextureCoordType::TOP_RIGHT)
         == glm::vec2(0.1, 0.1)
     );
     REQUIRE(
-        getTextureCoord(0, 1, TextureCoordType::BOTTOM_LEFT)
+        GetTextureCoord(0, 1, TextureCoordType::BOTTOM_LEFT)
         == glm::vec2(0.0, 0.2)
     );
     REQUIRE(
-        getTextureCoord(0, 1, TextureCoordType::BOTTOM_RIGHT)
+        GetTextureCoord(0, 1, TextureCoordType::BOTTOM_RIGHT)
         == glm::vec2(0.1, 0.2)
     );
 
     REQUIRE(
-        getTextureCoord(1, 1, TextureCoordType::TOP_LEFT)
+        GetTextureCoord(1, 1, TextureCoordType::TOP_LEFT)
         == glm::vec2(0.1, 0.1)
     );
     REQUIRE(
-        getTextureCoord(1, 1, TextureCoordType::TOP_RIGHT)
+        GetTextureCoord(1, 1, TextureCoordType::TOP_RIGHT)
         == glm::vec2(0.2, 0.1)
     );
     REQUIRE(
-        getTextureCoord(1, 1, TextureCoordType::BOTTOM_LEFT)
+        GetTextureCoord(1, 1, TextureCoordType::BOTTOM_LEFT)
         == glm::vec2(0.1, 0.2)
     );
     REQUIRE(
-        getTextureCoord(1, 1, TextureCoordType::BOTTOM_RIGHT)
+        GetTextureCoord(1, 1, TextureCoordType::BOTTOM_RIGHT)
         == glm::vec2(0.2, 0.2)
     );
     

@@ -10,12 +10,12 @@
  *      if `other` is null the block will need face
  *      if `other` is transparent block will need face
  */
-bool needsFace(block* other, block* current){
-    return (other == current ? false : (other == NULL ? true : other->isTransparent()));
+bool NeedsFace(Block* other, Block* current){
+    return (other == current ? false : (other == NULL ? true : other->IsTransparent()));
 }
 
-chunk::chunk(glm::ivec3 position, world* w) : pos(position){
-    worldo = w;
+Chunk::Chunk(glm::ivec3 position, World* w) : pos(position){
+    world = w;
     recreate = true;
     recreateTranslucent = true;
     generated = false;
@@ -32,7 +32,7 @@ chunk::chunk(glm::ivec3 position, world* w) : pos(position){
  * Sets block at `bpos` to block specified by pointer `b`
  * This will flag the mesh of a chunk to be recreated
  */
-void chunk::setBlock(glm::ivec3 bpos, block* b){
+void Chunk::SetBlock(glm::ivec3 bpos, Block* b){
     recreate = true;
     recreateTranslucent = true;
     blocks[bpos.x][bpos.y][bpos.z] = b;
@@ -42,8 +42,8 @@ void chunk::setBlock(glm::ivec3 bpos, block* b){
  * Sets block at xyz to block specified by pointer `b`
  * This will flag the mesh of a chunk to be recreated
  */
-void chunk::setBlock(int x, int y, int z, block* b){
-    setBlock(glm::ivec3(x,y,z), b);
+void Chunk::SetBlock(int x, int y, int z, Block* b){
+    SetBlock(glm::ivec3(x,y,z), b);
 };
 
 /**
@@ -51,7 +51,7 @@ void chunk::setBlock(int x, int y, int z, block* b){
  * If either x/y/z is below 0 then size of chunk will be added to it to allow e.g. using -1 as alternative to 15
  * Note values outside range of -CHUNK_BLOCK_SIZE to CHUNK_BLOCK_SIZE will cause reading outside range of blocks
  */
-block* chunk::getBlock(glm::ivec3 pos){
+Block* Chunk::GetBlock(glm::ivec3 pos){
     if(pos.x < 0){
         pos.x += CHUNK_BLOCK_SIZE;
     }
@@ -69,8 +69,8 @@ block* chunk::getBlock(glm::ivec3 pos){
  * If either x/y/z is below 0 then size of chunk will be added to it to allow e.g. using -1 as alternative to 15
  * Note values outside range of -CHUNK_BLOCK_SIZE to CHUNK_BLOCK_SIZE will cause reading outside range of blocks
  */
-block* chunk::getBlock(int x, int y, int z){
-    return getBlock(glm::ivec3(x, y, z));
+Block* Chunk::GetBlock(int x, int y, int z){
+    return GetBlock(glm::ivec3(x, y, z));
 }
 
 /**
@@ -78,7 +78,7 @@ block* chunk::getBlock(int x, int y, int z){
  * if `chunk::recreate` is set to true it will generate new mesh for chunk and cache it
  * otherwise it will return cached last response
  */
-GameObject3D chunk::getMesh(){
+GameObject3D Chunk::GetMesh(){
     
     if(recreate){
         recreate = false;
@@ -88,7 +88,7 @@ GameObject3D chunk::getMesh(){
         for(size_t x = 0; x < blocks.size(); x++){
             for(size_t y = 0; y < blocks[x].size(); y++){
                 for(size_t z = 0; z < blocks[x][y].size(); z++){
-                    if(blocks[x][y][z] != NULL && !(blocks[x][y][z]->isTransparent())){
+                    if(blocks[x][y][z] != NULL && !(blocks[x][y][z]->IsTransparent())){
                         int VerticiesOffset = cachedMesh.verticies.size();
 
                         glm::ivec3 absolutePosition = pos;
@@ -98,39 +98,39 @@ GameObject3D chunk::getMesh(){
                         absolutePosition.z += z;
 
                         int faces = 0;
-                        if(y == 15 && needsFace(worldo->getBlock(glm::ivec3(0,1,0) + absolutePosition), blocks[x][y][z])){
+                        if(y == 15 && NeedsFace(world->GetBlock(glm::ivec3(0,1,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::TOP;
-                        }else if(y != 15 && needsFace(blocks[x][y+1][z], blocks[x][y][z])){
+                        }else if(y != 15 && NeedsFace(blocks[x][y+1][z], blocks[x][y][z])){
                             faces |= BlockFace::TOP;
                         }
 
-                        if(y == 0 && needsFace(worldo->getBlock(glm::ivec3(0,-1,0) + absolutePosition), blocks[x][y][z])){
+                        if(y == 0 && NeedsFace(world->GetBlock(glm::ivec3(0,-1,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::BOTTOM;
-                        }else if(y != 0 && needsFace(blocks[x][y-1][z], blocks[x][y][z])){
+                        }else if(y != 0 && NeedsFace(blocks[x][y-1][z], blocks[x][y][z])){
                             faces |= BlockFace::BOTTOM;
                         }
 
-                        if(x == 15 && needsFace(worldo->getBlock(glm::ivec3(1,0,0) + absolutePosition), blocks[x][y][z])){
+                        if(x == 15 && NeedsFace(world->GetBlock(glm::ivec3(1,0,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::LEFT;
-                        }else if(x != 15 && needsFace(blocks[x+1][y][z], blocks[x][y][z])){
+                        }else if(x != 15 && NeedsFace(blocks[x+1][y][z], blocks[x][y][z])){
                             faces |= BlockFace::LEFT;
                         }
 
-                        if(x == 0 &&  needsFace(worldo->getBlock(glm::ivec3(-1,0,0) + absolutePosition), blocks[x][y][z])){
+                        if(x == 0 &&  NeedsFace(world->GetBlock(glm::ivec3(-1,0,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::RIGHT;
-                        }else if(x != 0 && needsFace(blocks[x-1][y][z], blocks[x][y][z])){
+                        }else if(x != 0 && NeedsFace(blocks[x-1][y][z], blocks[x][y][z])){
                             faces |= BlockFace::RIGHT;
                         }
 
-                        if(z == 15 && needsFace(worldo->getBlock(glm::ivec3(0,0,1) + absolutePosition), blocks[x][y][z])){
+                        if(z == 15 && NeedsFace(world->GetBlock(glm::ivec3(0,0,1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::BACK;
-                        }else if(z != 15 && needsFace(blocks[x][y][z+1], blocks[x][y][z])){
+                        }else if(z != 15 && NeedsFace(blocks[x][y][z+1], blocks[x][y][z])){
                             faces |= BlockFace::BACK;
                         }
 
-                        if(z == 0 && needsFace(worldo->getBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
+                        if(z == 0 && NeedsFace(world->GetBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
-                        }else if(z != 0 && needsFace(blocks[x][y][z-1], blocks[x][y][z])){
+                        }else if(z != 0 && NeedsFace(blocks[x][y][z-1], blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
                         }
 
@@ -139,7 +139,7 @@ GameObject3D chunk::getMesh(){
                             continue;
                         }
 
-                        GameObject3D blockObject = blocks[x][y][z]->getMesh(faces);
+                        GameObject3D blockObject = blocks[x][y][z]->GetMesh(faces);
 
                         std::for_each(blockObject.verticies.begin(), blockObject.verticies.end(), [absolutePosition, this](Vertex &v){
                             v.pos+=absolutePosition;
@@ -162,7 +162,7 @@ GameObject3D chunk::getMesh(){
  * if `chunk::recreateTranslucent` is set to true it will generate new mesh for chunk and cache it
  * otherwise it will return cached last response
  */
-GameObject3D chunk::getTranslucentMesh(){
+GameObject3D Chunk::GetTranslucentMesh(){
     
     if(recreateTranslucent){
         recreateTranslucent = false;
@@ -172,7 +172,7 @@ GameObject3D chunk::getTranslucentMesh(){
         for(size_t x = 0; x < blocks.size(); x++){
             for(size_t y = 0; y < blocks[x].size(); y++){
                 for(size_t z = 0; z < blocks[x][y].size(); z++){
-                    if(blocks[x][y][z] != NULL && blocks[x][y][z]->isTransparent()){
+                    if(blocks[x][y][z] != NULL && blocks[x][y][z]->IsTransparent()){
                         int VerticiesOffset = cachedTranslucentMesh.verticies.size();
 
                         glm::ivec3 absolutePosition = pos;
@@ -182,39 +182,39 @@ GameObject3D chunk::getTranslucentMesh(){
                         absolutePosition.z += z;
 
                         int faces = 0;
-                        if(y == 15 && needsFace(worldo->getBlock(glm::ivec3(0,1,0) + absolutePosition), blocks[x][y][z])){
+                        if(y == 15 && NeedsFace(world->GetBlock(glm::ivec3(0,1,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::TOP;
-                        }else if(y != 15 && needsFace(blocks[x][y+1][z], blocks[x][y][z])){
+                        }else if(y != 15 && NeedsFace(blocks[x][y+1][z], blocks[x][y][z])){
                             faces |= BlockFace::TOP;
                         }
 
-                        if(y == 0 && needsFace(worldo->getBlock(glm::ivec3(0,-1,0) + absolutePosition), blocks[x][y][z])){
+                        if(y == 0 && NeedsFace(world->GetBlock(glm::ivec3(0,-1,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::BOTTOM;
-                        }else if(y != 0 && needsFace(blocks[x][y-1][z], blocks[x][y][z])){
+                        }else if(y != 0 && NeedsFace(blocks[x][y-1][z], blocks[x][y][z])){
                             faces |= BlockFace::BOTTOM;
                         }
 
-                        if(x == 15 && needsFace(worldo->getBlock(glm::ivec3(1,0,0) + absolutePosition), blocks[x][y][z])){
+                        if(x == 15 && NeedsFace(world->GetBlock(glm::ivec3(1,0,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::LEFT;
-                        }else if(x != 15 && needsFace(blocks[x+1][y][z], blocks[x][y][z])){
+                        }else if(x != 15 && NeedsFace(blocks[x+1][y][z], blocks[x][y][z])){
                             faces |= BlockFace::LEFT;
                         }
 
-                        if(x == 0 &&  needsFace(worldo->getBlock(glm::ivec3(-1,0,0) + absolutePosition), blocks[x][y][z])){
+                        if(x == 0 &&  NeedsFace(world->GetBlock(glm::ivec3(-1,0,0) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::RIGHT;
-                        }else if(x != 0 && needsFace(blocks[x-1][y][z], blocks[x][y][z])){
+                        }else if(x != 0 && NeedsFace(blocks[x-1][y][z], blocks[x][y][z])){
                             faces |= BlockFace::RIGHT;
                         }
 
-                        if(z == 15 && needsFace(worldo->getBlock(glm::ivec3(0,0,1) + absolutePosition), blocks[x][y][z])){
+                        if(z == 15 && NeedsFace(world->GetBlock(glm::ivec3(0,0,1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::BACK;
-                        }else if(z != 15 && needsFace(blocks[x][y][z+1], blocks[x][y][z])){
+                        }else if(z != 15 && NeedsFace(blocks[x][y][z+1], blocks[x][y][z])){
                             faces |= BlockFace::BACK;
                         }
 
-                        if(z == 0 && needsFace(worldo->getBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
+                        if(z == 0 && NeedsFace(world->GetBlock(glm::ivec3(0,0,-1) + absolutePosition), blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
-                        }else if(z != 0 && needsFace(blocks[x][y][z-1], blocks[x][y][z])){
+                        }else if(z != 0 && NeedsFace(blocks[x][y][z-1], blocks[x][y][z])){
                             faces |= BlockFace::FRONT;
                         }
 
@@ -223,7 +223,7 @@ GameObject3D chunk::getTranslucentMesh(){
                             continue;
                         }
 
-                        GameObject3D blockObject = blocks[x][y][z]->getMesh(faces);
+                        GameObject3D blockObject = blocks[x][y][z]->GetMesh(faces);
 
                         std::for_each(blockObject.verticies.begin(), blockObject.verticies.end(), [absolutePosition, this](Vertex &v){
                             v.pos+=absolutePosition;
@@ -247,7 +247,7 @@ GameObject3D chunk::getTranslucentMesh(){
  * If chunk is below y 0 then the chunk will not be generated
  * After terrain is generated, mesh is forced to be recreated
  */
-void chunk::generate(){
+void Chunk::Generate(){
     if(generated){
         return;
     }
@@ -255,14 +255,14 @@ void chunk::generate(){
     if(pos.y < 0){
         return;
     }
-    worldo->worldGenerator->generate(blocks, pos);
-    forceRecreate();
+    world->worldGenerator->Generate(blocks, pos);
+    ForceRecreate();
 }
 
 /**
  * Marks mesh transparent and non-transparent mesh to be recreated
  */
-void chunk::forceRecreate(){
+void Chunk::ForceRecreate(){
     recreate = true;
     recreateTranslucent = true;
 }

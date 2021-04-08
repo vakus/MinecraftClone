@@ -25,40 +25,40 @@ int main(int argc, char *argv[])
 
 //if `-D LOGMIN=VALUE` is present in compilation then the value will be used for default logmin
 #ifndef LOGMIN
-    logger::setMinLog(logger::INFO);
+    Logger::SetMinLog(Logger::INFO);
 #elif LOGMIN == 1
-    logger::setMinLog(logger::FINER);
+    Logger::SetMinLog(Logger::FINER);
 #elif LOGMIN == 2
-    logger::setMinLog(logger::FINE);
+    Logger::SetMinLog(Logger::FINE);
 #elif LOGMIN == 3
-    logger::setMinLog(logger::INFO);
+    Logger::SetMinLog(Logger::INFO);
 #elif LOGMIN == 4
-    logger::setMinLog(logger::WARN);
+    Logger::SetMinLog(Logger::WARN);
 #elif LOGMIN == 5
-    logger::setMinLog(logger::ERROR);
+    Logger::SetMinLog(Logger::ERROR);
 #elif LOGMIN == 6
-    logger::setMinLog(logger::CRITICAL);
+    Logger::SetMinLog(Logger::CRITICAL);
 #else
-    logger::setMinLog(logger::INFO);
+    Logger::SetMinLog(Logger::INFO);
 #endif
 
 //if `-D LOGMAX=VALUE` is present in compilation then the value will be used for default logmax
 #ifndef LOGMAX
-    logger::setMaxLog(logger::NONE);
+    Logger::SetMaxLog(Logger::NONE);
 #elif LOGMAX == 1
-    logger::setMaxLog(logger::FINER);
+    Logger::SetMaxLog(Logger::FINER);
 #elif LOGMAX == 2
-    logger::setMaxLog(logger::FINE);
+    Logger::SetMaxLog(Logger::FINE);
 #elif LOGMAX == 3
-    logger::setMaxLog(logger::INFO);
+    Logger::SetMaxLog(Logger::INFO);
 #elif LOGMAX == 4
-    logger::setMaxLog(logger::WARN);
+    Logger::SetMaxLog(Logger::WARN);
 #elif LOGMAX == 5
-    logger::setMaxLog(logger::ERROR);
+    Logger::SetMaxLog(Logger::ERROR);
 #elif LOGMAX == 6
-    logger::setMaxLog(logger::CRITICAL);
+    Logger::SetMaxLog(Logger::CRITICAL);
 #else
-    logger::setMaxLog(logger::NONE);
+    Logger::SetMaxLog(Logger::NONE);
 #endif
 
     //Check for runtime arguments
@@ -80,35 +80,35 @@ int main(int argc, char *argv[])
                 const std::string sarg = argv[x + 1];
                 if (sarg.compare("finer") == 0)
                 {
-                    logger::setMinLog(logger::FINER);
+                    Logger::SetMinLog(Logger::FINER);
                 }
                 else if (sarg.compare("fine") == 0)
                 {
-                    logger::setMinLog(logger::FINE);
+                    Logger::SetMinLog(Logger::FINE);
                 }
                 else if (sarg.compare("info") == 0)
                 {
-                    logger::setMinLog(logger::INFO);
+                    Logger::SetMinLog(Logger::INFO);
                 }
                 else if (sarg.compare("warn") == 0 || sarg.compare("warning") == 0)
                 {
-                    logger::setMinLog(logger::WARNING);
+                    Logger::SetMinLog(Logger::WARNING);
                 }
                 else if (sarg.compare("error") == 0)
                 {
-                    logger::setMinLog(logger::ERROR);
+                    Logger::SetMinLog(Logger::ERROR);
                 }
                 else if (sarg.compare("critical") == 0)
                 {
-                    logger::setMinLog(logger::CRITICAL);
+                    Logger::SetMinLog(Logger::CRITICAL);
                 }
                 else if (sarg.compare("none") == 0)
                 {
-                    logger::setMinLog(logger::NONE);
+                    Logger::SetMinLog(Logger::NONE);
                 }
                 else
                 {
-                    logger::warn("Ignoring unknown argument for --logmin: " + sarg);
+                    Logger::Warn("Ignoring unknown argument for --logmin: " + sarg);
                     std::cout << "unknown";
                 }
             }
@@ -119,35 +119,35 @@ int main(int argc, char *argv[])
                 std::string sarg = argv[x + 1];
                 if (sarg.compare("finer") == 0)
                 {
-                    logger::setMaxLog(logger::FINER);
+                    Logger::SetMaxLog(Logger::FINER);
                 }
                 else if (sarg.compare("fine") == 0)
                 {
-                    logger::setMaxLog(logger::FINE);
+                    Logger::SetMaxLog(Logger::FINE);
                 }
                 else if (sarg.compare("info") == 0)
                 {
-                    logger::setMaxLog(logger::INFO);
+                    Logger::SetMaxLog(Logger::INFO);
                 }
                 else if (sarg.compare("warn") == 0 || sarg.compare("warning") == 0)
                 {
-                    logger::setMaxLog(logger::WARNING);
+                    Logger::SetMaxLog(Logger::WARNING);
                 }
                 else if (sarg.compare("error") == 0)
                 {
-                    logger::setMaxLog(logger::ERROR);
+                    Logger::SetMaxLog(Logger::ERROR);
                 }
                 else if (sarg.compare("critical") == 0)
                 {
-                    logger::setMaxLog(logger::CRITICAL);
+                    Logger::SetMaxLog(Logger::CRITICAL);
                 }
                 else if (sarg.compare("none") == 0)
                 {
-                    logger::setMaxLog(logger::NONE);
+                    Logger::SetMaxLog(Logger::NONE);
                 }
                 else
                 {
-                    logger::warn("Ignoring unknown argument for --logmax: " + sarg);
+                    Logger::Warn("Ignoring unknown argument for --logmax: " + sarg);
                 }
             }
             else if (parg.compare("--validation-layers") == 0)
@@ -174,26 +174,26 @@ int main(int argc, char *argv[])
     const std::string compDate = __DATE__;
     const std::string compTime = __TIME__;
 
-    logger::fine("Compiled on " + compDate + " at " + compTime);
+    Logger::Fine("Compiled on " + compDate + " at " + compTime);
 #ifdef VALIDATIONLAYERS
-    logger::fine("Compiled with Validation Layers enabled by default");
+    Logger::Fine("Compiled with Validation Layers enabled by default");
 #endif
 #ifdef LAYERS_KHRONOS_VALIDATION
     application.validationLayers.push_back("VK_LAYER_KHRONOS_validation");
-    logger::fine("Compiled with Always On Validation Layer VK_LAYER_KHRONOS_validation");
+    Logger::Fine("Compiled with Always On Validation Layer VK_LAYER_KHRONOS_validation");
 #endif
 #ifdef LAYERS_API_DUMP
     application.validationLayers.push_back("VK_LAYER_LUNARG_api_dump");
-    logger::fine("Compiled with Always On Validation Layer VK_LAYER_LUNARG_api_dump");
+    Logger::Fine("Compiled with Always On Validation Layer VK_LAYER_LUNARG_api_dump");
 #endif
     try
     {
-        blockInitialise();
+        BlockInitialise();
         application.run(enableValidationLayers);
     }
     catch (std::exception &e)
     {
-        logger::critical(e.what());
+        Logger::Critical(e.what());
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

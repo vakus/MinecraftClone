@@ -77,9 +77,8 @@ class Application{
 
         /**
          * world
-         * TODO: replace chunk with actual world; chunk is fine for testing purposes
          */
-        world gameWorld;
+        World gameWorld;
 
         /**
          * GLFW window handle for the application

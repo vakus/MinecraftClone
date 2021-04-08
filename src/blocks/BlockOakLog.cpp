@@ -1,17 +1,17 @@
 #include "../world/block.hpp"
 #include "block_templates.cpp"
 
-class BlockOakLog : public block
+class BlockOakLog : public Block
 {
 public:
     BlockOakLog(){
     }
 
-    virtual bool isTransparent() override{
+    virtual bool IsTransparent() override{
         return false;
     }
 
-    GameObject3D getMesh(int FaceFlags) override
+    GameObject3D GetMesh(int FaceFlags) override
     {
         GameObject3D gameObject{
             BLOCK_STANDARD_VERTEX(4,0,5,0,4,0),

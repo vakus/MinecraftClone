@@ -27,7 +27,7 @@ struct Vertex{
     /**
      * This function specifies the size of Vertex and binding information for Vulkan
      */
-    static VkVertexInputBindingDescription getBindingDescription()
+    static VkVertexInputBindingDescription GetBindingDescription()
     {
         VkVertexInputBindingDescription bindingDescription{};
 
@@ -41,7 +41,7 @@ struct Vertex{
     /**
      * This function specifies content of vertex and its sizes and type information for Vulkan
      */
-    static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
+    static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions()
     {
         std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
 

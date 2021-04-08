@@ -28,20 +28,20 @@
  */
 class GeneratorDefault : public Generator{
 public:
-    GeneratorDefault(world* w){
-        worldo = w;
+    GeneratorDefault(World* world){
+        this->world = world;
     }
-    void setSeed(uint32_t seed){
+    void SetSeed(uint32_t seed){
         this->seed = seed;
     }
-    uint32_t getSeed(){
+    uint32_t GetSeed(){
         return this->seed;
     }
     /**
      * generates default terrain with hills, water, trees, flowers etc.
-     * If tree would cross chunk border, then world::setBlock is called to set blocks on other chunks
+     * If tree would cross chunk border, then world::SetBlock is called to set blocks on other chunks
      */
-    void generate(std::vector<std::vector<std::vector<block*>>> &blocks,
+    void Generate(std::vector<std::vector<std::vector<Block*>>> &blocks,
                   glm::ivec3 chunkPos){
         glm::ivec3 absoluteBlockPos = chunkPos * CHUNK_BLOCK_SIZE;
 
@@ -79,14 +79,14 @@ public:
                             for(int yo = 2; yo < 4; yo++){
                                 for(int xo = -2; xo <= 2; xo++){
                                     for(int zo = -2; zo <= 2; zo++){
-                                        setBlock(blocks, chunkPos, glm::ivec3(x+xo,y+yo,z+zo) + absoluteBlockPos, BLOCKS[5]);
+                                        SetBlock(blocks, chunkPos, glm::ivec3(x+xo,y+yo,z+zo) + absoluteBlockPos, BLOCKS[5]);
                                     }
                                 }
                             }
                             for(int yo = 4; yo < 6; yo++){
                                 for(int xo = -1; xo <= 1; xo++){
                                     for(int zo = -1; zo <= 1; zo++){
-                                        setBlock(blocks, chunkPos, glm::ivec3(x+xo,y+yo,z+zo) + absoluteBlockPos, BLOCKS[5]);
+                                        SetBlock(blocks, chunkPos, glm::ivec3(x+xo,y+yo,z+zo) + absoluteBlockPos, BLOCKS[5]);
                                     }
                                 }
                             }
@@ -111,7 +111,7 @@ public:
     }
 private:
     uint32_t seed;
-    world* worldo;
+    World* world;
 
     /**
      * This function is a helper function to set block in either
@@ -121,15 +121,15 @@ private:
      * valid use example: setting blocks for tree (entire tree is one structure and parts of it may be outside border)
      * invalid use example: setting single block at X/Y/Z within chunk
      */
-    void setBlock(std::vector<std::vector<std::vector<block*>>> &blocks,
+    void SetBlock(std::vector<std::vector<std::vector<Block*>>> &blocks,
                   glm::ivec3 chunkPos,
                   glm::ivec3 absolutePos,
-                  block* bloc){
-        if(world::convertToChunk(absolutePos) == chunkPos){
-            glm::ivec3 relativeBlock = world::convertToChunkRelative(absolutePos);
+                  Block* bloc){
+        if(World::ConvertToChunk(absolutePos) == chunkPos){
+            glm::ivec3 relativeBlock = World::ConvertToChunkRelative(absolutePos);
             blocks[relativeBlock.x][relativeBlock.y][relativeBlock.z] = bloc;
         }else{
-            worldo->setBlock(absolutePos, bloc);
+            world->SetBlock(absolutePos, bloc);
         }
     }
 };

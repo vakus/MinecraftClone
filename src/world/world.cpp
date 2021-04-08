@@ -9,93 +9,93 @@
 /**
  * Creates world with random seed and default terrain generator
  */
-world::world(){
+World::World(){
     seed = rand();
     worldGenThread.resize(WORLDGEN_THREAD_COUNT_MAX);
     for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
-        pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
+        pthread_create(&worldGenThread[x], NULL, &World::WorldGenHelper, this);
     }
     worldGenerator = new GeneratorDefault(this);
-    worldGenerator->setSeed(seed);
+    worldGenerator->SetSeed(seed);
 }
 
 /**
  * Creates world with specified seed and default terrain generator
  */
-world::world(uint32_t seed){
+World::World(uint32_t seed){
     this->seed = seed;
     worldGenThread.resize(WORLDGEN_THREAD_COUNT_MAX);
     for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
-        pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
+        pthread_create(&worldGenThread[x], NULL, &World::WorldGenHelper, this);
     }
     worldGenerator = new GeneratorDefault(this);
-    worldGenerator->setSeed(seed);
+    worldGenerator->SetSeed(seed);
 }
 
 /**
  * Creates world with specified seed and specified terrain generator
  */
-world::world(uint32_t seed, Generator* worldGenerator){
+World::World(uint32_t seed, Generator* worldGenerator){
     this->seed = seed;
     worldGenThread.resize(WORLDGEN_THREAD_COUNT_MAX);
     for(size_t x = 0; x < WORLDGEN_THREAD_COUNT_MAX; x++){
-        pthread_create(&worldGenThread[x], NULL, &world::WorldGenHelper, this);
+        pthread_create(&worldGenThread[x], NULL, &World::WorldGenHelper, this);
     }
     this->worldGenerator = worldGenerator;
-    this->worldGenerator->setSeed(seed);
+    this->worldGenerator->SetSeed(seed);
 }
 
 /**
  * Sets `block` at absolute `pos`
  * If chunk does not exist, it will be created
  * 
- * FIXME: world::chunks is not thread safe
+ * FIXME: World::chunks is not thread safe
  */
-void world::setBlock(glm::ivec3 pos, block* block){
-    glm::ivec3 chunkPos = convertToChunk(pos);
+void World::SetBlock(glm::ivec3 pos, Block* block){
+    glm::ivec3 chunkPos = ConvertToChunk(pos);
 
-    chunk* c = chunks[chunkPos];
+    Chunk* c = chunks[chunkPos];
 
     if(c == NULL){
         //if chunk doesnt exist simply create it
-        c = new chunk(chunkPos, this);
+        c = new Chunk(chunkPos, this);
 
         chunks[chunkPos] = c;
     }
 
-    c->setBlock(convertToChunkRelative(pos), block);
+    c->SetBlock(ConvertToChunkRelative(pos), block);
 }
 
 /**
  * Sets `block` at absolute `x`/`y`/`z`
- * converts x/y/z to glm::ivec3 and calls setBlock(glm::ivec3, block*)
+ * converts x/y/z to glm::ivec3 and calls SetBlock(glm::ivec3, block*)
  */
-void world::setBlock(int x, int y, int z, block* block){
-    world::setBlock(glm::ivec3(x, y, z), block);
+void World::SetBlock(int x, int y, int z, Block* block){
+    World::SetBlock(glm::ivec3(x, y, z), block);
 }
 
 /**
  * Returns block at absolute `pos`
  * If chunk doesn't exist then it returns NULL
  */
-block* world::getBlock(glm::ivec3 pos){
-    glm::ivec3 chunkPos = convertToChunk(pos);
+Block* World::GetBlock(glm::ivec3 pos){
+    glm::ivec3 chunkPos = ConvertToChunk(pos);
 
-    chunk* c = chunks[chunkPos];
+    Chunk* c = chunks[chunkPos];
 
     if(c == NULL){
         //if the chunk doesnt exist we dont want to generate it (could cause cascading generation)
         return NULL;
     }
 
-    return c->getBlock(convertToChunkRelative(pos));
+    return c->GetBlock(ConvertToChunkRelative(pos));
 }
 /**
  * Returns block at absolute `x`/`y`/`z`
- * Converts x/y/z to glm::ivec3 and calls getBlock(glm::ivec3)
+ * Converts x/y/z to glm::ivec3 and calls GetBlock(glm::ivec3)
  */
-block* world::getBlock(int x, int y, int z){
-    return getBlock(glm::ivec3(x,y,z));
+Block* World::GetBlock(int x, int y, int z){
+    return GetBlock(glm::ivec3(x,y,z));
 }
 
 /**
@@ -104,15 +104,15 @@ block* world::getBlock(int x, int y, int z){
  * (chunk in which `pos` is plus 3 chunks each direction)
  * 
  * FIXME: sometimes causes segmentation fault
- * FIXME: world::chunk is not thread safe (possibly causing segfault)
- * FIXME: Currently WorldGenCond is notified at least once per call to prevent notifications being missed by other threads.
+ * FIXME: World::chunks is not thread safe (possibly causing segfault)
+ * FIXME: Currently worldGenCond is notified at least once per call to prevent notifications being missed by other threads.
  */
-GameObject3D world::getMesh(glm::ivec3 pos, int distance){
+GameObject3D World::GetMesh(glm::ivec3 pos, int distance){
 
     GameObject3D mesh;
     GameObject3D translucentMesh;
 
-    glm::ivec3 targetChunk = convertToChunk(pos);
+    glm::ivec3 targetChunk = ConvertToChunk(pos);
 
     for(int x = -distance; x <= distance; x++){
         for(int y = -distance; y <= distance; y++){
@@ -123,26 +123,26 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
                 actualPos.z += z;
                 actualPos *= -1;
 
-                chunk* c = chunks[actualPos];
+                Chunk* c = chunks[actualPos];
                 if(c == NULL){
-                    c = new chunk(actualPos, this);
+                    c = new Chunk(actualPos, this);
                     
                     chunks[actualPos] = c;
                     
-                    auto lock = std::unique_lock<std::mutex>(WorldGenMutex);
-                    WorldGenQueue.push_back(c);
+                    auto lock = std::unique_lock<std::mutex>(worldGenMutex);
+                    worldGenQueue.push_back(c);
                     lock.unlock();
-                    WorldGenCond.notify_all();
+                    worldGenCond.notify_all();
                     continue;
                 }
-                GameObject3D chunkMesh = c->getMesh();
+                GameObject3D chunkMesh = c->GetMesh();
 
                 uint32_t verticiesOffset = mesh.verticies.size();
                 std::for_each(chunkMesh.indicies.begin(), chunkMesh.indicies.end(), [verticiesOffset](uint32_t &x){x += verticiesOffset;});
                 mesh.indicies.insert(mesh.indicies.end(), chunkMesh.indicies.begin(), chunkMesh.indicies.end());
                 mesh.verticies.insert(mesh.verticies.end(), chunkMesh.verticies.begin(), chunkMesh.verticies.end());
 
-                GameObject3D translucentChunkMesh = c->getTranslucentMesh();
+                GameObject3D translucentChunkMesh = c->GetTranslucentMesh();
 
                 verticiesOffset = translucentMesh.verticies.size();
                 std::for_each(translucentChunkMesh.indicies.begin(), translucentChunkMesh.indicies.end(), [verticiesOffset](uint32_t &x){x += verticiesOffset;});
@@ -159,7 +159,7 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
     //
     // while this prevents chunks from never being generated
     // this doesnt feel right
-    WorldGenCond.notify_all();
+    worldGenCond.notify_all();
 
     //we need to add translucent layer after normal layer
     
@@ -185,7 +185,7 @@ GameObject3D world::getMesh(glm::ivec3 pos, int distance){
 /**
  * This function converts absolute `pos` to a absolute chunk position
  */
-glm::ivec3 world::convertToChunk(glm::ivec3 pos){
+glm::ivec3 World::ConvertToChunk(glm::ivec3 pos){
     if(pos.x % CHUNK_BLOCK_SIZE < 0){
         pos.x -= CHUNK_BLOCK_SIZE - 1;
     }
@@ -206,7 +206,7 @@ glm::ivec3 world::convertToChunk(glm::ivec3 pos){
 /**
  * This function converts absolute `pos` to a relative block within a chunk position
  */
-glm::ivec3 world::convertToChunkRelative(glm::ivec3 pos){
+glm::ivec3 World::ConvertToChunkRelative(glm::ivec3 pos){
     pos.x %= CHUNK_BLOCK_SIZE;
     pos.y %= CHUNK_BLOCK_SIZE;
     pos.z %= CHUNK_BLOCK_SIZE;
@@ -228,15 +228,15 @@ glm::ivec3 world::convertToChunkRelative(glm::ivec3 pos){
 /**
  * This function stops all threads from the world
  */
-void world::stop(){
-    auto lock = std::unique_lock<std::mutex>(WorldGenMutex);
-    WorldGenContinue = false;
+void World::Stop(){
+    auto lock = std::unique_lock<std::mutex>(worldGenMutex);
+    worldGenContinue = false;
     lock.unlock();
-    WorldGenCond.notify_all();
+    worldGenCond.notify_all();
 }
 
-void *world::WorldGenHelper(void* context){
-    return ((world *) context)->WorldGen();
+void *World::WorldGenHelper(void* context){
+    return ((World *) context)->WorldGen();
 }
 
 /**
@@ -244,36 +244,36 @@ void *world::WorldGenHelper(void* context){
  * This function will pick a chunk from queue of chunks to be generated
  * and then call generate function on it.
  * It will also cause nearby chunks to be marked to be recreated
- * The thread will continue as long as `world::WorldGenContinue` is true
+ * The thread will continue as long as `world::worldGenContinue` is true
  */
-void *world::WorldGen(){
-    while(WorldGenContinue){
-        auto lock = std::unique_lock<std::mutex>(WorldGenMutex);
-        WorldGenCond.wait(lock);
-        if(!WorldGenQueue.empty()){
-            chunk* c = WorldGenQueue.front();
-            WorldGenQueue.pop_front();
+void *World::WorldGen(){
+    while(worldGenContinue){
+        auto lock = std::unique_lock<std::mutex>(worldGenMutex);
+        worldGenCond.wait(lock);
+        if(!worldGenQueue.empty()){
+            Chunk* c = worldGenQueue.front();
+            worldGenQueue.pop_front();
             lock.unlock();
-            c->generate();
+            c->Generate();
 
             //we also would want to regenerate nearby chunks
             if(chunks[glm::ivec3(1,0,0) + c->pos] != NULL){
-                chunks[glm::ivec3(1,0,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(1,0,0) + c->pos]->ForceRecreate();
             }
             if(chunks[glm::ivec3(-1,0,0) + c->pos] != NULL){
-                chunks[glm::ivec3(-1,0,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(-1,0,0) + c->pos]->ForceRecreate();
             }
             if(chunks[glm::ivec3(0,1,0) + c->pos] != NULL){
-                chunks[glm::ivec3(0,1,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,1,0) + c->pos]->ForceRecreate();
             }
             if(chunks[glm::ivec3(0,-1,0) + c->pos] != NULL){
-                chunks[glm::ivec3(0,-1,0) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,-1,0) + c->pos]->ForceRecreate();
             }
             if(chunks[glm::ivec3(0,0,1) + c->pos] != NULL){
-                chunks[glm::ivec3(0,0,1) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,0,1) + c->pos]->ForceRecreate();
             }
             if(chunks[glm::ivec3(0,0,-1) + c->pos] != NULL){
-                chunks[glm::ivec3(0,0,-1) + c->pos]->forceRecreate();
+                chunks[glm::ivec3(0,0,-1) + c->pos]->ForceRecreate();
             }
         }
     }

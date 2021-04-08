@@ -5,25 +5,25 @@
  */
 #define BLOCK_STANDARD_VERTEX(xtop,ytop,xside,yside,xbottom,ybottom) { \
              /* back - 0 */ \
-             {{0.0f, 0.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 0.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 1.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE}, \
-             {{0.0f, 1.0f, 1.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 0.0f, 1.0f}, GetTextureCoord(xside, yside, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 1.0f}, GetTextureCoord(xside, yside, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 1.0f}, GetTextureCoord(xside, yside, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 1.0f}, GetTextureCoord(xside, yside, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
              /* bottom - 4 */  \
-             {{0.0f, 0.0f, 0.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_BOTTOM}, \
-             {{1.0f, 0.0f, 0.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_BOTTOM}, \
-             {{0.0f, 0.0f, 1.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::TOP_LEFT), BLOCK_SHADE_BOTTOM}, \
-             {{1.0f, 0.0f, 1.0f}, getTextureCoord(xbottom, ybottom, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_BOTTOM}, \
+             {{0.0f, 0.0f, 0.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_BOTTOM}, \
+             {{1.0f, 0.0f, 0.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_BOTTOM}, \
+             {{0.0f, 0.0f, 1.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::TOP_LEFT), BLOCK_SHADE_BOTTOM}, \
+             {{1.0f, 0.0f, 1.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_BOTTOM}, \
              /* top - 8 */ \
-             {{0.0f, 1.0f, 1.0f}, getTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_TOP}, \
-             {{1.0f, 1.0f, 1.0f}, getTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_TOP}, \
-             {{1.0f, 1.0f, 0.0f}, getTextureCoord(xtop, ytop, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_TOP}, \
-             {{0.0f, 1.0f, 0.0f}, getTextureCoord(xtop, ytop, TextureCoordType::TOP_LEFT), BLOCK_SHADE_TOP}, \
+             {{0.0f, 1.0f, 1.0f}, GetTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_TOP}, \
+             {{1.0f, 1.0f, 1.0f}, GetTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_TOP}, \
+             {{1.0f, 1.0f, 0.0f}, GetTextureCoord(xtop, ytop, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_TOP}, \
+             {{0.0f, 1.0f, 0.0f}, GetTextureCoord(xtop, ytop, TextureCoordType::TOP_LEFT), BLOCK_SHADE_TOP}, \
              /* front - 12 */ \
-             {{0.0f, 0.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 0.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 1.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{0.0f, 1.0f, 0.0f}, getTextureCoord(xside, yside, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE} \
+             {{0.0f, 0.0f, 0.0f}, GetTextureCoord(xside, yside, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 0.0f}, GetTextureCoord(xside, yside, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 0.0f}, GetTextureCoord(xside, yside, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 0.0f}, GetTextureCoord(xside, yside, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE} \
             }
 
 /**
@@ -58,15 +58,15 @@
  */
 #define BLOCK_FLOWER_VERTEX(x,y) { \
              /* back - 0 */ \
-             {{0.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 0.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{0.0f, 1.0f, 1.0f}, getTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 0.0f, 1.0f}, GetTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 1.0f}, GetTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 1.0f}, GetTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 1.0f}, GetTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE}, \
              /* front - 4 */ \
-             {{0.0f, 0.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 0.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{1.0f, 1.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
-             {{0.0f, 1.0f, 0.0f}, getTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE} \
+             {{0.0f, 0.0f, 0.0f}, GetTextureCoord(x, y, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 0.0f, 0.0f}, GetTextureCoord(x, y, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{1.0f, 1.0f, 0.0f}, GetTextureCoord(x, y, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_SIDE}, \
+             {{0.0f, 1.0f, 0.0f}, GetTextureCoord(x, y, TextureCoordType::TOP_LEFT), BLOCK_SHADE_SIDE} \
             }
 
 /**

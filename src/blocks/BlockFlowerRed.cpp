@@ -1,17 +1,17 @@
 #include "../world/block.hpp"
 #include "block_templates.cpp"
 
-class BlockFlowerRed : public block
+class BlockFlowerRed : public Block
 {
 public:
     BlockFlowerRed(){
     }
 
-    virtual bool isTransparent() override{
+    virtual bool IsTransparent() override{
         return true;
     }
 
-    GameObject3D getMesh(__attribute__((unused)) int FaceFlags) override
+    GameObject3D GetMesh(__attribute__((unused)) int FaceFlags) override
     {
         GameObject3D gameObject{
             BLOCK_FLOWER_VERTEX(1,1),

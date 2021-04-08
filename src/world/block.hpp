@@ -42,7 +42,7 @@
         0.6f, 0.6f, 0.6f   \
     }
 
-class block
+class Block
 {
 public:
     /**
@@ -50,17 +50,17 @@ public:
      * If the block is transparent/translucent then blocks' face covered by this block will still be rendered
      * If the block is not transparent then blocks' face covered by this block will not be rendered
      */
-    virtual bool isTransparent() = 0;
+    virtual bool IsTransparent() = 0;
     /**
      * Gets 3D mesh of the block
      * FaceFlags specify which faces should be included in block.
      * e.g. if BlockFace::TOP is not present that means that top face of this block will not be visible
      */
-    virtual GameObject3D getMesh(int FaceFlags) = 0;
+    virtual GameObject3D GetMesh(int FaceFlags) = 0;
 };
 
 /**
- * Used in combination with block::getMesh
+ * Used in combination with block::GetMesh
  * Specifies block faces directions.
  * LEFT/RIGHT is on X axis
  * TOP/BOTTOM is on Y axis
@@ -77,7 +77,7 @@ enum BlockFace
 };
 
 /**
- * Used in combination with getTextureCoord
+ * Used in combination with GetTextureCoord
  * Specifies which vertex on texture should be represented
  */
 enum TextureCoordType
@@ -91,17 +91,17 @@ enum TextureCoordType
 /**
  * This list stores all blocks available in the game
  */
-extern std::vector<block*> BLOCKS;
+extern std::vector<Block*> BLOCKS;
 
 /**
  * This function is a helper function that calculates normalised position in texture map,
  * based on provided X and Y coordinate where 0,0 is top left.
  */
-glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType);
+glm::vec2 GetTextureCoord(uint x, uint y, TextureCoordType textureCoordType);
 
 /**
  * This function sets up list of all blocks available in the game
  * The blocks are stored in global variable `BLOCKS`
  */
-void blockInitialise();
+void BlockInitialise();
 #endif

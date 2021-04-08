@@ -6,17 +6,17 @@
  */
 class GeneratorFlat : public Generator{
 public:
-    void setSeed(uint32_t seed){
+    void SetSeed(uint32_t seed){
         this->seed = seed;
     }
-    uint32_t getSeed(){
+    uint32_t GetSeed(){
         return this->seed;
     }
     /**
      * Generates flat terrain up to absolute block height of 8
      * Top layer is grass block, 2 layers below are dirt, rest down to absolute 0 is stone
      */
-    void generate(std::vector<std::vector<std::vector<block*>>> &blocks,
+    void Generate(std::vector<std::vector<std::vector<Block*>>> &blocks,
                   glm::ivec3 chunkPos){
         chunkPos *= CHUNK_BLOCK_SIZE;
 
