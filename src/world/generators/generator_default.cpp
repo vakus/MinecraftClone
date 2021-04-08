@@ -3,6 +3,29 @@
 
 #include <PerlinNoise/PerlinNoise.hpp>
 
+/**
+ * Specifies sea level for world generation
+ */
+#define CHUNK_GENERATION_SEA_LEVEL 64
+
+/**
+ * Specifies minimum value for Y for world generation
+ */
+#define CHUNK_GENERATION_MIN_Y 56
+
+/**
+ * Specifies maximum value for Y for world generation
+ */
+#define CHUNK_GENERATION_MAX_Y 72
+
+/**
+ * Specifies how many octaves should be used in perlin noise generator
+ */
+#define CHUNK_GENERATION_OCTAVES 4
+
+/**
+ * This generator generates default terrain for the game with hills, water, trees, flowers etc.
+ */
 class GeneratorDefault : public Generator{
 public:
     GeneratorDefault(world* w){
@@ -14,6 +37,10 @@ public:
     uint32_t getSeed(){
         return this->seed;
     }
+    /**
+     * generates default terrain with hills, water, trees, flowers etc.
+     * If tree would cross chunk border, then world::setBlock is called to set blocks on other chunks
+     */
     void generate(std::vector<std::vector<std::vector<block*>>> &blocks,
                   glm::ivec3 chunkPos){
         glm::ivec3 absoluteBlockPos = chunkPos * CHUNK_BLOCK_SIZE;

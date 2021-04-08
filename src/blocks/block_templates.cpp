@@ -2,9 +2,6 @@
 /**
  * This defines optimised list of vertecies to be used in a block
  * This definition should be used either as argument for insert or list creation
- * WARNING: this list only works if all faces have the same texture
- * This will work e.g. for stone where each face has the same texture
- * But this will not work for e.g. grass block which has different top, sides and bottom
  */
 #define BLOCK_STANDARD_VERTEX(xtop,ytop,xside,yside,xbottom,ybottom) { \
              /* back - 0 */ \

@@ -1,8 +1,6 @@
 #include "../world/block.hpp"
 #include "block_templates.cpp"
 
-#define BLOCK_SHADE_BLACK {0.0f,0.0f,0.0f}
-
 class BlockSand : public block
 {
 public:

@@ -3,12 +3,15 @@
 #include <PerlinNoise/PerlinNoise.hpp>
 #include <chrono>
 
-bool isTransparent(block* block){
-    return (block == NULL ? true : block->isTransparent());
-}
-
+/**
+ * checks if `current` block needs face when covered by `other`
+ * if `current` and `other` are the same the face is not needed
+ * otherwise
+ *      if `other` is null the block will need face
+ *      if `other` is transparent block will need face
+ */
 bool needsFace(block* other, block* current){
-    return (other == current ? false : isTransparent(other));
+    return (other == current ? false : (other == NULL ? true : other->isTransparent()));
 }
 
 chunk::chunk(glm::ivec3 position, world* w) : pos(position){
@@ -25,16 +28,29 @@ chunk::chunk(glm::ivec3 position, world* w) : pos(position){
     }
 };
 
+/**
+ * Sets block at `bpos` to block specified by pointer `b`
+ * This will flag the mesh of a chunk to be recreated
+ */
 void chunk::setBlock(glm::ivec3 bpos, block* b){
     recreate = true;
     recreateTranslucent = true;
     blocks[bpos.x][bpos.y][bpos.z] = b;
 }
 
+/**
+ * Sets block at xyz to block specified by pointer `b`
+ * This will flag the mesh of a chunk to be recreated
+ */
 void chunk::setBlock(int x, int y, int z, block* b){
     setBlock(glm::ivec3(x,y,z), b);
 };
 
+/**
+ * Returns pointer to block that is at `pos`
+ * If either x/y/z is below 0 then size of chunk will be added to it to allow e.g. using -1 as alternative to 15
+ * Note values outside range of -CHUNK_BLOCK_SIZE to CHUNK_BLOCK_SIZE will cause reading outside range of blocks
+ */
 block* chunk::getBlock(glm::ivec3 pos){
     if(pos.x < 0){
         pos.x += CHUNK_BLOCK_SIZE;
@@ -48,10 +64,20 @@ block* chunk::getBlock(glm::ivec3 pos){
     return blocks[pos.x][pos.y][pos.z];
 }
 
+/**
+ * Returns pointer to block that is at xyz
+ * If either x/y/z is below 0 then size of chunk will be added to it to allow e.g. using -1 as alternative to 15
+ * Note values outside range of -CHUNK_BLOCK_SIZE to CHUNK_BLOCK_SIZE will cause reading outside range of blocks
+ */
 block* chunk::getBlock(int x, int y, int z){
     return getBlock(glm::ivec3(x, y, z));
 }
 
+/**
+ * Returns the non-transparent mesh of a chunk
+ * if `chunk::recreate` is set to true it will generate new mesh for chunk and cache it
+ * otherwise it will return cached last response
+ */
 GameObject3D chunk::getMesh(){
     
     if(recreate){
@@ -131,6 +157,11 @@ GameObject3D chunk::getMesh(){
     return cachedMesh;
 };
 
+/**
+ * Returns the transparent mesh of a chunk
+ * if `chunk::recreateTranslucent` is set to true it will generate new mesh for chunk and cache it
+ * otherwise it will return cached last response
+ */
 GameObject3D chunk::getTranslucentMesh(){
     
     if(recreateTranslucent){
@@ -210,6 +241,12 @@ GameObject3D chunk::getTranslucentMesh(){
     return cachedTranslucentMesh;
 };
 
+/**
+ * This function requests that the chunk generates terrain
+ * If chunk has already been generated this function will return instantly
+ * If chunk is below y 0 then the chunk will not be generated
+ * After terrain is generated, mesh is forced to be recreated
+ */
 void chunk::generate(){
     if(generated){
         return;
@@ -222,6 +259,9 @@ void chunk::generate(){
     forceRecreate();
 }
 
+/**
+ * Marks mesh transparent and non-transparent mesh to be recreated
+ */
 void chunk::forceRecreate(){
     recreate = true;
     recreateTranslucent = true;

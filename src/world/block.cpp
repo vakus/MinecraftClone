@@ -10,6 +10,10 @@
 #include "../blocks/BlockWater.cpp"
 #include "../blocks/BlockSand.cpp"
 
+/**
+ * This function sets up list of all blocks available in the game
+ * The blocks are stored in global variable `BLOCKS`
+ */
 void blockInitialise()
 {
     BlockGrass *grass = new BlockGrass();
@@ -40,6 +44,10 @@ void blockInitialise()
     BLOCKS.push_back(sand);
 }
 
+/**
+ * This function is a helper function that calculates normalised position in texture map,
+ * based on provided X and Y coordinate where 0,0 is top left.
+ */
 glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
 {
 
@@ -63,4 +71,7 @@ glm::vec2 getTextureCoord(uint x, uint y, TextureCoordType textureCoordType)
     return glm::vec2(baseX, baseY);
 }
 
+/**
+ * This list stores all blocks available in the game
+ */
 std::vector<block*> BLOCKS{};

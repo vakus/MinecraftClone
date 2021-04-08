@@ -11,10 +11,22 @@
 #include <GLFW/glfw3.h>
 
 struct Vertex{
+    /**
+     * Stores 3D absolute position where the vertex is
+     */
     glm::vec3 pos;
+    /**
+     * Stores 2D normalised position of texture where the vertex corresponds
+     */
     glm::vec2 texCoord;
+    /**
+     * Stores additional shade information that should be placed on this vertex
+     */
     glm::vec3 shade;
 
+    /**
+     * This function specifies the size of Vertex and binding information for Vulkan
+     */
     static VkVertexInputBindingDescription getBindingDescription()
     {
         VkVertexInputBindingDescription bindingDescription{};
@@ -26,6 +38,9 @@ struct Vertex{
         return bindingDescription;
     }
 
+    /**
+     * This function specifies content of vertex and its sizes and type information for Vulkan
+     */
     static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
     {
         std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};

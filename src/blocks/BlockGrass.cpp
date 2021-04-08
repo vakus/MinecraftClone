@@ -1,5 +1,4 @@
 #include "../world/block.hpp"
-
 #include "block_templates.cpp"
 
 class BlockGrass : public block

@@ -1,6 +1,9 @@
 #include "generator.hpp"
 #include "../chunk.hpp"
 
+/**
+ * This generator simply creates flat terrain
+ */
 class GeneratorFlat : public Generator{
 public:
     void setSeed(uint32_t seed){
@@ -9,6 +12,10 @@ public:
     uint32_t getSeed(){
         return this->seed;
     }
+    /**
+     * Generates flat terrain up to absolute block height of 8
+     * Top layer is grass block, 2 layers below are dirt, rest down to absolute 0 is stone
+     */
     void generate(std::vector<std::vector<std::vector<block*>>> &blocks,
                   glm::ivec3 chunkPos){
         chunkPos *= CHUNK_BLOCK_SIZE;
@@ -24,7 +31,7 @@ public:
                     if(chunkPos.y + y < height - 3){
                         //stone
                         blocks[x][y][z] = BLOCKS[1];
-                    }else if(chunkPos.y + y < height - 1){
+                    }else if(chunkPos.y + y < height - 2){
                         //dirt
                         blocks[x][y][z] = BLOCKS[2];
                     }else if(chunkPos.y + y < height){

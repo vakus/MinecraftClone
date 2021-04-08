@@ -61,7 +61,14 @@ int main(int argc, char *argv[])
     logger::setMaxLog(logger::NONE);
 #endif
 
-    //check runtime arguments
+    //Check for runtime arguments
+    //available arguments
+    //  --logmin [finer|fine|info|warn/warning|error|none]  - will silence all logs below treshold
+    //  --logmax [finer|fine|info|warn/warning|error|none]  - will silence all logs above treshold
+    //  --validation-layers                                 - enable Vulkan Validation layers
+    //  --validation-layer-khronos                          - enable Khronos' Vulkan Validation layer for right API usage
+    //  --validation-layer-api-dump                         - enable Lunarg's Vulkan Validation layer for API dumping
+    //  --flatland                                          - make the world flat
     if (argc > 0)
     {
         for (int x = 0; x < argc; x++)
@@ -70,8 +77,6 @@ int main(int argc, char *argv[])
 
             if (parg.compare("--logmin") == 0)
             {
-
-                //parse the min
                 const std::string sarg = argv[x + 1];
                 if (sarg.compare("finer") == 0)
                 {
