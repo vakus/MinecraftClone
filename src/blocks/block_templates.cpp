@@ -12,8 +12,8 @@
              /* bottom - 4 */  \
              {{0.0f, 0.0f, 0.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_BOTTOM}, \
              {{1.0f, 0.0f, 0.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_BOTTOM}, \
-             {{0.0f, 0.0f, 1.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::TOP_LEFT), BLOCK_SHADE_BOTTOM}, \
-             {{1.0f, 0.0f, 1.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_BOTTOM}, \
+             {{0.0f, 0.0f, 1.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::TOP_RIGHT), BLOCK_SHADE_BOTTOM}, \
+             {{1.0f, 0.0f, 1.0f}, GetTextureCoord(xbottom, ybottom, TextureCoordType::TOP_LEFT), BLOCK_SHADE_BOTTOM}, \
              /* top - 8 */ \
              {{0.0f, 1.0f, 1.0f}, GetTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_LEFT), BLOCK_SHADE_TOP}, \
              {{1.0f, 1.0f, 1.0f}, GetTextureCoord(xtop, ytop, TextureCoordType::BOTTOM_RIGHT), BLOCK_SHADE_TOP}, \
