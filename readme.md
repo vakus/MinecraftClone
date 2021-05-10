@@ -1,3 +1,13 @@
+# Minecraft Clone in C++/Vulkan
+
+## About
+
+This project was created as part of my University final year project. The focus of this project was to explore C++ programming language and Vulkan Graphics API.
+
+The game was created under Linux (Debian) and was not tested on Windows operating systems.
+
+![Game Screenshot](/assets/example_image.jpg?raw=true "Game Screenshot")
+
 ## Application Arguments
 
 | Argument                                                           | Description                         |
@@ -12,8 +22,6 @@
 
 **NOTE:** to enable Vulkan Validation Layers you are required to have VulkanSDK, otherwise the application may result with a crash.
 For linux see: https://vulkan.lunarg.com/doc/view/1.2.135.0/linux/getting_started.html
-
-**NOTE:** To self: `source ~/vulkan/1.2.154.0/setup-env.sh`
 
 
 ## Compilation Arguments
